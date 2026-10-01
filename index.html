@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CSF dynamics: interactive models</title>
+<meta name="author" content="Dr G Narenthiran">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
@@ -46,6 +47,11 @@ nav.side{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;heigh
 .navlist button:focus-visible{outline:2px solid var(--csf);outline-offset:1px;}
 .navlist .navgroup{font-size:.78rem;color:var(--muted);padding:14px 10px 4px;font-weight:500;}
 .navlist .navgroup:first-child{padding-top:0;}
+.credit{font-size:.82rem;color:var(--muted);line-height:1.5;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:10px 14px;}
+.credit strong{color:var(--ink);font-weight:600;}
+.credit a{color:var(--csf);}
+.credit.top{margin:0 0 22px;}
+.credit.bottom{margin:40px 0 0;}
 .side .foot{margin-top:1.4rem;font-size:.78rem;color:var(--muted);line-height:1.45;}
 main{padding:30px 34px 60px;min-width:0;}
 section.model[hidden]{display:none;}
@@ -93,6 +99,11 @@ ol.refs em{color:var(--ink);font-style:italic;}
   :root{padding-top:0;}
   .brand p,.navlist .navgroup{font-size:.78rem;color:var(--muted);padding:14px 10px 4px;font-weight:500;}
 .navlist .navgroup:first-child{padding-top:0;}
+.credit{font-size:.82rem;color:var(--muted);line-height:1.5;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:10px 14px;}
+.credit strong{color:var(--ink);font-weight:600;}
+.credit a{color:var(--csf);}
+.credit.top{margin:0 0 22px;}
+.credit.bottom{margin:40px 0 0;}
 .side .foot{display:none;}
   .brand h1{font-size:1.1rem;margin-bottom:8px;}
   .navlist{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px;}
@@ -110,12 +121,13 @@ ol.refs em{color:var(--ink);font-style:italic;}
 <nav class="side" aria-label="Models">
   <div class="brand">
     <h1>CSF dynamics, modelled</h1>
-    <p>Twenty-one interactive models in three groups: foundations, clinical models and special scenarios.</p>
+    <p>Twenty-five interactive models in three groups: foundations, clinical models and special scenarios.</p>
   </div>
   <ul class="navlist" id="navlist"></ul>
   <div class="foot">Teaching models with simplified physiology. Parameter values are representative, not patient-specific.</div>
 </nav>
 <main id="main">
+<div class="credit top">Conceived, directed and curated by <strong>Dr G Narenthiran</strong> BSc(MedSci)(Hons) MB ChB MRCS(Ed.) FEBNS FRCS(SN), <a href="mailto:g_narenthiran@hotmail.com">g_narenthiran@hotmail.com</a><br>© G Narenthiran. All rights reserved.</div>
 <section class="model" id="m-mar" data-group="Foundations" data-dim="0-D" data-name="Infusion test">
   <header>
     <h2>Constant-rate infusion test</h2>
@@ -871,7 +883,157 @@ ol.refs em{color:var(--ink);font-style:italic;}
     </div>
   </div>
 </section>
+<section class="model" id="m-star" data-group="Special scenarios" data-dim="Venous" data-name="Starling resistor" hidden>
+  <header>
+    <h2>CSF pressure and the cerebral venous Starling resistor</h2>
+    <p>Bridging veins and the lateral lacunae cross the subarachnoid space before entering the sinuses. Their thin walls are exposed to CSF pressure, so they behave as a collapsible segment: when ICP exceeds sinus pressure they narrow until upstream venous pressure sits just above ICP. CSF pressure, not sinus pressure, then sets the effective downstream pressure for cerebral blood flow. This is the vascular waterfall that couples cortical venous pressure to ICP and isolates the brain from jugular pressure changes.</p>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-star"><h3>Presets</h3><div class="btnrow" id="pre-star"></div><h3>Parameters</h3></div>
+    <div class="figs">
+      <figure><figcaption>Pressure profile from artery to right atrium; dashed line is ICP</figcaption><canvas id="cv-star-prof"></canvas></figure>
+      <figure><figcaption>Waterfall: CBF against added sinus/jugular pressure at three ICP levels</figcaption><canvas id="cv-star-w"></canvas></figure>
+      <figure><figcaption>Cortical venous pressure tracks ICP once the segment collapses</figcaption><canvas id="cv-star-c"></canvas></figure>
+      <figure><figcaption>Dynamic scenario: ICP, sinus and cortical venous pressure</figcaption><canvas id="cv-star-d"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-star"></div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class="eq">\[q=\frac{\mathrm{MAP}-P_{eff}}{R_a+R_c+R_{cv}+R_{bv}},\qquad P_{eff}=\operatorname{smax}\big(\mathrm{ICP}+\Delta P_o,\;P_{ss}\big),\qquad P_{ss}=\mathrm{CVP}+P_{jug}+q\,R_{jug}\]</div>
+      <div class="eq">\[\frac{dP}{dt}=E(P-P_0)\Big[I_f+I_{ext}-\frac{P-P_{ss}}{R_{out}}+\frac{dV_{ven}}{dt}\Big],\qquad V_{ven}=C_v\,(P_{cv}-\mathrm{ICP})\]</div>
+      <p>The collapsible segment is represented by a smooth maximum: flow is governed by MAP − (ICP + ΔP<sub>o</sub>) when the segment is collapsed and by MAP − P<sub>ss</sub> when it is open. ΔP<sub>o</sub> is the small transmural pressure needed to keep the vessel patent. Autoregulation adjusts arteriolar resistance to hold flow constant within limits. In the dynamic scenarios, venous blood volume follows transmural pressure and adds to the Marmarou equation. This is why jugular compression raises ICP (the Queckenstedt test) only once sinus pressure approaches ICP, and why CSF drainage lowers cortical venous pressure.</p>
+      <p>Consequences: effective perfusion pressure is MAP − max(ICP, P<sub>ss</sub>). Raising jugular pressure or PEEP has no effect on flow until it exceeds ICP. Venous transmural pressure, and so venous blood volume, stays nearly constant as ICP rises. Perilesional regions with higher tissue pressure can lose flow to neighbours (venous steal).</p>
+      <p class="caveat">A single lumped segment and a smooth-maximum waterfall. Real outflow includes several parallel routes (cortical veins, deep system, emissary veins, vertebral plexus), self-excited oscillation of collapsible tubes is not represented, and the venous volume time constant is assumed.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Permutt S, Riley RL. <em>Hemodynamics of collapsible vessels with tone: the vascular waterfall.</em> J Appl Physiol 1963;18:924–932.</li>
+        <li>Luce JM, Huseby JS, Kirk W, Butler J. <em>A Starling resistor regulates cerebral venous outflow in dogs.</em> J Appl Physiol 1982;53:1496–1503.</li>
+        <li>Nakagawa Y, Tsuru M, Yada K. <em>Site and mechanism for compression of the venous system during experimental intracranial hypertension.</em> J Neurosurg 1974;41:427–434.</li>
+        <li>Piechnik SK, Czosnyka M, Richards HK, Whitfield PC, Pickard JD. <em>Cerebral venous blood outflow: a theoretical model based on laboratory simulation.</em> Neurosurgery 2001;49:1214–1222.</li>
+        <li><em>Cerebral venous steal: blood flow diversion with increased tissue pressure.</em> PMID 12383372.</li>
+        <li>Holmlund P, et al. <em>Venous collapse regulates intracranial pressure in upright body positions.</em> Am J Physiol Regul Integr Comp Physiol 2018;314:R377–R385.</li>
+        <li>Wilson MH. <em>Monro-Kellie 2.0: the dynamic vascular and venous pathophysiological components of intracranial pressure.</em> J Cereb Blood Flow Metab 2016;36:1338–1350.</li>
+        <li>Queckenstedt H. <em>Zur Diagnose der Rückenmarkskompression.</em> Dtsch Z Nervenheilkd 1916;55:325–333.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+<section class="model" id="m-valve" data-group="Special scenarios" data-dim="Shunts" data-name="Valve hysteresis" hidden>
+  <header>
+    <h2>Shunt valve hysteresis: opening, closing and operating pressures</h2>
+    <p>A differential-pressure valve does not open and close at the same pressure. Static friction and seat adhesion must be overcome to lift the ball or membrane, so it opens above its nominal setting. Once moving, kinetic friction acts against the direction of motion, so flow at a given pressure is higher on the way down than on the way up. When nearly closed, the pressure acts on the smaller seat area and the valve snaps shut. In a patient with little absorption, this produces intermittent, sawtooth drainage.</p>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-valve"><h3>Presets</h3><div class="btnrow" id="pre-valve"></div><h3>Parameters</h3></div>
+    <div class="figs">
+      <figure><figcaption>Bench pressure–flow loop: rising (solid) and falling (dashed) pressure</figcaption><canvas id="cv-valve-l"></canvas></figure>
+      <figure><figcaption>Valve state on the pressure axis</figcaption><canvas id="cv-valve-b"></canvas></figure>
+      <figure class="wide"><figcaption>Patient: ICP (left) and shunt flow (right) over six hours</figcaption><canvas id="cv-valve-p" style="height:270px"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-valve"></div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class="eq">\[u=\Delta P-P_{set},\qquad \text{opens when } u\ge P_s,\qquad w\leftarrow\min\!\big(\max(w,\,u-P_k),\,u+P_k\big),\qquad Q=\frac{w}{R_v}\]</div>
+      <div class="eq">\[P_{open}=P_{set}+P_s,\qquad P_{close}=P_{set}-P_k+P_{snap},\qquad \text{closes when } w\le P_{snap}\]</div>
+      <p>Valve opening is a "play" (backlash) operator, a standard way of representing Coulomb friction. The variable w can only change once the pressure moves by more than the kinetic friction band ±P<sub>k</sub>, which produces the two parallel branches of the loop. The static term P<sub>s</sub> represents stiction and seat adhesion, and causes a flow burst on opening. P<sub>snap</sub> represents the seat-area effect that closes the valve at low flow. In the patient, the valve sits between a Marmarou compartment and the peritoneum, with an optional siphon column.</p>
+      <p>On the bench, the "operating pressure" depends on direction and flow rate. That is why laboratory reports quote opening, closing and operating pressures separately, and why measured values drift with protein deposition or debris.</p>
+      <p class="caveat">This is a phenomenological valve. Ball inertia, chatter, membrane mechanics, Bernoulli forces on the ball and flow-regulating valve designs are not modelled.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Czosnyka M, Czosnyka Z, Whitehouse H, Pickard JD. <em>Hydrodynamic properties of hydrocephalus shunts: United Kingdom Shunt Evaluation Laboratory.</em> JNNP 1997;62:43–50.</li>
+        <li>Czosnyka Z, Czosnyka M, Richards HK, Pickard JD. <em>Laboratory testing of hydrocephalus shunts: conclusion of the UK shunt evaluation programme.</em> Acta Neurochir 2002;144:525–538.</li>
+        <li>Aschoff A, Kremer P, Hashemi B, Kunze S. <em>The scientific history of hydrocephalus and its treatment.</em> Neurosurg Rev 1999;22:67–93.</li>
+        <li>Drake JM, Sainte-Rose C. <em>The Shunt Book.</em> Blackwell Science, 1995.</li>
+        <li>Gehlen M, et al. <em>Comparison of anti-siphon devices: how do they affect CSF dynamics in supine and upright posture?</em> Acta Neurochir 2017;159:1389–1397.</li>
+      </ol>
+    </div>
+  </div>
+</section>
 
+<section class="model" id="m-negph" data-group="Special scenarios" data-dim="Low ICP" data-name="Negative-pressure hydrocephalus" hidden>
+  <header>
+    <h2>Negative-pressure hydrocephalus and mantle hysteresis</h2>
+    <p>Ventricles can stay large, and keep enlarging, while ventricular pressure is normal, low or below zero. Two features explain it. First, the ventricles and subarachnoid space become disconnected, and a leak or loss of the subarachnoid space keeps convexity pressure low, so the transmantle gradient stays positive even at a low ventricular drain height. Second, the mantle yields plastically: once stretched, it does not recoil when the gradient falls to zero. Only a sustained negative transmantle gradient (a sub-zero drain, sealing the leak, neck wraps) remodels it back. Afterwards the ventricles hold their new size at ordinary drain heights. That is hysteresis.</p>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-negph"><h3>Presets</h3><div class="btnrow" id="pre-negph"></div><h3>Protocol and physiology</h3></div>
+    <div class="figs">
+      <figure><figcaption>Ventricular volume over the protocol (shaded phases)</figcaption><canvas id="cv-negph-v"></canvas></figure>
+      <figure><figcaption>Mantle hysteresis loop: ventricular volume against transmantle pressure</figcaption><canvas id="cv-negph-h"></canvas></figure>
+      <figure><figcaption>Ventricular and subarachnoid pressure with the drain level</figcaption><canvas id="cv-negph-p"></canvas></figure>
+      <figure><figcaption>External drainage (mL/day)</figcaption><canvas id="cv-negph-q"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-negph"></div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class="eq">\[\Delta p=E_{el}(V-V_r),\qquad \frac{dV_r}{dt}=k_p\Big[(\Delta p-y^{+})_+-(-\Delta p-y^{-})_+\Big],\qquad y^{\pm}\leftarrow y^{\pm}+h\,|V_r-V_0|\]</div>
+      <div class="eq">\[\dot V=f_vI_f-G_{com}\Delta p-Q_{EVD},\qquad C_s\dot P_s=(1-f_v)I_f+G_{com}\Delta p-\frac{P_s-P_{ss}-W}{R_{out}}-G_{leak}(P_s)_+\]</div>
+      <p>The mantle is an elastoplastic element with a "rest volume" V<sub>r</sub>. It expands when the transmantle gradient exceeds y<sup>+</sup>, contracts only when the gradient is more negative than −y<sup>−</sup>, and does nothing in between (the hysteresis band). Hardening h widens the band as deformation accumulates. A floor term stops collapse at slit size. The drain (EVD) height is set per phase, relative to the foramen of Monro. Neck wraps W raise venous pressure, transmitted to the subarachnoid space, and the leak can be sealed from phase 2.</p>
+      <p class="caveat">The yield thresholds, rates and communication conductance are illustrative. Turgor and viscoelastic remodelling are inferred from clinical behaviour and have not been measured directly in humans.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Pang D, Altschuler E. <em>Low-pressure hydrocephalic state and viscoelastic alterations in the brain.</em> Neurosurgery 1994;35:643–656.</li>
+        <li>Lesniak MS, Clatterbuck RE, Rigamonti D, Williams MA. <em>Low pressure hydrocephalus and ventriculomegaly: hysteresis, non-linear dynamics, and the benefits of CSF diversion.</em> Br J Neurosurg 2002;16:555–561.</li>
+        <li>Filippidis AS, Kalani MYS, Nakaji P, Rekate HL. <em>Negative-pressure and low-pressure hydrocephalus: the role of cerebrospinal fluid leaks resulting from surgical approaches to the cranial base.</em> J Neurosurg 2011;115:1031–1037.</li>
+        <li>Rekate HL. <em>Brain turgor (Kb): intrinsic property of the brain to resist distortion.</em> Pediatr Neurosurg 1992;18:257–262.</li>
+        <li>Akins PT, Guppy KH, Axelrod YV, et al. <em>The genesis of low pressure hydrocephalus.</em> Neurocrit Care 2011;15:461–468.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-syrinx" data-group="Special scenarios" data-dim="Spinal" data-name="Syringomyelia" hidden>
+  <header>
+    <h2>CSF dynamics in syringomyelia</h2>
+    <p>Obstruction at the foramen magnum (Chiari I, arachnoiditis) disturbs the craniospinal exchange of CSF on every heartbeat and every cough. Four proposed mechanisms are computed side by side: craniospinal pressure dissociation (Williams), the tonsillar piston and altered cervical pulse (Oldfield and Heiss), the Venturi pressure drop across the narrowing (Greitz), and perivascular pumping into the cord, which depends on the timing of the subarachnoid pulse relative to arterial opening of perivascular spaces (Stoodley and Bilston).</p>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-syrinx"><h3>Presets</h3><div class="btnrow" id="pre-syrinx"></div><h3>Parameters</h3></div>
+    <div class="figs">
+      <figure><figcaption>Cranial and cervical subarachnoid pressure pulse (two beats)</figcaption><canvas id="cv-syr-w"></canvas></figure>
+      <figure><figcaption>Cough: cranial and spinal pressure, with valve-like tonsillar block</figcaption><canvas id="cv-syr-c"></canvas></figure>
+      <figure><figcaption>Mechanisms against foramen magnum patency</figcaption><canvas id="cv-syr-s"></canvas></figure>
+      <figure><figcaption>Perivascular pumping pressure into the cord against timing</figcaption><canvas id="cv-syr-p"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-syrinx"></div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class="eq">\[R_{fm}\propto\phi^{-4},\quad L_{fm}\propto\phi^{-2},\quad Y_{piston}=i\omega\,C_t(1-\phi),\qquad \Delta P_{Venturi}=\tfrac12\rho v_{fm}^2\]</div>
+      <div class="eq">\[\Delta\bar P_{syrinx}\approx\frac{G_{in}}{G_{in}+G_{out}}\,\frac{a\,A_1}{2}\cos(\theta_1-\varphi)\]</div>
+      <p>Three compartments (cranium, upper cervical subarachnoid space, distal spinal sac) are solved for the cardiac harmonics. The foramen magnum channel is narrowed according to Poiseuille scaling, and impacted tonsils transmit volume as an elastic piston. Perivascular inflow is modulated by arterial pulsation (amplitude a, phase φ). The time-averaged product of conductance and cervical pressure gives a net filling pressure, positive when the subarachnoid pressure peak coincides with open perivascular spaces. A cough injects epidural venous volume into the spinal sac over 0.3 s. The tonsils act as a one-way valve: easier cranial than caudal flow, so the spinal-to-cranial gradient builds quickly and the return is slow ("suck and slosh").</p>
+      <p class="caveat">The linear lumped model does not reproduce the increased cervical pulse amplitude Heiss and Oldfield measured before decompression; that probably needs nonlinear tonsillar impaction and inertia. The Venturi drop is computed honestly and is small (well under 1 mmHg). The syrinx itself, cord compliance and tissue mechanics are not simulated.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Gardner WJ. <em>Hydrodynamic mechanism of syringomyelia: its relationship to myelocele.</em> JNNP 1965;28:247–259.</li>
+        <li>Williams B. <em>On the pathogenesis of syringomyelia: a review.</em> J R Soc Med 1980;73:798–806.</li>
+        <li>Oldfield EH, Muraszko K, Shawker TH, Patronas NJ. <em>Pathophysiology of syringomyelia associated with Chiari I malformation of the cerebellar tonsils.</em> J Neurosurg 1994;80:3–15.</li>
+        <li>Heiss JD, et al. <em>Elucidating the pathophysiology of syringomyelia.</em> J Neurosurg 1999;91:553–562.</li>
+        <li>Greitz D. <em>Unraveling the riddle of syringomyelia.</em> Neurosurg Rev 2006;29:251–263.</li>
+        <li>Stoodley MA, Jones NR, Brown CJ. <em>Evidence for rapid fluid flow from the subarachnoid space into the spinal cord central canal in the rat.</em> Brain Res 1996;707:155–164.</li>
+        <li>Bilston LE, Fletcher DF, Brodbelt AR, Stoodley MA. <em>Arterial pulsation-driven cerebrospinal fluid flow in the perivascular space: a computational model.</em> Comput Methods Biomech Biomed Engin 2003;6:235–241.</li>
+        <li>Elliott NSJ, Bertram CD, Martin BA, Brodbelt AR. <em>Syringomyelia: a review of the biomechanics.</em> J Fluids Struct 2013;40:1–24.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<footer class="credit bottom">Conceived, directed and curated by <strong>Dr G Narenthiran</strong> BSc(MedSci)(Hons) MB ChB MRCS(Ed.) FEBNS FRCS(SN), <a href="mailto:g_narenthiran@hotmail.com">g_narenthiran@hotmail.com</a><br>© G Narenthiran. All rights reserved.</footer>
 </main>
 </div>
 <script>
@@ -1301,6 +1463,102 @@ function spaceDay(p,g){ const t=[],P=[],IOP=[];
   const m=mean(P); return {t,P,IOP,mean:m,tlp:IOP.map((v,i)=>v-P[i])}; }
 
 if(typeof module!=='undefined'&&module.exports) Object.assign(module.exports,{aqueductModel,cisternModel,craniectomy,papilloma,ivhModel,spaceDay,spaceICP,besJ});
+
+// ===== Starling resistor: CSF pressure as the external pressure on bridging veins =====
+function softmax2(a,b,s){ const m=Math.max(a,b); return m+s*Math.log(Math.exp((a-m)/s)+Math.exp((b-m)/s)); }
+function starling(p){ // p: MAP, ICP, CVP, dPo, auto (bool), Rjug, jug (extra jugular/sinus pressure)
+  const Rc=1.2, Rcv=0.6, Rbv=0.3, qn=12.5, s=0.6;
+  const solveQ=Ra=>{ // iterate: Pss depends on q
+    let q=qn; for(let i=0;i<60;i++){ const Pss=p.CVP+p.jug+q*p.Rjug; const Peff=softmax2(p.ICP+p.dPo,Pss,s); const qn2=Math.max(0,(p.MAP-Peff)/(Ra+Rc+Rcv+Rbv)); if(Math.abs(qn2-q)<1e-9) break; q=0.5*q+0.5*qn2; } return q; };
+  let Ra=4.5; if(p.auto){ const target=Ra0=>solveQ(Ra0)-qn; if(target(1.2)<0) Ra=1.2; else if(target(14)>0) Ra=14; else Ra=bisect(target,1.2,14,60); }
+  const q=solveQ(Ra); const Pss=p.CVP+p.jug+q*p.Rjug; const Peff=softmax2(p.ICP+p.dPo,Pss,s);
+  const Pv=Peff+q*Rbv, Pven=Pv+q*Rcv, Pcap=Pven+q*Rc, Part=Pcap+q*Ra;
+  const collapsed=p.ICP+p.dPo>Pss;
+  return {q,Ra,Pss,Peff,Pv,Pven,Pcap,Part,collapsed,tm:Pv-p.ICP,cpp:p.MAP-p.ICP,ecpp:p.MAP-Math.max(p.ICP,Pss)}; }
+function starlingSim(p){ // dynamic: scenario 'queck' | 'peep' | 'drain' | 'infuse'; seconds
+  const E=p.E, P0=0, If=0.35/60, Rout=p.Rout*60, Cv=p.Cv, T=p.scenario==='drain'||p.scenario==='infuse'?600:180;
+  const jugAt=t=>p.scenario==='queck'&&t>=20&&t<40?p.jugAmp:0;
+  const cvpAt=t=>p.scenario==='peep'&&t>=20?p.CVP+p.peep:p.CVP;
+  const extra=t=>p.scenario==='drain'&&t>=20&&t<140?-10/120:(p.scenario==='infuse'&&t>=20&&t<320?1.5/60*2:0);
+  const tm=(P,t)=>{ const r=starling({MAP:p.MAP,ICP:P,CVP:cvpAt(t),dPo:p.dPo,auto:p.auto,Rjug:p.Rjug,jug:jugAt(t)}); return r; };
+  // P from baseline steady state: If=(P-Pss)/Rout
+  let P=bisect(x=>If-(x-tm(x,0).Pss)/Rout,0,60,60);
+  const out={t:[],P:[],Pss:[],Pv:[],q:[],Vv:[]}; const dt=0.05;
+  let Vv=Cv*tm(P,0).tm;
+  for(let i=0;i*dt<=T;i++){ const t=i*dt; const r=tm(P,t); const Vtar=Cv*r.tm; const dVv=(Vtar-Vv)/1.0; // venous volume follows transmural pressure (1 s)
+    if(i%10===0){ out.t.push(t); out.P.push(P); out.Pss.push(r.Pss); out.Pv.push(r.Pv); out.q.push(r.q/12.5*100); out.Vv.push(Vv); }
+    const dP=E*Math.max(P-P0,0.3)*(If-(P-r.Pss)/Rout+dVv+extra(t)); P+=dP*dt; Vv+=dVv*dt; }
+  return out; }
+if(typeof module!=='undefined'&&module.exports) Object.assign(module.exports,{starling,starlingSim});
+
+// ===== Part 5: valve hysteresis, negative-pressure hydrocephalus, syringomyelia =====
+function makeValve(v){ // v: Pset, Ps (static/stiction, cmH2O above set), Pk (kinetic friction half-band), R (cmH2O·h/mL)
+  let open=false, w=0;
+  return function(dP){ const u=dP-v.Pset;
+    if(!open){ if(u>=v.Ps){ open=true; w=u-v.Pk; } else return {Q:0,open:false}; }
+    w=Math.min(Math.max(w,u-v.Pk),u+v.Pk);
+    if(w<=(v.Psnap||0)){ open=false; w=0; return {Q:0,open:false}; }
+    return {Q:w/v.R,open:true}; }; }
+function valveLoop(v){ const f=makeValve(v); const up=[],dn=[]; const P=[];
+  for(let p=0;p<=40;p+=0.1) up.push({p,Q:f(p).Q}); for(let p=40;p>=0;p-=0.1) dn.push({p,Q:f(p).Q});
+  const pOpen=(up.find(x=>x.Q>0)||{p:NaN}).p; let pClose=NaN; for(const x of dn) if(x.Q===0){ pClose=x.p; break; }
+  return {up,dn,pOpen,pClose}; }
+function valvePatient(p){ // p: valve params + E, Rout, If, Pss, Pabd (mmHg), siph (cm), theta, T (min)
+  const f=makeValve(p); const s=Math.sin(p.theta*Math.PI/180);
+  let P=p.Pss+p.If*p.Rout+3; const dt=0.01; const out={t:[],P:[],Q:[]}; let vol=0;
+  for(let i=0;i*dt<=p.T;i++){ const t=i*dt; const dP=(P-p.Pabd)/CMH2O+p.siph*s; const r=f(dP); const Qmin=r.Q/60;
+    if(i%20===0){ out.t.push(t); out.P.push(P); out.Q.push(r.Q); }
+    vol+=Qmin*dt; P+=dt*p.E*Math.max(P-p.P0,0.3)*(p.If-Math.max(0,(P-p.Pss)/p.Rout)-Qmin); }
+  const tail=out.P.slice(Math.floor(out.P.length/2)); return {out,meanP:mean(tail),swing:Math.max(...tail)-Math.min(...tail),vol}; }
+
+// Negative-pressure hydrocephalus with mantle hysteresis
+function negph(p){ // phases: [{d0,d1,h(cmH2O),wrap(mmHg)}], Gcom, Gleak, yUp, yDn, kp, Eel, Rout, Pss, If, fv(frac to ventricles), V0
+  const T=p.T*1440; const n=1500; const times=linspace(0,T,n+1);
+  const phaseAt=t=>{ const d=t/1440; for(const ph of p.phases) if(d>=ph.d0&&d<ph.d1) return ph; return p.phases[p.phases.length-1]; };
+  const Cs=0.6, Revd=0.5; // SAS compliance mL/mmHg, EVD resistance mmHg·min/mL
+  const alg=(t,y)=>{ const [V,Vr,Ps0]=y; const ph=phaseAt(t); const Ps=Ps0+0.6*ph.wrap; const dp=p.Eel*(V-Vr)-6*Math.exp(-(V-8)/4); const Pv=Ps+dp; const hv=ph.h*CMH2O;
+    const Qcom=p.Gcom*dp; const Qevd=ph.h===null?0:Math.max(0,Pv-hv)/Revd; const Qleak=p.Gleak*(ph.leak===undefined?1:ph.leak)*Math.max(0,Ps-p.Pleak); const Qabs=Math.max(0,(Ps-(p.Pss+ph.wrap))/p.Rout);
+    const Pse=Ps;
+    return {dp,Pv,Ps,Qcom,Qevd,Qleak,Qabs,ph}; };
+  const f=(t,y)=>{ const a=alg(t,y); const [V,Vr,Ps]=y;
+    const dV=p.If*p.fv-a.Qcom-a.Qevd;
+    const sm=(x,y0)=>x>y0?x-y0:0; const hU=p.yUp+p.hard*Math.max(0,Vr-p.V0), hD=p.yDn+p.hard*Math.max(0,p.V0-Vr); let dVr=p.kp*(sm(a.dp,hU)-sm(-a.dp,hD))/1440; if(Vr<15&&dVr<0) dVr*=Math.max(0,(Vr-5)/10);
+    const dPs=(p.If*(1-p.fv)+a.Qcom-a.Qabs-a.Qleak)/Cs;
+    return [dV,dVr,dPs]; };
+  const y0=[p.V0,p.V0-6*Math.exp(-(p.V0-8)/4)/p.Eel*0,p.Pss];
+  const Y=implicitEuler(f,y0,times);
+  const out={d:[],V:[],Pv:[],Ps:[],dp:[],Qevd:[],h:[]};
+  Y.forEach((y,i)=>{ const a=alg(times[i],y); out.d.push(times[i]/1440); out.V.push(y[0]); out.Pv.push(a.Pv); out.Ps.push(a.Ps); if(!out.Vr) out.Vr=[]; out.Vr.push(y[1]); out.dp.push(a.dp); out.Qevd.push(a.Qevd*1440); out.h.push(a.ph.h); });
+  return out; }
+
+// Syringomyelia: craniospinal pulse transmission, Venturi, cough dissociation, perivascular pumping
+function syrinxPulse(p){ // p: pat (0-1 foramen magnum patency), dV, HR, phi (deg PVS opening phase), aPvs
+  const HR=p.HR||70, N=200, H=8, w1=2*Math.PI*HR/60; const pat=Math.max(p.pat,0.02);
+  const Rst=0.02/pat**4, Lst=0.003/pat**2, Rsp=0.05, Lsp=0.004; const Cc=0.25, C1=0.05, C2=0.3;
+  const vol=arterialShape(N).map(v=>v*p.dV); const Vh=harmonics(vol,H);
+  const PC=[],P1=[],P2=[],QS=[];
+  for(let k=1;k<=H;k++){ const w=k*w1; const jw=c=>cplx(0,w*c); const Ys=C.add(C.div(cplx(1,0),cplx(Rst,w*Lst)),jw((p.Ct||0)*(1-pat))), Yp=C.div(cplx(1,0),cplx(Rsp,w*Lsp)); const neg=z=>cplx(-z.re,-z.im);
+    const A=[[C.add(jw(Cc),Ys),neg(Ys),cplx(0,0)],[neg(Ys),C.add(C.add(jw(C1),Ys),Yp),neg(Yp)],[cplx(0,0),neg(Yp),C.add(jw(C2),Yp)]];
+    const q=C.mul(cplx(0,w),Vh[k-1]); const [c,s1,s2]=csolve(A,[q,cplx(0,0),cplx(0,0)]); PC.push(c); P1.push(s1); P2.push(s2); QS.push(C.mul(Ys,C.sub(c,s1))); }
+  const pc=synth(PC,N), p1=synth(P1,N), qs=synth(QS,N);
+  const pp=a=>Math.max(...a)-Math.min(...a);
+  // phase of fundamental of cervical pulse (deg, relative to arterial volume fundamental)
+  const ph1=Math.atan2(P1[0].im,P1[0].re)-Math.atan2(Vh[0].im,Vh[0].re);
+  // perivascular pump: excess syrinx pressure = a*A/2*cos(theta - phi) * Gin/(Gin+Gout)
+  const amp1=C.abs(P1[0]); const drive=p.aPvs*amp1*Math.cos(ph1-p.phi*Math.PI/180)*0.5*0.8; // 0.8 = Gin/(Gin+Gout)
+  const qpk=Math.max(...qs.map(Math.abs)); const Afm=1.5e-4*pat; const v=qpk*1e-6/Afm; const venturi=0.5*1000*v*v/133.322;
+  return {t:linspace(0,60/HR,N),pc,p1,ampC:pp(pc),amp1:pp(p1),diss:pp(pc.map((x,i)=>x-p1[i])),phase:ph1*180/Math.PI,drive,venturi,vel:v*100}; }
+function coughSim(p){ // valve-like tonsillar block: resistance higher for caudal flow
+  const pat=Math.max(p.pat,0.02); const Rup=0.02/pat**4, Rdn=Rup*(1+p.valve*(1/pat-1)); const Cc=0.3, Cs=0.35;
+  let Pc=10, Ps=10; const dt=0.002, T=6; const out={t:[],Pc:[],Ps:[]};
+  for(let i=0;i*dt<=T;i++){ const t=i*dt; const inj=(t>=0.5&&t<0.8)?p.cough/0.3:0; const dq=Pc-Ps; const R=dq>0?Rdn:Rup; const q=dq/R; // cranial->spinal positive
+    if(i%10===0){ out.t.push(t); out.Pc.push(Pc); out.Ps.push(Ps); }
+    Pc+=dt*(-q)/Cc; Ps+=dt*(q+inj-(t>=0.8&&t<1.1?p.cough/0.3:0))/Cs; }
+  let peak=0, dur=0; for(let i=0;i<out.t.length;i++){ const d=out.Pc[i]-out.Ps[i]; if(d>peak) peak=d; if(out.t[i]>1.1&&d>1) dur+=out.t[1]-out.t[0]; }
+  return {out,peak,dur}; }
+function syrinxGrowth(drive,Cy,months,Gin){ // syrinx volume: dV/dt = Gin*(drive - V/Cy), mL, months
+  const t=linspace(0,months,121); return t.map(m=>Math.max(0,drive*Cy*(1-Math.exp(-Gin*m/Cy)))); }
+if(typeof module!=='undefined'&&module.exports) Object.assign(module.exports,{makeValve,valveLoop,valvePatient,negph,syrinxPulse,coughSim,syrinxGrowth});
 
 </script>
 <script>
@@ -2218,6 +2476,157 @@ const logT=v=>{ const h=Math.pow(10,v); if(h<1) return f(h*60,0)+' min'; if(h<48
     {id:'iop',label:'IOP shift in low gravity',min:-3,max:5,step:0.5,value:1,unit:'mmHg',fmt:v=>v.toFixed(1)}],throttle(draw));
   presets($('pre-space'),[['ISS',{g:'0',lbnp:0,shift:-1}],['ISS + LBNP 20',{g:'0',lbnp:20,shift:-1}],['Mars',{g:'0.38',lbnp:0}],['Moon',{g:'0.16',lbnp:0}],['Larger fluid shift',{g:'0',shift:3,lbnp:0}]],ctl);
   renders['m-space']=draw;
+})();
+
+// ========== S8. Starling resistor ==========
+(function(){
+  let ctl; const draw=()=>{ if(!active('m-star')) return; const s=ctl.state; const auto=s.auto==='on';
+    const base={MAP:s.MAP,ICP:s.ICP,CVP:s.CVP,dPo:s.dPo,auto,Rjug:0.4,jug:s.jug};
+    const r=starling(base);
+    const labels=['Artery','Capillary','Venule','Cortical vein','Bridging outlet','Sinus','Right atrium'];
+    const ys=[s.MAP,r.Pcap,r.Pven,r.Pv,r.Peff,r.Pss,s.CVP];
+    plot($('cv-star-prof'),{series:[{x:[0,1,2,3,4,5,6],y:ys,color:css('--art'),width:2.4},{x:[0,1,2,3,4,5,6],y:ys,color:css('--art'),dots:true,r:4}],xlabel:'',ylabel:'Pressure (mmHg)',xlim:[-0.3,6.3],xticks:7,xfmt:v=>Number.isInteger(Math.round(v*1000)/1000)&&Math.abs(v-Math.round(v))<1e-6?labels[Math.round(v)].split(' ')[0]:'',ylim:[0,Math.max(s.MAP,40)*1.05],
+      hlines:[{y:s.ICP,color:css('--csf'),label:`ICP ${s.ICP} mmHg`}],bands:[{axis:'x',from:3.6,to:4.4,color:r.collapsed?'rgba(179,38,62,.12)':css('--shade'),label:r.collapsed?'Collapsed':'Open'}]});
+    const js=linspace(0,40,81);
+    const ser=[5,15,25].map((icp,i)=>{ const rr=js.map(j=>starling(Object.assign({},base,{ICP:icp,jug:j}))); return {x:rr.map(z=>z.Pss),y:rr.map(z=>z.q/12.5*100),color:[css('--ven'),css('--csf'),css('--art')][i],width:2.2,label:`ICP ${icp} mmHg`}; });
+    plot($('cv-star-w'),{series:ser,xlabel:'Sinus pressure (mmHg)',ylabel:'CBF (% normal)',legend:'bl',ylim:[0,Math.max(110,...ser.flatMap(x=>x.y))*1.05],points:[{x:r.Pss,y:r.q/12.5*100,color:css('--ink')}]});
+    const is=linspace(0,50,101); const cs=is.map(i=>starling(Object.assign({},base,{ICP:i})));
+    plot($('cv-star-c'),{series:[{x:is,y:cs.map(c=>c.Pv),color:css('--ven'),width:2.4,label:'Cortical venous pressure'},{x:is,y:is,color:css('--muted'),width:1.2,dash:[4,4],label:'Identity (= ICP)'},{x:is,y:cs.map(c=>c.Pss),color:css('--amb'),width:1.6,label:'Sinus pressure'},{x:is,y:cs.map(c=>c.q/12.5*100),color:css('--art'),width:2,dash:[5,4],label:'CBF % (right)',y2:true}],
+      xlabel:'ICP (mmHg)',ylabel:'mmHg',y2label:'% normal',legend:'tl',xlim:[0,50],y2lim:[0,120],vlines:[{x:s.ICP,color:css('--muted'),dash:[2,3]}]});
+    const d=starlingSim({E:0.15,Rout:s.Rout,Cv:s.Cv,MAP:s.MAP,CVP:s.CVP,dPo:s.dPo,auto,Rjug:0.4,jugAmp:20,peep:12,scenario:s.scen});
+    plot($('cv-star-d'),{series:[{x:d.t,y:d.P,color:css('--csf'),width:2.4,label:'ICP'},{x:d.t,y:d.Pss,color:css('--amb'),width:1.8,label:'Sinus'},{x:d.t,y:d.Pv,color:css('--ven'),width:1.8,dash:[5,4],label:'Cortical vein'}],xlabel:'Time (s)',ylabel:'mmHg',legend:'tr',
+      bands:s.scen==='queck'?[{axis:'x',from:20,to:40,color:css('--shade'),label:'Compression'}]:(s.scen==='peep'?[{axis:'x',from:20,to:180,color:css('--shade'),label:'PEEP +12'}]:(s.scen==='drain'?[{axis:'x',from:20,to:140,color:css('--shade'),label:'Drain 10 mL'}]:[{axis:'x',from:20,to:320,color:css('--shade'),label:'Infusion'}]))});
+    table($('ro-star'),[
+      ['Outflow segment',r.collapsed?'Collapsed (waterfall)':'Open',r.collapsed?'Effective downstream pressure = ICP + ΔP<sub>o</sub>; jugular changes below this do not reach the brain':'Downstream pressure = sinus pressure; jugular changes transmit to the brain'],
+      ['Cortical venous pressure',f(r.Pv,1)+' mmHg',`Transmural ${f(r.tm,1)} mmHg above ICP`],
+      ['Sinus pressure',f(r.Pss,1)+' mmHg',''],
+      ['CBF',f(r.q/12.5*100,0)+'% of normal',auto?`Arteriolar resistance ${f(r.Ra,1)} mmHg·s/mL`:'Autoregulation off'],
+      ['Perfusion pressure: MAP − ICP vs MAP − max(ICP, P<sub>ss</sub>)',`${f(r.cpp,0)} / ${f(r.ecpp,0)} mmHg`,r.ecpp<r.cpp-0.5?'<span class="flag">Sinus pressure exceeds ICP: conventional CPP overestimates perfusion pressure</span>':'Conventional CPP valid']]);
+  };
+  ctl=controls($('ctl-star'),[
+    {id:'MAP',label:'MAP',min:40,max:140,step:1,value:90,unit:'mmHg'},
+    {id:'ICP',label:'ICP (CSF pressure)',min:0,max:50,step:0.5,value:10,unit:'mmHg'},
+    {id:'CVP',label:'Central venous pressure',min:-5,max:20,step:0.5,value:2,unit:'mmHg'},
+    {id:'jug',label:'Added jugular/sinus pressure',min:0,max:30,step:0.5,value:0,unit:'mmHg'},
+    {id:'dPo',label:'Transmural pressure to stay open ΔP<sub>o</sub>',min:0,max:5,step:0.1,value:1.5,unit:'mmHg',fmt:v=>v.toFixed(1)},
+    {id:'auto',label:'Autoregulation',type:'select',value:'on',options:[['on','Intact'],['off','Abolished']]},
+    {id:'scen',label:'Dynamic scenario (from 20 s)',type:'select',value:'queck',options:[['queck','Jugular compression +20 mmHg (Queckenstedt)'],['peep','PEEP / raised CVP +12 mmHg'],['drain','CSF drainage 10 mL over 2 min'],['infuse','CSF infusion 3 mL/min for 5 min']]},
+    {id:'Rout',label:'R<sub>out</sub>',min:4,max:30,step:0.5,value:10,unit:'mmHg·min/mL'},
+    {id:'Cv',label:'Cerebral venous compliance',min:0.1,max:1.5,step:0.05,value:0.5,unit:'mL/mmHg',fmt:v=>v.toFixed(2)}],throttle(draw));
+  presets($('pre-star'),[['Normal',{MAP:90,ICP:10,CVP:2,jug:0}],['Intracranial hypertension',{MAP:90,ICP:30,CVP:2,jug:0}],['Raised ICP + PEEP 12',{MAP:90,ICP:25,CVP:14,jug:0}],['Normal ICP + jugular obstruction',{MAP:90,ICP:10,CVP:2,jug:15}],['IIH-like sinus stenosis',{MAP:90,ICP:22,CVP:2,jug:18}]],ctl);
+  renders['m-star']=draw;
+})();
+
+// ========== S9. Valve hysteresis ==========
+(function(){
+  let ctl; const draw=()=>{ if(!active('m-valve')) return; const s=ctl.state;
+    const Psnap=Math.min(s.Psnap,Math.max(0,s.Ps-s.Pk-0.05));
+    const v={Pset:s.Pset,Ps:Math.max(s.Ps,s.Pk),Pk:s.Pk,R:s.R,Psnap};
+    const L=valveLoop(v);
+    plot($('cv-valve-l'),{series:[{x:L.up.map(z=>z.p),y:L.up.map(z=>z.Q),color:css('--art'),width:2.4,label:'Rising pressure'},{x:L.dn.map(z=>z.p),y:L.dn.map(z=>z.Q),color:css('--csf'),width:2.2,dash:[6,4],label:'Falling pressure'}],xlabel:'Differential pressure (cmH₂O)',ylabel:'Flow (mL/h)',legend:'tl',xlim:[0,40],
+      vlines:[{x:s.Pset,color:css('--muted'),label:'Set'},...(isFinite(L.pOpen)?[{x:L.pOpen,color:css('--art'),label:'Opens'}]:[]),...(isFinite(L.pClose)?[{x:L.pClose,color:css('--csf'),label:'Closes'}]:[])]});
+    const pt=valvePatient(Object.assign({},v,{E:0.15,Rout:s.Rout,If:s.If,Pss:6,Pabd:4,siph:45,theta:s.theta,T:360,P0:0}));
+    const o=pt.out;
+    plot($('cv-valve-p'),{series:[{x:o.t.map(t=>t/60),y:o.P,color:css('--art'),width:2,label:'ICP (mmHg)'},{x:o.t.map(t=>t/60),y:o.Q,color:css('--csf'),width:1.4,label:'Shunt flow (mL/h, right)',y2:true}],xlabel:'Hours',ylabel:'mmHg',y2label:'mL/h',legend:'tr',xlim:[0,6]});
+    // state bar
+    const cv=$('cv-valve-b'); const {ctx,W,H}=setup(cv); ctx.font=FONT; const m=30, X=p=>m+(W-2*m)*p/40, y=H*0.45;
+    ctx.strokeStyle=css('--line'); ctx.lineWidth=10; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(X(0),y); ctx.lineTo(X(40),y); ctx.stroke();
+    if(isFinite(L.pClose)&&isFinite(L.pOpen)){ ctx.strokeStyle=css('--amb'); ctx.globalAlpha=.7; ctx.beginPath(); ctx.moveTo(X(L.pClose),y); ctx.lineTo(X(L.pOpen),y); ctx.stroke(); ctx.globalAlpha=1; }
+    ctx.lineCap='butt';
+    const tick=(p,c,t,dy)=>{ ctx.strokeStyle=c; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(X(p),y-14); ctx.lineTo(X(p),y+14); ctx.stroke(); ctx.fillStyle=c; ctx.textAlign='center'; ctx.textBaseline=dy<0?'bottom':'top'; ctx.fillText(t,X(p),y+dy); };
+    tick(s.Pset,css('--muted'),`Set ${f(s.Pset,1)}`,-18); if(isFinite(L.pOpen)) tick(L.pOpen,css('--art'),`Open ${f(L.pOpen,1)}`,18); if(isFinite(L.pClose)) tick(L.pClose,css('--csf'),`Close ${f(L.pClose,1)}`,36);
+    const sth=Math.sin(s.theta*Math.PI/180); const dps=pt.out.P.slice(Math.floor(pt.out.P.length/2)).map(P=>(P-4)/0.7356+45*sth);
+    ctx.fillStyle=css('--vio'); ctx.globalAlpha=.35; ctx.fillRect(X(Math.max(0,Math.min(...dps))),y-24,Math.max(2,X(Math.min(40,Math.max(...dps)))-X(Math.max(0,Math.min(...dps)))),8); ctx.globalAlpha=1;
+    ctx.fillStyle=css('--muted'); ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('Amber: hysteresis band. Violet: patient differential pressure range.',8,6);
+    ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText('Differential pressure across valve (cmH₂O)',W/2,H-2);
+    table($('ro-valve'),[
+      ['Opening / closing pressure',`${f(L.pOpen,1)} / ${f(L.pClose,1)} cmH₂O`,`Hysteresis width ${f(L.pOpen-L.pClose,1)} cmH₂O around a set pressure of ${f(s.Pset,1)}`],
+      ['Flow at 20 cmH₂O: rising / falling',`${f(L.up[200].Q,0)} / ${f(L.dn[200].Q,0)} mL/h`,'Same pressure, different flow: path dependence'],
+      ['Patient mean ICP (last 3 h)',f(pt.meanP,1)+' mmHg',`Swing ${f(pt.swing,1)} mmHg`+(pt.swing>1?' <span class="flag">Intermittent, sawtooth drainage</span>':' (continuous drainage)')],
+      ['Shunt drainage over 6 h',f(pt.vol,0)+' mL',`Formation over 6 h ${f(s.If*360,0)} mL`]]);
+  };
+  ctl=controls($('ctl-valve'),[
+    {id:'Pset',label:'Nominal (set) pressure',min:0,max:20,step:0.5,value:10,unit:'cmH₂O'},
+    {id:'Ps',label:'Static friction / seat adhesion',min:0,max:10,step:0.25,value:4,unit:'cmH₂O'},
+    {id:'Pk',label:'Kinetic friction half-band',min:0,max:4,step:0.1,value:1,unit:'cmH₂O',fmt:v=>v.toFixed(1)},
+    {id:'Psnap',label:'Seat-area snap closure',min:0,max:4,step:0.1,value:2,unit:'cmH₂O',fmt:v=>v.toFixed(1)},
+    {id:'R',label:'Open-valve resistance',min:0.02,max:0.15,step:0.005,value:0.06,unit:'cmH₂O·h/mL',fmt:v=>v.toFixed(3)},
+    {id:'Rout',label:'Patient R<sub>out</sub>',min:10,max:80,step:1,value:40,unit:'mmHg·min/mL'},
+    {id:'If',label:'CSF formation',min:0.1,max:0.6,step:0.01,value:0.35,unit:'mL/min',fmt:v=>v.toFixed(2)},
+    {id:'theta',label:'Head-up tilt',min:0,max:90,step:1,value:0,unit:'°'}],throttle(draw));
+  presets($('pre-valve'),[['Ideal valve',{Ps:0,Pk:0,Psnap:0}],['Ball-in-cone',{Ps:4,Pk:1,Psnap:2}],['Sticky seat (protein)',{Ps:9,Pk:1.5,Psnap:3}],['Upright, siphoning',{Ps:4,Pk:1,Psnap:2,theta:80}]],ctl);
+  renders['m-valve']=draw;
+})();
+
+// ========== S10. Negative-pressure hydrocephalus ==========
+(function(){
+  let ctl, cache=null, key='';
+  const draw=()=>{ if(!active('m-negph')) return; const s=ctl.state;
+    const d1=s.d1, d2=Math.max(s.d1+0.5,s.d2); const seal=s.seal==='yes'?0:1;
+    const phases=[{d0:0,d1:d1,h:s.h1,wrap:0,leak:1},{d0:d1,d1:d2,h:s.h2,wrap:s.wrap,leak:seal},{d0:d2,d1:14.01,h:s.h3,wrap:s.wrap,leak:seal}];
+    const k=JSON.stringify([phases,s.Gcom,s.yUp,s.yDn,s.kp]);
+    if(k!==key){ cache=negph({phases,T:14,Gcom:s.Gcom,Gleak:0.05,Pleak:0,yUp:s.yUp,yDn:s.yDn,kp:s.kp,hard:0.05,Eel:0.15,Rout:10,Pss:6,If:0.35,fv:0.8,V0:120}); key=k; }
+    const r=cache; const bands=[{axis:'x',from:0,to:d1,color:'rgba(0,0,0,0)',label:'Phase 1'},{axis:'x',from:d1,to:d2,color:css('--shade'),label:'Phase 2'},{axis:'x',from:d2,to:14,color:'rgba(0,0,0,0)',label:'Phase 3'}];
+    plot($('cv-negph-v'),{series:[{x:r.d,y:r.V,color:css('--csf'),width:2.4,label:'Ventricular volume'},{x:r.d,y:r.Vr,color:css('--muted'),width:1.4,dash:[5,4],label:'Remodelled rest volume'}],xlabel:'Days',ylabel:'mL',legend:'tl',xlim:[0,14],ylim:[0,Math.max(...r.V)*1.1],bands});
+    const seg=(a,b,c,lab)=>{ const ix=r.d.map((d,i)=>[d,i]).filter(([d])=>d>=a&&d<=b).map(([,i])=>i); return {x:ix.map(i=>r.dp[i]),y:ix.map(i=>r.V[i]),color:c,width:2.2,label:lab}; };
+    plot($('cv-negph-h'),{series:[seg(0,d1,css('--art'),'Phase 1'),seg(d1,d2,css('--vio'),'Phase 2'),seg(d2,14,css('--csf'),'Phase 3')],xlabel:'Transmantle pressure (mmHg)',ylabel:'Ventricular volume (mL)',legend:'tr',
+      bands:[{axis:'x',from:-s.yDn,to:s.yUp,color:css('--shade'),label:'No remodelling (initial band)'}],vlines:[{x:0,color:css('--muted'),dash:[1,3]}]});
+    plot($('cv-negph-p'),{series:[{x:r.d,y:r.Pv,color:css('--art'),width:2.2,label:'Ventricular'},{x:r.d,y:r.Ps,color:css('--ven'),width:2.2,label:'Subarachnoid'},{x:r.d,y:r.h.map(h=>h*0.7356),color:css('--muted'),width:1.4,dash:[5,4],label:'Drain level'}],xlabel:'Days',ylabel:'mmHg',legend:'tr',xlim:[0,14],bands,hlines:[{y:0,color:css('--muted'),dash:[1,3]}]});
+    plot($('cv-negph-q'),{series:[{x:r.d,y:r.Qevd,color:css('--csf'),width:2}],xlabel:'Days',ylabel:'mL/day',xlim:[0,14],bands});
+    const at=d=>{ let i=0; while(i<r.d.length-1&&r.d[i]<d) i++; return i; };
+    const i1=at(d1-0.01), i2=at(d2-0.01), i3=r.d.length-1;
+    table($('ro-negph'),[
+      ['Ventricular volume at end of phase 1 / 2 / 3',`${f(r.V[i1],0)} / ${f(r.V[i2],0)} / ${f(r.V[i3],0)} mL`,r.V[i1]>r.V[0]+10?'<span class="flag">Ventricles enlarge despite an open drain at a normal height</span>':''],
+      ['Ventricular pressure at end of each phase',`${f(r.Pv[i1],1)} / ${f(r.Pv[i2],1)} / ${f(r.Pv[i3],1)} mmHg`,'Can be at or below zero with large ventricles'],
+      ['Transmantle pressure at end of each phase',`${f(r.dp[i1],1)} / ${f(r.dp[i2],1)} / ${f(r.dp[i3],1)} mmHg`,'Sets whether the mantle remodels'],
+      (()=>{ const ia=at(Math.min(d2+1,13.5)); const drift=r.V[i3]-r.V[ia]; return ['Phase 3 outcome',Math.abs(drift)<5?'Size holds':'Size drifts',(Math.abs(drift)<5?'Hysteresis: after elastic recoil, size is stable at the phase 3 drain level':`Drift ${f(drift,0)} mL: gradient outside the hysteresis band`)+`. Remodelled rest volume ${f(r.Vr[i1],0)} → ${f(r.Vr[i2],0)} → ${f(r.Vr[i3],0)} mL`]; })(),
+      ['Minimum ventricular volume',f(Math.min(...r.V),0)+' mL',Math.min(...r.V)<12?'<span class="flag">Slit ventricles: over-correction</span>':'']]);
+  };
+  ctl=controls($('ctl-negph'),[
+    {id:'h1',label:'Phase 1 drain height',min:-20,max:25,step:1,value:14,unit:'cmH₂O'},
+    {id:'d1',label:'Phase 1 ends (day)',min:0.5,max:6,step:0.5,value:3,unit:'d'},
+    {id:'h2',label:'Phase 2 drain height',min:-20,max:25,step:1,value:-10,unit:'cmH₂O'},
+    {id:'d2',label:'Phase 2 ends (day)',min:1,max:13,step:0.5,value:8,unit:'d'},
+    {id:'h3',label:'Phase 3 drain height',min:-20,max:25,step:1,value:5,unit:'cmH₂O'},
+    {id:'wrap',label:'Neck wraps from phase 2 (venous rise)',min:0,max:15,step:0.5,value:0,unit:'mmHg'},
+    {id:'seal',label:'Leak sealed from phase 2',type:'select',value:'no',options:[['no','No'],['yes','Yes']]},
+    {id:'Gcom',label:'Ventricle–SAS communication',min:0.001,max:0.2,log:true,value:0.005,unit:'mL/min/mmHg',fmt:v=>v.toFixed(3)},
+    {id:'yUp',label:'Expansion threshold y⁺',min:0.5,max:8,step:0.5,value:3,unit:'mmHg'},
+    {id:'yDn',label:'Recovery threshold y⁻',min:0.5,max:10,step:0.5,value:4,unit:'mmHg'},
+    {id:'kp',label:'Remodelling rate',min:0.5,max:10,step:0.5,value:3,unit:'mL/day/mmHg'}],throttle(draw));
+  presets($('pre-negph'),[['Standard drain only',{h1:14,h2:14,h3:14,wrap:0,seal:'no'}],['Sub-zero drainage (Pang)',{h1:14,h2:-10,h3:5,wrap:0,seal:'no'}],['Seal leak + gentle sub-zero',{h1:14,h2:-3,h3:5,wrap:0,seal:'yes'}],['Sub-zero + neck wraps (over-correction)',{h1:14,h2:-10,h3:5,wrap:10,seal:'yes'}],['Good communication',{Gcom:0.15,h1:14,h2:14,h3:14,wrap:0,seal:'no'}]],ctl);
+  renders['m-negph']=draw;
+})();
+
+// ========== S11. Syringomyelia ==========
+(function(){
+  let ctl; const draw=()=>{ if(!active('m-syrinx')) return; const s=ctl.state;
+    const P=(pat,phi)=>syrinxPulse({pat,dV:1,HR:s.HR,phi:phi===undefined?s.phi:phi,aPvs:1,Ct:s.Ct});
+    const r=P(s.pat), n=P(1);
+    const t2=[...r.t,...r.t.map(x=>x+r.t[r.t.length-1]+r.t[1])];
+    plot($('cv-syr-w'),{series:[{x:t2,y:[...r.pc,...r.pc],color:css('--art'),width:2.2,label:'Cranial'},{x:t2,y:[...r.p1,...r.p1],color:css('--csf'),width:2.2,label:'Cervical SAS'},{x:t2,y:[...n.p1,...n.p1],color:css('--muted'),width:1.3,dash:[5,4],label:'Cervical, normal patency'}],xlabel:'Time (s)',ylabel:'Pulsatile pressure (mmHg)',legend:'tr'});
+    const c=coughSim({pat:s.pat,valve:s.valve,cough:s.cough});
+    plot($('cv-syr-c'),{series:[{x:c.out.t,y:c.out.Pc,color:css('--art'),width:2.2,label:'Cranial'},{x:c.out.t,y:c.out.Ps,color:css('--csf'),width:2.2,label:'Spinal'}],xlabel:'Time (s)',ylabel:'Pressure (mmHg)',legend:'tr',bands:[{axis:'x',from:0.5,to:1.1,color:css('--shade'),label:'Cough'}]});
+    const ps=linspace(0.1,1,37); const sw=ps.map(x=>P(x)); const cw=ps.map(x=>coughSim({pat:x,valve:s.valve,cough:s.cough}));
+    plot($('cv-syr-s'),{series:[{x:ps,y:sw.map(z=>z.ampC),color:css('--art'),width:2,label:'Cranial pulse'},{x:ps,y:sw.map(z=>z.amp1),color:css('--csf'),width:2,label:'Cervical pulse'},{x:ps,y:cw.map(z=>z.peak),color:css('--amb'),width:2.2,label:'Cough dissociation'},{x:ps,y:sw.map(z=>z.venturi),color:css('--vio'),width:2,dash:[5,4],label:'Venturi drop'}],xlabel:'Foramen magnum patency',ylabel:'mmHg',legend:'tr',xlim:[0.1,1],vlines:[{x:s.pat,color:css('--muted'),dash:[2,3]}]});
+    const phis=linspace(-180,180,73);
+    plot($('cv-syr-p'),{series:[{x:phis,y:phis.map(ph=>P(1,ph).drive),color:css('--muted'),width:1.4,dash:[5,4],label:'Normal patency'},{x:phis,y:phis.map(ph=>P(s.pat,ph).drive),color:css('--csf'),width:2.4,label:'Current patency'}],xlabel:'Perivascular opening phase φ (°)',ylabel:'Net filling pressure (mmHg)',legend:'tr',xlim:[-180,180],hlines:[{y:0,color:css('--muted'),dash:[1,3]}],vlines:[{x:s.phi,color:css('--muted'),dash:[2,3]}]});
+    table($('ro-syrinx'),[
+      ['Cranial / cervical pulse amplitude',`${f(r.ampC,2)} / ${f(r.amp1,2)} mmHg`,`Normal ${f(n.ampC,2)} / ${f(n.amp1,2)}`],
+      ['Cervical pulse phase vs arterial input',f(r.phase,0)+'°',`Normal ${f(n.phase,0)}°`],
+      ['Peak cough dissociation (cranial − spinal)',f(c.peak,1)+' mmHg',c.dur>0.3?`<span class="flag">Dissociation over 1 mmHg persists ${f(c.dur,1)} s after the cough</span>`:'Rapid equilibration'],
+      ['Venturi pressure drop at the foramen',f(r.venturi,3)+' mmHg',`Peak velocity ${f(r.vel,1)} cm/s: small at physiological velocities`],
+      ['Perivascular net filling pressure',f(r.drive,3)+' mmHg',r.drive>n.drive+0.01?'Higher than normal: favours syrinx filling':(r.drive<0?'Negative: favours drainage':'')]]);
+  };
+  ctl=controls($('ctl-syrinx'),[
+    {id:'pat',label:'Foramen magnum patency',min:0.1,max:1,step:0.01,value:0.35,unit:'',fmt:v=>(100*v).toFixed(0)+'%'},
+    {id:'Ct',label:'Tonsillar piston coupling',min:0,max:0.8,step:0.05,value:0.3,unit:'mL/mmHg',fmt:v=>v.toFixed(2)},
+    {id:'cough',label:'Epidural venous volume per cough',min:1,max:10,step:0.5,value:6,unit:'mL',fmt:v=>v.toFixed(1)},
+    {id:'valve',label:'One-way valve asymmetry',min:0,max:2,step:0.1,value:1,unit:'',fmt:v=>v.toFixed(1)},
+    {id:'phi',label:'Perivascular opening phase φ',min:-180,max:180,step:5,value:0,unit:'°'},
+    {id:'HR',label:'Heart rate',min:45,max:120,step:1,value:70,unit:'/min'}],throttle(draw));
+  presets($('pre-syrinx'),[['Normal',{pat:1,Ct:0}],['Chiari I, moderate',{pat:0.45,Ct:0.3}],['Chiari I, severe',{pat:0.2,Ct:0.5}],['After decompression',{pat:0.9,Ct:0.05}],['Arachnoiditis, no piston',{pat:0.25,Ct:0}]],ctl);
+  renders['m-syrinx']=draw;
 })();
 
 // ---------- presets go before "Parameters" heading: reorder control panels ----------
