@@ -64,7 +64,11 @@ section.model[hidden]{display:none;}
 .ctl-top{display:flex;justify-content:space-between;gap:8px;font-size:.86rem;}
 .ctl-top output{font-variant-numeric:tabular-nums;color:var(--csf);font-weight:500;white-space:nowrap;}
 input[type=range]{width:100%;accent-color:var(--csf);margin:4px 0 0;}
-select{width:100%;font:inherit;font-size:.88rem;padding:5px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);margin-top:4px;}
+select,input[type=number]{box-sizing:border-box;}
+select,input[type=number]{width:100%;font:inherit;font-size:.88rem;padding:5px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);margin-top:4px;}
+input[type=file]{width:100%;font:inherit;font-size:.8rem;margin-top:6px;color:var(--muted);}
+.filestat{font-size:.8rem;color:var(--muted);margin-top:4px;}
+.filestat.err{color:var(--art);}
 .btnrow{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px;}
 .btnrow button{font:inherit;font-size:.8rem;padding:5px 9px;border-radius:5px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;}
 .btnrow button:hover{border-color:var(--csf);}
@@ -124,7 +128,7 @@ ol.refs em{color:var(--ink);font-style:italic;}
 <nav class="side" aria-label="Models">
   <div class="brand">
     <h1>CSF dynamics, modelled</h1>
-    <p>Twenty-six interactive models in four groups: foundations, clinical models, special scenarios and mission profiles.</p>
+    <p>Thirty-three interactive models in four groups: foundations, clinical models, special scenarios and mission profiles.</p>
   </div>
   <ul class="navlist" id="navlist"></ul>
   <div class="foot">Teaching models with simplified physiology. Parameter values are representative, not patient-specific.</div>
@@ -161,6 +165,270 @@ ol.refs em{color:var(--ink);font-style:italic;}
         <li>Boon AJW, et al. <em>Dutch Normal-Pressure Hydrocephalus Study: prediction of outcome after shunting by resistance to outflow of CSF.</em> J Neurosurg 1997;87:687–693.</li>
         <li>Czosnyka M, Whitehouse H, Smielewski P, Simac S, Pickard JD. <em>Testing of cerebrospinal compensatory reserve in shunted and non-shunted patients.</em> JNNP 1996;60:549–558.</li>
         <li>Eklund A, et al. <em>Assessment of cerebrospinal fluid outflow resistance.</em> Med Biol Eng Comput 2007;45:719–735.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-cpi" data-dim="0-D" data-name="Constant-pressure infusion" hidden>
+  <header>
+    <h2>Constant-pressure infusion test</h2>
+    <p>Ekstedt's method turns the infusion test around. Instead of fixing the infusion rate and watching pressure, a servo holds CSF pressure at a series of set levels and records the flow needed to keep it there. Once each level settles, the flow equals net absorption, so the flow–pressure line gives outflow conductance (1/R<sub>out</sub>) directly from its slope. A level set below sagittal sinus pressure stops absorption: the drained flow then equals CSF formation, and sinus pressure can be calculated.</p>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-cpi"><h3>Presets</h3><div class="btnrow" id="pre-cpi"></div><h3>Parameters</h3></div>
+    <div class="figs">
+      <figure class="wide"><figcaption>Pressure held at each level (top line, right axis) and the flow the servo must infuse (positive) or drain (negative)</figcaption><canvas id="cv-cpi-t"></canvas></figure>
+      <figure><figcaption>Steady flow against pressure: slope = conductance C<sub>out</sub> = 1/R<sub>out</sub></figcaption><canvas id="cv-cpi-ip"></canvas></figure>
+      <figure><figcaption>Where the infused volume goes at each step: compliance filling vs absorption</figcaption><canvas id="cv-cpi-v"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-cpi"></div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class="eq">\[I_{inf}(t)=\underbrace{\frac{\max(P-P_{ss},0)}{R_{out}}-I_f}_{\text{steady part}}+\underbrace{\frac{1}{E\,(P-P_0)}\frac{dP}{dt}}_{\text{compliance filling}}\]</div>
+      <div class="eq">\[\bar I_k=C_{out}\,(P_k-P_r),\qquad R_{out}=\frac{1}{C_{out}},\qquad I_f=-\bar I_{drain},\qquad P_{ss}=P_r-I_f\,R_{out}\]</div>
+      <p>Pressure moves to each new level with the servo time constant τ<sub>s</sub>. The transient flow fills the compartment's compliance and dies away; the mean flow over the last 40% of each step is taken as steady. Linear regression of steady flow on pressure, using levels above sinus pressure, gives C<sub>out</sub> and the resting pressure P<sub>r</sub> where the line crosses zero flow. Ekstedt found this relationship to be rectilinear: once the arachnoid villi are open, higher pressure does not distend them further. Below sinus pressure absorption stops, so all CSF formed drains into the system.</p>
+      <p>Compared with constant-rate infusion, R<sub>out</sub> comes from several steady states rather than one plateau, so it does not depend on reaching a plateau or on the pressure–volume curve. The cost is a longer test and the need for a pressure-controlled pump.</p>
+      <p class="caveat">Slow vasogenic (B-wave) fluctuations are represented as correlated noise in the measured flow. Real tests also contend with pressure-dependent sinus pressure, needle resistance and lumbar–intracranial gradients, which are not modelled here.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Ekstedt J. <em>CSF hydrodynamic studies in man. 1. Method of constant pressure CSF infusion.</em> J Neurol Neurosurg Psychiatry 1977;40:105–119. doi:10.1136/jnnp.40.2.105</li>
+        <li>Ekstedt J. <em>CSF hydrodynamic studies in man. 2. Normal hydrodynamic variables related to CSF pressure and flow.</em> J Neurol Neurosurg Psychiatry 1978;41:345–353. doi:10.1136/jnnp.41.4.345</li>
+        <li>Marmarou A, Shulman K, Rosende RM. <em>A nonlinear analysis of the cerebrospinal fluid system and intracranial pressure dynamics.</em> J Neurosurg 1978;48:332–344. doi:10.3171/jns.1978.48.3.0332</li>
+        <li>Eklund A, et al. <em>Assessment of cerebrospinal fluid outflow resistance.</em> Med Biol Eng Comput 2007;45:719–735.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-bolus" data-dim="0-D" data-name="Bolus injection test" hidden>
+  <header>
+    <h2>Fluid bolus injection (and withdrawal) test</h2>
+    <p>A small volume is injected (or withdrawn) over a second or two. The size of the immediate pressure jump reads the pressure–volume curve: the pressure–volume index (PVI) is the volume that would raise pressure tenfold. The return to baseline over the next minutes reads absorption, so the same bolus gives outflow resistance through Marmarou's formula. The test is quick but depends on the pressure the curve is referred to.</p>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-bolus"><h3>Presets</h3><div class="btnrow" id="pre-bolus"></div><h3>Parameters</h3></div>
+    <div class="figs">
+      <figure class="wide"><figcaption>ICP after the bolus: baseline P<sub>0</sub>, peak P<sub>p</sub> and the pressure P<sub>t</sub> read at time t after the peak</figcaption><canvas id="cv-bol-t"></canvas></figure>
+      <figure><figcaption>Pressure–volume curve: true and as implied by the classic PVI (reference 0 mmHg)</figcaption><canvas id="cv-bol-pv"></canvas></figure>
+      <figure><figcaption>R<sub>out</sub> from the bolus against the reading time t</figcaption><canvas id="cv-bol-r"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-bolus"></div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class="eq">\[\mathrm{PVI}=\frac{\Delta V}{\log_{10}\!\big(P_p/P_0\big)},\qquad R_{out}=\frac{t\,P_0}{\mathrm{PVI}\,\log_{10}\!\Big[\dfrac{P_t}{P_p}\cdot\dfrac{P_p-P_0}{P_t-P_0}\Big]}\]</div>
+      <p>Pressure is simulated with Marmarou's equation, injecting ΔV over the chosen time. The classic formulae assume the exponential pressure–volume curve is referred to 0 mmHg. When the true reference pressure P<sub>ref</sub> is not zero, the classic PVI is biased. The bias is upward when P<sub>ref</sub> > 0, so compliance looks better than it is. The corrected versions refer every pressure to P<sub>ref</sub>: replace P with P − P<sub>ref</sub> in both formulae. R<sub>out</sub> follows from the logistic recovery after the peak and is independent of sinus pressure. A withdrawal (negative ΔV) gives the same PVI with less risk of a pressure wave.</p>
+      <p>Clinically, bolus-derived R<sub>out</sub> is typically lower than infusion-derived R<sub>out</sub> (Shapiro 1980 reported 2.8 ± 0.8 mmHg·min/mL). In the model the two agree, because absorption is linear. The clinical gap is usually attributed to pressure-dependent resistance, vasogenic volume changes and the short observation window.</p>
+      <p class="caveat">A single compartment, linear absorption and no pulse or respiratory waves. In practice PVI is averaged over several boluses, readings are taken at end-expiration and diastole, and injections are avoided when ICP is high.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Marmarou A, Shulman K, LaMorgese J. <em>Compartmental analysis of compliance and outflow resistance of the cerebrospinal fluid system.</em> J Neurosurg 1975;43:523–534. doi:10.3171/jns.1975.43.5.0523</li>
+        <li>Marmarou A, Shulman K, Rosende RM. <em>A nonlinear analysis of the cerebrospinal fluid system and intracranial pressure dynamics.</em> J Neurosurg 1978;48:332–344. doi:10.3171/jns.1978.48.3.0332</li>
+        <li>Shapiro K, Marmarou A, Shulman K. <em>Characterization of clinical CSF dynamics and neural axis compliance using the pressure-volume index: I. The normal pressure-volume index.</em> Ann Neurol 1980;7:508–514. doi:10.1002/ana.410070603</li>
+        <li>Shapiro K, Marmarou A. <em>Clinical applications of the pressure-volume index in treatment of pediatric head injuries.</em> J Neurosurg 1982;56:819–825. doi:10.3171/jns.1982.56.6.0819</li>
+        <li>Czosnyka M, Whitehouse H, Smielewski P, Simac S, Pickard JD. <em>Testing of cerebrospinal compensatory reserve in shunted and non-shunted patients.</em> JNNP 1996;60:549–558.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-pvi" data-dim="0-D" data-name="PVI calculator" hidden>
+  <header>
+    <h2>Pressure–volume index calculator</h2>
+    <p>Enter the measurements from a bolus test (volume, baseline pressure, peak pressure and, if you have it, the pressure a set time after the peak). The calculator returns PVI, elastance, compliance at baseline, the expected rise for a further 1 mL, the reserve volume to a pressure threshold and R<sub>out</sub>. Results are compared with the adult normal PVI of 25.9 ± 3.7 mL (Shapiro et al. 1980).</p>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-pvi"><h3>Presets</h3><div class="btnrow" id="pre-pvi"></div><h3>Parameters</h3></div>
+    <div class="figs">
+      <figure><figcaption>Pressure–volume curve implied by your measurement, with the threshold and reserve volume</figcaption><canvas id="cv-pvi-pv"></canvas></figure>
+      <figure><figcaption>Compliance against pressure for this PVI and for the adult normal</figcaption><canvas id="cv-pvi-c"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-pvi"></div>
+  <div class="notes">
+    <div>
+      <h3>Formulae</h3>
+      <div class="eq">\[\mathrm{PVI}=\frac{\Delta V}{\log_{10}\!\big[(P_p-P_{ref})/(P_0-P_{ref})\big]}\]</div>
+      <div class="eq">\[E=\frac{\ln 10}{\mathrm{PVI}},\qquad C(P)=\frac{\mathrm{PVI}}{\ln 10\,(P-P_{ref})}\]</div>
+      <div class="eq">\[\mathrm{PVR}_{1\,mL}=(P_0-P_{ref})\big(10^{1/\mathrm{PVI}}-1\big),\qquad V_{thr}=\mathrm{PVI}\,\log_{10}\frac{P_{thr}-P_{ref}}{P_0-P_{ref}}\]</div>
+      <div class="eq">\[R_{out}=\frac{t\,(P_0-P_{ref})}{\mathrm{PVI}\,\log_{10}\!\Big[\dfrac{P_t-P_{ref}}{P_p-P_{ref}}\cdot\dfrac{P_p-P_0}{P_t-P_0}\Big]}\]</div>
+      <p>With P<sub>ref</sub> = 0 these are the classic Marmarou formulae. Use a negative ΔV, with P<sub>p</sub> below P<sub>0</sub>, for a withdrawal. PVR is the pressure rise expected from adding 1 mL at the current baseline. V<sub>thr</sub> is the volume that would take pressure from baseline to the chosen threshold, a direct statement of remaining reserve. Shapiro and Marmarou found that a PVI below 80% of predicted normal anticipated intracranial hypertension in children with severe head injury.</p>
+      <p class="caveat">For teaching only, not for clinical decisions. The exponential curve and a single bolus are idealisations; clinical PVI should be averaged over several boluses and interpreted with the waveform, the patient's age and body size (predicted PVI is lower in small children), and the pressure reference.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Shapiro K, Marmarou A, Shulman K. <em>Characterization of clinical CSF dynamics and neural axis compliance using the pressure-volume index: I. The normal pressure-volume index.</em> Ann Neurol 1980;7:508–514. doi:10.1002/ana.410070603</li>
+        <li>Marmarou A, Shulman K, Rosende RM. <em>A nonlinear analysis of the cerebrospinal fluid system and intracranial pressure dynamics.</em> J Neurosurg 1978;48:332–344. doi:10.3171/jns.1978.48.3.0332</li>
+        <li>Shapiro K, Marmarou A. <em>Clinical applications of the pressure-volume index in treatment of pediatric head injuries.</em> J Neurosurg 1982;56:819–825. doi:10.3171/jns.1982.56.6.0819</li>
+        <li>Shapiro K, Fried A, Marmarou A. <em>Biomechanical and hydrodynamic characterization of the hydrocephalic infant.</em> J Neurosurg 1985;63:69–75. doi:10.3171/jns.1985.63.1.0069</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-shunt" data-dim="Bernoulli" data-name="Shunt equation" hidden>
+  <header>
+    <h2>The shunt equation: Bernoulli applied to a ventriculoperitoneal shunt</h2>
+    <p>Flow through a shunt follows the energy balance between the ventricular catheter tip and the peritoneal outlet. Bernoulli's equation is extended for viscous flow by adding the valve opening pressure and the resistive losses in the valve and catheter. When the patient sits up, the column of CSF in the shunt adds a siphoning pressure ρgh that can exceed the valve setting several times over. That is why upright overdrainage happens and why gravitational and anti-siphon devices exist. The velocity term ½ρv² is shown too: at shunt flow rates it is negligible.</p>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-shunt"><h3>Presets</h3><div class="btnrow" id="pre-shunt"></div><h3>Parameters</h3></div>
+    <div class="figs">
+      <figure class="wide"><figcaption>Pressure budget along the shunt at the selected ICP and posture (mmHg): driving terms right, opposing terms left</figcaption><canvas id="cv-sh-b" class="short"></canvas></figure>
+      <figure><figcaption>Shunt flow against ICP: supine, upright and selected posture; dashed line is CSF formation</figcaption><canvas id="cv-sh-q"></canvas></figure>
+      <figure><figcaption>Equilibrium ICP against head-up angle (shunt plus physiological absorption balance formation)</figcaption><canvas id="cv-sh-e"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-shunt"></div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class="eq">\[P_1+\rho g z_1+\tfrac12\rho v_1^2=P_2+\rho g z_2+\tfrac12\rho v_2^2+P_{open}+Q\,(R_{valve}+R_{cath})\]</div>
+      <div class="eq">\[Q=\frac{\max\big(0,\;\mathrm{ICP}+\rho g H\sin\theta-P_{abd}-P_{open}(\theta)\big)}{R_{valve}+R_{cath}},\qquad R_{cath}=\frac{8\mu L}{\pi r^4},\qquad Re=\frac{\rho v D}{\mu}\]</div>
+      <p>Point 1 is the ventricular catheter tip at ICP; point 2 is the peritoneal outlet at intra-abdominal pressure. The height difference is H sin θ for a head-up angle θ. With the same internal diameter at both ends, the velocity terms cancel. Even taken alone, ½ρv² is a few hundredths of a mmHg, because shunt flow is slow and laminar (Reynolds number in the tens to low hundreds). So in practice the "shunt equation" is a hydrostatic balance plus Hagen–Poiseuille losses. A gravitational unit adds opening pressure in proportion to sin θ, offsetting part of the siphon. The equilibrium ICP solves I<sub>f</sub> = max(0, (ICP − P<sub>ss</sub>)/R<sub>out</sub>) + Q(ICP): formation leaves by physiological absorption and by the shunt.</p>
+      <p class="caveat">Valves are idealised as an opening pressure plus a linear resistance; real differential-pressure valves have pressure-dependent resistance, hysteresis (see "Valve hysteresis") and, for flow-regulating designs, a deliberately non-linear pressure–flow curve. Catheter obstruction, distal pseudocysts and subcutaneous tunnel compression of anti-siphon devices are not modelled.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Bloomfield IG, Johnston IH, Bilston LE. <em>Effects of proteins, blood cells and glucose on the viscosity of cerebrospinal fluid.</em> Pediatr Neurosurg 1998;28:246–251. doi:10.1159/000028659</li>
+        <li>Czosnyka ZH, Czosnyka M, Richards HK, Pickard JD. <em>Evaluation of three new models of hydrocephalus shunts.</em> Acta Neurochir Suppl 2005;95:223–227. doi:10.1007/3-211-32318-x_46</li>
+        <li>Czosnyka ZH, Czosnyka M, Richards HK, Pickard JD. <em>Laboratory evaluation of the Phoenix CRx Diamond valve.</em> Neurosurgery 2001;48:689–694. doi:10.1097/00006123-200103000-00052</li>
+        <li>Czosnyka M, Czosnyka ZH, Richards HK, Pickard JD. <em>Hydrodynamic properties of extraventricular drainage systems.</em> Neurosurgery 2003;52:619–623. doi:10.1227/01.neu.0000049956.11888.6d</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-prx" data-dim="Index" data-name="Pressure reactivity index (PRx)" hidden>
+  <header>
+    <h2>Pressure reactivity index (PRx) and optimal CPP</h2>
+    <p>PRx is a moving correlation coefficient between slow waves of arterial pressure and ICP. When cerebral vessels react, a rise in arterial pressure constricts them, cerebral blood volume falls and ICP falls or stays put: PRx is zero or negative. When they are pressure-passive, ICP follows arterial pressure and PRx becomes positive. Plotting PRx against CPP usually gives a U-shaped curve whose minimum is the "optimal" CPP (CPPopt). Use the demo recording, or load your own file with arterial pressure and ICP columns; the file is read only inside your browser and is not uploaded.</p>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-prx"><h3>Presets</h3><div class="btnrow" id="pre-prx"></div><h3>Parameters</h3></div>
+    <div class="figs">
+      <figure class="wide"><figcaption>Arterial pressure (left) and ICP (right axis), averaged over the chosen period</figcaption><canvas id="cv-prx-t" class="short"></canvas></figure>
+      <figure class="wide"><figcaption>PRx over time, with the 0.05 (favourable outcome) and 0.25 (survival) thresholds</figcaption><canvas id="cv-prx-p" class="short"></canvas></figure>
+      <figure><figcaption>PRx against CPP (bin means ± SE) with the fitted curve and CPPopt</figcaption><canvas id="cv-prx-c"></canvas></figure>
+      <figure><figcaption>Time spent in each CPP bin</figcaption><canvas id="cv-prx-h"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-prx"></div>
+  <div class="notes">
+    <div>
+      <h3>Method</h3>
+      <div class="eq">\[\mathrm{PRx}_k=\operatorname{corr}\big(\overline{\mathrm{ABP}}_{k-N+1..k},\;\overline{\mathrm{ICP}}_{k-N+1..k}\big),\qquad \mathrm{CPP}_{opt}=\arg\min_{\mathrm{CPP}}\big(a+b\,\mathrm{CPP}+c\,\mathrm{CPP}^2\big)\]</div>
+      <p>Signals are averaged over short periods (Czosnyka et al. used 5 s, Steiner et al. 6 s; 10 s is common in current software) to remove pulse and respiratory components while keeping slow waves. PRx is the Pearson correlation over the last N averages (about 3–5 minutes), recalculated every minute. For CPPopt, PRx values are grouped into CPP bins of 5 mmHg. A parabola is fitted, weighted by the number of values in each bin, and its minimum taken. CPPopt is reported only when the curve is a genuine U within the observed CPP range: the fitted minimum must be well below the curve at the edges and below 0.3. Sorrentino et al. found PRx thresholds of 0.25 for survival and 0.05 for favourable outcome, with CPP 70 mmHg and ICP 22 mmHg.</p>
+      <p><strong>Loading your data.</strong> A CSV or tab-separated file with a header row. Columns whose names contain "ABP", "ART", "MAP" or "BP" are taken as arterial pressure, "ICP" as intracranial pressure, and "time", "t" or "sec" as time in seconds. Without a time column, enter the sampling rate. Gaps (blank or non-numeric cells) are filled with the previous value.</p>
+      <p class="caveat">For teaching and research exploration, not for bedside decisions. The demo signal is synthetic: an autoregulation plateau between adjustable limits generates the U-shape. Real PRx needs artefact rejection, calibrated arterial pressure referenced to the same level as ICP, and enough CPP variation to define a curve.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Czosnyka M, Smielewski P, Kirkpatrick P, Laing RJ, Menon D, Pickard JD. <em>Continuous assessment of the cerebral vasomotor reactivity in head injury.</em> Neurosurgery 1997;41:11–17. doi:10.1097/00006123-199707000-00005</li>
+        <li>Steiner LA, Czosnyka M, Piechnik SK, et al. <em>Continuous monitoring of cerebrovascular pressure reactivity allows determination of optimal cerebral perfusion pressure in patients with traumatic brain injury.</em> Crit Care Med 2002;30:733–738. doi:10.1097/00003246-200204000-00002</li>
+        <li>Aries MJH, Czosnyka M, Budohoski KP, et al. <em>Continuous determination of optimal cerebral perfusion pressure in traumatic brain injury.</em> Crit Care Med 2012;40:2456–2463. doi:10.1097/CCM.0b013e3182514eb6</li>
+        <li>Sorrentino E, Diedler J, Kasprowicz M, et al. <em>Critical thresholds for cerebrovascular reactivity after traumatic brain injury.</em> Neurocrit Care 2012;16:258–266. doi:10.1007/s12028-011-9630-8</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-night" data-dim="Overnight" data-name="Overnight ICP and B-waves" hidden>
+  <header>
+    <h2>Overnight ICP: average pressure and percentage of B-waves</h2>
+    <p>An overnight ICP recording is summarised by its average level and its slow-wave activity. Lundberg's B-waves are rhythmic oscillations at 0.5–2 per minute, common during sleep and in hydrocephalus. Their burden is expressed as the percentage of monitoring time they occupy. That percentage depends heavily on the amplitude threshold used to define a wave, so the threshold curve is shown alongside. Use the demo recording, or load your own ICP file; it is read only inside your browser and is not uploaded.</p>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-night"><h3>Presets</h3><div class="btnrow" id="pre-night"></div><h3>Parameters</h3></div>
+    <div class="figs">
+      <figure class="wide"><figcaption>Whole recording (10-second means), with B-wave periods shaded</figcaption><canvas id="cv-ng-t" class="short"></canvas></figure>
+      <figure class="wide"><figcaption>30-minute zoom: ICP and the band-passed B-wave component (right axis); shading marks windows classified as B-waves</figcaption><canvas id="cv-ng-z" class="short"></canvas></figure>
+      <figure><figcaption>Distribution of ICP over the recording</figcaption><canvas id="cv-ng-h"></canvas></figure>
+      <figure><figcaption>% B-waves against the amplitude threshold</figcaption><canvas id="cv-ng-c"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-night"></div>
+  <div class="notes">
+    <div>
+      <h3>Method</h3>
+      <div class="eq">\[x_B(t)=\overline{\mathrm{ICP}}_{10\,s}(t)-\overline{\mathrm{ICP}}_{180\,s}(t),\qquad \text{B-wave if } \max_{w}x_B-\min_{w}x_B\ge A_{thr}\ \text{and}\ 0.5\le f_w\le 2\ \text{min}^{-1}\]</div>
+      <p>The signal is first averaged to 1-second values. A 10-second moving average removes pulse and respiratory waves, and subtracting a 180-second moving average removes slower drifts, leaving a band of roughly 30 s–3 min periods. Every 10 seconds, a 2-minute window centred on that point is classified as B-wave activity if its peak-to-peak amplitude reaches the threshold and its zero-crossing frequency lies within 0.5–2 per minute. The % B-waves is the fraction of these 10-second blocks classified as B-wave, out of the total monitoring time, as in Stephensen et al. They tested thresholds of 0.5–5 mmHg and showed how strongly the percentage depends on that choice. Mean and median ICP, spread and the time above a chosen threshold describe the average pressure.</p>
+      <p><strong>Loading your data.</strong> A CSV or tab-separated file with a header row and a column whose name contains "ICP". A "time", "t" or "sec" column (seconds) sets the sampling rate; otherwise enter it. Recordings sampled slower than one value every 10 seconds cannot resolve B-waves.</p>
+      <p class="caveat">Automated B-wave counts vary with the filter, window, amplitude threshold and artefact handling; values are comparable only within one method. The demo recording is synthetic (B-wave trains of random period 30–120 s on a drifting baseline), so the detector can be checked against a known answer. Not for clinical decisions.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Lundberg N. <em>Continuous recording and control of ventricular fluid pressure in neurosurgical practice.</em> Acta Psychiatr Scand Suppl 1960;36(149):1–193.</li>
+        <li>Stephensen H, Andersson N, Eklund A, Malm J, Tisell M, Wikkelsö C. <em>Objective B wave analysis in 55 patients with non-communicating and communicating hydrocephalus.</em> J Neurol Neurosurg Psychiatry 2005;76:965–970. doi:10.1136/jnnp.2004.039834</li>
+        <li>Spiegelberg A, Krause M, Meixensberger J, Kurtcuoglu V. <em>RAQ: a novel surrogate for the craniospinal pressure–volume relationship.</em> Physiol Meas 2020;41:094002. doi:10.1088/1361-6579/abb145</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-ns" data-dim="NS" data-name="Navier–Stokes in CSF" hidden>
+  <header>
+    <h2>Where the Navier–Stokes equations apply to CSF</h2>
+    <p>CSF is a Newtonian liquid with the viscosity of water, so its motion obeys the incompressible Navier–Stokes equations everywhere. The equations are rarely solved in full. Instead, two dimensionless numbers decide which terms matter at each site. The Reynolds number Re compares inertia with viscosity; the Womersley number α compares pulsation frequency with viscous diffusion across the channel. This tab places each CSF pathway on that map. It then applies the exact or reduced Navier–Stokes solution that fits each one:</p>
+    <ul>
+      <li>the cerebral aqueduct, normal and stenosed;</li>
+      <li>an endoscopic third ventriculostomy (ETV) stoma;</li>
+      <li>the cervical subarachnoid space;</li>
+      <li>the shunt catheter;</li>
+      <li>spinal CSF leaks and CSF–venous fistulae in intracranial hypotension;</li>
+      <li>perivascular spaces;</li>
+      <li>red-cell sedimentation in intraventricular haemorrhage.</li>
+    </ul>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-ns"><h3>Presets</h3><div class="btnrow" id="pre-ns"></div><h3>Parameters</h3></div>
+    <div class="figs">
+      <figure class="wide"><figcaption>Regime map: peak Reynolds number against Womersley number for each CSF pathway (logarithmic axes)</figcaption><canvas id="cv-ns-map"></canvas></figure>
+      <figure><figcaption>Aqueduct: exact Womersley velocity profiles at eight phases of the cardiac cycle; dashed is quasi-steady Poiseuille at peak flow</figcaption><canvas id="cv-ns-aq"></canvas></figure>
+      <figure><figcaption>Aqueduct: pressure-drop amplitude by Navier–Stokes term, normal and with the selected stenosis (Pa)</figcaption><canvas id="cv-ns-st"></canvas></figure>
+      <figure><figcaption>ETV stoma: pressure-drop amplitude against stoma diameter by term (Pa, logarithmic)</figcaption><canvas id="cv-ns-etv"></canvas></figure>
+      <figure><figcaption>Cervical subarachnoid space: oscillatory velocity across the gap between cord (−1) and dura (+1)</figcaption><canvas id="cv-ns-sp"></canvas></figure>
+      <figure><figcaption>Spinal CSF leak or CSF–venous fistula: leak flow against transmural pressure; dashed line is CSF formation</figcaption><canvas id="cv-ns-lk"></canvas></figure>
+      <figure><figcaption>Intraventricular haemorrhage: Stokes settling time of red cells across the horn depth against aggregate size</figcaption><canvas id="cv-ns-sd"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-ns"></div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class="eq">\[\rho\Big(\underbrace{\frac{\partial\mathbf u}{\partial t}}_{\text{unsteady}}+\underbrace{\mathbf u\cdot\nabla\mathbf u}_{\text{convective}}\Big)=-\nabla p+\underbrace{\mu\nabla^2\mathbf u}_{\text{viscous}}+\rho\mathbf g,\qquad \nabla\cdot\mathbf u=0,\qquad Re=\frac{\rho UD}{\mu},\quad \alpha=R\sqrt{\frac{\omega\rho}{\mu}}\]</div>
+      <p><strong>Hydrostatics (u = 0).</strong> With no flow, the equations reduce to ∇p = ρg. This is the basis of every posture effect in these models, including the upright pressure fall in intracranial hypotension.</p>
+      <p><strong>Steady pipe flow.</strong> In a straight uniform tube the convective term vanishes identically. The exact solution is then Hagen–Poiseuille, Q = πR⁴ΔP/(8μL), which governs the shunt catheter. It also gives an annular version for the spinal canal: Q = πG/(8μ)[(R₂⁴ − R₁⁴) − (R₂² − R₁²)²/ln(R₂/R₁)].</p>
+      <p><strong>Oscillatory flow.</strong> For a sinusoidal pressure gradient in a rigid tube, Womersley's exact solution is u(r,t) = Re{(G/iωρ)[1 − J₀(i<sup>3/2</sup>αr/R)/J₀(i<sup>3/2</sup>α)]e<sup>iωt</sup>}. It is used for the aqueduct. Between parallel walls the analogous cosh solution describes the cervical subarachnoid gap. When α is well above 1 the profile flattens, peaks move towards the walls and the pressure gradient leads the flow, as Loth et al. found in the spinal canal.</p>
+      <p><strong>Stenoses and orifices.</strong> Where the cross-section changes, the convective term returns. For a stenosis, the Young–Tsai form is ΔP = viscous + K<sub>t</sub>(ρ/2)(A₀/A₁ − 1)²U² + unsteady, with K<sub>t</sub> = 1.52. For a hole in a thin membrane (an ETV stoma or a dural tear), the creeping-flow limit is Sampson's exact solution ΔP = 3μQ/a³, with an orifice term (ρ/2)(Q/C<sub>d</sub>A)² (C<sub>d</sub> = 0.62) and an inertance ρ/(2a) added.</p>
+      <p><strong>Creeping flow.</strong> When Re ≪ 1 the inertial terms drop out entirely, leaving Stokes flow. That describes perivascular spaces, and Stokes drag on a sphere, v = 2Δρ g r²/(9μ), gives red-cell settling. A Richardson–Zaki factor (1 − φ)<sup>4.65</sup> corrects for haematocrit, and a cluster of n cells settles as a sphere of radius r·n<sup>1/3</sup>.</p>
+      <p><strong>Leaks.</strong> If the leak path can carry CSF formation at almost no pressure difference, CSF pressure at the leak settles at the downstream pressure: epidural for a dural tear, venous for a fistula. Upright, the hydrostatic column then lowers ICP at the foramen of Monro by ρgh, where h is the height of the Monro above the leak.</p>
+      <p class="caveat">These are one-dimensional or idealised exact solutions, not full three-dimensional CFD. Walls are taken as rigid, though brain and cord motion drive the flow. Sizes and stroke volumes are representative, and the coefficients K<sub>t</sub>, C<sub>d</sub> and the 1.2 inertance factor come from engineering correlations. The leak model ignores dural-sac compliance, venous engorgement and absorption changes, all of which soften the upright pressure fall in real intracranial hypotension. CSF viscosity is 0.7–1 mPa·s even with high protein (Bloomfield 1998). Not for clinical decisions.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Womersley JR. <em>Method for the calculation of velocity, rate of flow and viscous drag in arteries when the pressure gradient is known.</em> J Physiol 1955;127:553–563. doi:10.1113/jphysiol.1955.sp005276</li>
+        <li>Loth F, Yardimci MA, Alperin N. <em>Hydrodynamic modeling of cerebrospinal fluid motion within the spinal cavity.</em> J Biomech Eng 2001;123:71–79. doi:10.1115/1.1336144</li>
+        <li>Jacobson EE, Fletcher DF, Morgan MK, Johnston IH. <em>Fluid dynamics of the cerebral aqueduct.</em> Pediatr Neurosurg 1996;24:229–236. doi:10.1159/000121044</li>
+        <li>Kurtcuoglu V, Soellinger M, Summers P, Poulikakos D, Boesiger P. <em>Mixing and modes of mass transfer in the third cerebral ventricle: a computational analysis.</em> J Biomech Eng 2007;129:695–702. doi:10.1115/1.2768376</li>
+        <li>Mestre H, Tithof J, Du T, et al. <em>Flow of cerebrospinal fluid is driven by arterial pulsations and is reduced in hypertension.</em> Nat Commun 2018;9:4878. doi:10.1038/s41467-018-07318-3</li>
+        <li>Schievink WI. <em>Spontaneous spinal cerebrospinal fluid leaks and intracranial hypotension.</em> JAMA 2006;295:2286–2296. doi:10.1001/jama.295.19.2286</li>
+        <li>Schievink WI, Moser FG, Maya MM. <em>CSF-venous fistula in spontaneous intracranial hypotension.</em> Neurology 2014;83:472–473. doi:10.1212/WNL.0000000000000639</li>
+        <li>Bloomfield IG, Johnston IH, Bilston LE. <em>Effects of proteins, blood cells and glucose on the viscosity of cerebrospinal fluid.</em> Pediatr Neurosurg 1998;28:246–251. doi:10.1159/000028659</li>
+        <li>Classical results (textbooks rather than PubMed): Hagen–Poiseuille flow; Sampson RA 1891, flow through a circular aperture in a thin plate; Stokes drag on a sphere; Young DF and Tsai FY 1973, flow characteristics in models of arterial stenoses (J Biomech 6); Richardson JF and Zaki WN 1954, hindered settling.</li>
       </ol>
     </div>
   </div>
@@ -1107,6 +1375,158 @@ function marmarouSim(p){
   for(let i=0;i<=n;i++){ if(i%5===0){T.push(t);Y.push(y[0]);} y=rk4(f,y,t,dt); t+=dt; }
   return {T,Y,Pss};
 }
+// ===== 1b. Constant-pressure infusion (Ekstedt) =====
+function constPressureSim(p){ // p: Pb, Rout, E, P0, If, levels[], stepMin, tauS (min), noise (mL/min), seed
+  const Pss=p.Pb-p.If*p.Rout, r=rng(p.seed||3);
+  const absorb=P=>Math.max(0,(P-Pss)/p.Rout); // villi do not conduct below sinus pressure (Ekstedt 1977)
+  const C=P=>1/(p.E*Math.max(P-p.P0,0.3));
+  const dt=0.01, n=Math.round(p.stepMin/dt); const T=[],P=[],I=[],steps=[]; let Pc=p.Pb, t=0, slow=0;
+  p.levels.forEach(target=>{ let s=0, m=0;
+    for(let j=0;j<n;j++){ const dP=(target-Pc)*(1-Math.exp(-dt/p.tauS)); const flow=absorb(Pc)-p.If+C(Pc)*dP/dt; Pc+=dP; t+=dt;
+      slow+=(-slow*dt/0.5)+p.noise*Math.sqrt(2*dt/0.5)*randn(r); const meas=flow+slow;
+      if(j>=0.6*n){ s+=meas; m++; } if(j%5===0){ T.push(t); P.push(Pc); I.push(meas); } }
+    steps.push({P:target,I:s/m,drain:target<Pss}); });
+  const fit=steps.filter(x=>!x.drain); let a=0,b=0;
+  if(fit.length>=2){ const mx=mean(fit.map(x=>x.P)), my=mean(fit.map(x=>x.I)); let sxy=0,sxx=0; fit.forEach(x=>{ sxy+=(x.P-mx)*(x.I-my); sxx+=(x.P-mx)**2; }); b=sxy/sxx; a=my-b*mx; }
+  const dr=steps.filter(x=>x.drain); const IfEst=dr.length?-mean(dr.map(x=>x.I)):null;
+  const RoutEst=b>0?1/b:null, Pr=b>0?-a/b:null;
+  return {T,P,I,steps,Pss,fit:{a,b},RoutEst,Pr,IfEst,PssEst:(IfEst!==null&&RoutEst)?Pr-IfEst*RoutEst:null}; }
+
+// ===== 1c. Bolus injection and PVI (Marmarou) =====
+function bolusSim(p){ // p: Pb, Rout, E, P0, If, dV (mL, negative = withdrawal), tInj (s), tEnd (min)
+  const Pss=p.Pb-p.If*p.Rout, ti=p.tInj/60, rate=p.dV/ti;
+  const f=(t,y)=>{ const inf=(t>=0&&t<ti)?rate:0; const P=y[0]; return [p.E*Math.max(P-p.P0,1e-6)*(p.If+inf-(P-Pss)/p.Rout)]; };
+  const dt=0.0005, n=Math.round((p.tEnd+0.25)/dt); const T=[],Y=[]; let y=[p.Pb], t=-0.25;
+  for(let i=0;i<=n;i++){ if(i%10===0){ T.push(t); Y.push(y[0]); } y=rk4(f,y,t,dt); t+=dt; }
+  let ip=0; for(let i=0;i<Y.length;i++) if(p.dV>=0?Y[i]>Y[ip]:Y[i]<Y[ip]) ip=i;
+  return {T,Y,Pss,Pp:Y[ip],tp:T[ip]}; }
+function pviFrom(dV,Pb,Pp,Pref){ return dV/Math.log10((Pp-Pref)/(Pb-Pref)); }
+function roFrom(t,Pb,Pp,Pt,PVI,Pref){ // Marmarou 1978: t (min) after the peak; pressures referred to Pref
+  const xb=Pb-Pref, xp=Pp-Pref, xt=Pt-Pref; const L=Math.log10((xt/xp)*(xp-xb)/(xt-xb)); return (isFinite(L)&&L>0)?t*xb/(PVI*L):null; }
+
+// ===== 1e. Shunt equation: extended Bernoulli with Poiseuille losses =====
+function shuntCalc(s,P,theta){ // s: H (cm), Popen, Pgu (cmH2O), Rv (mmHg·min/mL), D (mm), L (cm), mu (mPa·s), Pabd (mmHg)
+  const rho=1007, g=9.81, PA=133.322, sn=Math.sin(theta*Math.PI/180);
+  const siph=rho*g*(s.H/100)*sn/PA, Pop=(s.Popen+s.Pgu*sn)*CMH2O;
+  const r=s.D/2000, A=Math.PI*r*r;
+  const Rc=8*(s.mu*1e-3)*(s.L/100)/(Math.PI*r**4)*(1e-6/60)/PA; // Hagen–Poiseuille, mmHg per mL/min
+  const drive=P+siph-s.Pabd-Pop, Rt=s.Rv+Rc, Q=Math.max(0,drive)/Rt;
+  const v=Q*1e-6/60/A;
+  return {Q,siph,Pop,Rc,Rt,drive,v,kin:0.5*rho*v*v/PA,Re:rho*v*(s.D/1000)/(s.mu*1e-3),valveLoss:Q*s.Rv,cathLoss:Q*Rc}; }
+function shuntEquilibrium(s,theta,noShunt){ const Iabs=P=>Math.max(0,(P-s.Pss)/s.Rout);
+  const P=bisect(P=>s.If-Iabs(P)-(noShunt?0:shuntCalc(s,P,theta).Q),-80,200); return Object.assign(shuntCalc(s,P,theta),{P,Iabs:Iabs(P)}); }
+
+// ===== 1f. Signal analysis helpers, PRx and overnight ICP =====
+function blockMeans(x,n){ const o=[]; for(let i=0;i+n<=x.length;i+=n){ let s=0; for(let j=0;j<n;j++) s+=x[i+j]; o.push(s/n); } return o; }
+function movAvg(x,w){ const n=x.length, cs=new Float64Array(n+1), o=new Float64Array(n), h=Math.floor(w/2);
+  for(let i=0;i<n;i++) cs[i+1]=cs[i]+x[i];
+  for(let i=0;i<n;i++){ const a=Math.max(0,i-h), b=Math.min(n,i+h+1); o[i]=(cs[b]-cs[a])/(b-a); } return o; }
+function ar1(r,n,tau,sd,dt){ const a=Math.exp(-dt/tau), q=sd*Math.sqrt(1-a*a); const o=new Float64Array(n); let x=0; for(let i=0;i<n;i++){ x=a*x+q*randn(r); o[i]=x; } return o; }
+function prxSynth(p){ // 1 Hz; p: hours, map0, drift, LLA, ULA, integrity, icp0, noise, seed
+  const r=rng(p.seed||11), N=Math.round(p.hours*3600), T=p.hours*3600;
+  const wA=ar1(r,N,25,3,1), wI=ar1(r,N,40,p.noise,1), walk=ar1(r,N,1800,6,1); const abp=new Float64Array(N), icp=new Float64Array(N);
+  const sig=x=>1/(1+Math.exp(-x));
+  for(let i=0;i<N;i++){ const trend=p.map0+p.drift*Math.sin(2*Math.PI*i/T*1.5)+walk[i]; const c=trend-p.icp0;
+    const k=0.35-(0.35+0.25)*p.integrity*sig((c-p.LLA)/3)*sig((p.ULA-c)/3);
+    abp[i]=trend+wA[i]+0.8*randn(r); icp[i]=p.icp0+k*wA[i]+wI[i]+0.25*randn(r); }
+  return {abp,icp,fs:1}; }
+function prxAnalyse(abp,icp,fs,o){ // o: avgSec, win (n means), step (n means), binW (mmHg)
+  const n=Math.max(1,Math.round(o.avgSec*fs)), A=blockMeans(abp,n), I=blockMeans(icp,n), C=A.map((a,i)=>a-I[i]);
+  const t=[],prx=[],cpp=[];
+  for(let k=0;k+o.win<=A.length;k+=o.step){ prx.push(pearson(A.slice(k,k+o.win),I.slice(k,k+o.win))); cpp.push(mean(C.slice(k,k+o.win))); t.push((k+o.win)*n/fs/3600); }
+  const bins={}; prx.forEach((v,i)=>{ if(!isFinite(v)) return; const b=Math.floor(cpp[i]/o.binW); (bins[b]=bins[b]||[]).push(v); });
+  const minN=Math.max(3,0.02*prx.length);
+  const B=Object.keys(bins).map(Number).sort((a,b)=>a-b).map(b=>({c:(b+0.5)*o.binW,m:mean(bins[b]),n:bins[b].length,se:Math.sqrt(mean(bins[b].map(v=>(v-mean(bins[b]))**2))/bins[b].length)}));
+  const use=B.filter(b=>b.n>=minN); let fit=null, opt=null;
+  if(use.length>=3){ const S=[[0,0,0],[0,0,0],[0,0,0]], y=[0,0,0];
+    use.forEach(b=>{ const v=[1,b.c,b.c*b.c]; for(let i=0;i<3;i++){ y[i]+=b.n*v[i]*b.m; for(let j=0;j<3;j++) S[i][j]+=b.n*v[i]*v[j]; } });
+    fit=rsolve(S,y); if(fit[2]>0){ const c=-fit[1]/(2*fit[2]), F=x=>fit[0]+fit[1]*x+fit[2]*x*x; const depth=Math.min(F(use[0].c),F(use[use.length-1].c))-F(c); // require a genuine U, not a flat curve
+      if(c>=use[0].c&&c<=use[use.length-1].c&&depth>=0.15&&F(c)<0.3) opt=c; } }
+  return {t,prx,cpp,A,I,C,tm:A.map((_,i)=>(i+0.5)*n/fs/3600),B,use,fit,opt}; }
+function nightSynth(p){ // 1 Hz; p: hours, icp0, bAmp, bFrac (0–1), seed
+  const r=rng(p.seed||5), N=Math.round(p.hours*3600), icp=new Float64Array(N), truth=new Uint8Array(N);
+  const drift=ar1(r,N,1200,1.2,1); let on=false, ph=0, per=60, amp=p.bAmp, left=0;
+  const meanOn=300, meanOff=p.bFrac>0?meanOn*(1-p.bFrac)/p.bFrac:Infinity;
+  for(let i=0;i<N;i++){
+    if(left<=0){ on=!on&&p.bFrac>0; left=on?meanOn*(0.4+1.2*r()):(isFinite(meanOff)?meanOff*(0.4+1.2*r()):N); per=30+90*r(); amp=p.bAmp*(0.6+0.8*r()); }
+    left--; ph+=2*Math.PI/per; const w=on?amp/2*(Math.sin(ph)+0.3*Math.sin(2*ph+1)):0;
+    icp[i]=p.icp0+0.8*Math.sin(Math.PI*i/N)+drift[i]+w+0.3*randn(r); truth[i]=on?1:0; }
+  return {icp,fs:1,truth}; }
+function nightAnalyse(raw,fs,o){ // o: thr (mmHg p-p), hi (mmHg)
+  let x=raw, dt=1/fs; if(fs>1.5){ x=blockMeans(raw,Math.round(fs)); dt=1; }
+  const n=x.length, w=s=>Math.max(1,Math.round(s/dt));
+  const filt=movAvg(x,w(10)), base=movAvg(x,w(180)), bw=Array.from(filt,(v,i)=>v-base[i]);
+  const blk=w(10), half=w(60), blocks=[];
+  for(let c=Math.floor(blk/2);c<n;c+=blk){ const a=Math.max(0,c-half), b=Math.min(n,c+half); let lo=Infinity,hi=-Infinity,zc=0;
+    for(let i=a;i<b;i++){ const v=bw[i]; if(v<lo)lo=v; if(v>hi)hi=v; if(i>a&&(bw[i-1]<0)!==(v<0)) zc++; }
+    const span=(b-a)*dt/60; blocks.push({c,pp:hi-lo,cpm:zc/2/span}); }
+  const isB=(b,thr)=>b.pp>=thr&&b.cpm>=0.5&&b.cpm<=2;
+  const flags=blocks.map(b=>isB(b,o.thr)), pctB=100*flags.filter(Boolean).length/Math.max(1,blocks.length);
+  const thrs=linspace(0.5,6,23), curve=thrs.map(t=>100*blocks.filter(b=>isB(b,t)).length/Math.max(1,blocks.length));
+  const sorted=Array.from(x).sort((a,b)=>a-b), q=f=>sorted[Math.min(sorted.length-1,Math.floor(f*sorted.length))];
+  const m=mean(x), sd=Math.sqrt(mean(Array.from(x,v=>(v-m)**2)));
+  const Bb=blocks.filter((b,i)=>flags[i]);
+  return {x,dt,bw,blocks,flags,pctB,thrs,curve,mean:m,median:q(0.5),p10:q(0.1),p90:q(0.9),sd,
+    pctHi:100*Array.from(x).filter(v=>v>o.hi).length/n,hours:n*dt/3600,
+    bAmp:Bb.length?mean(Bb.map(b=>b.pp)):null,bCpm:Bb.length?mean(Bb.map(b=>b.cpm)):null}; }
+
+// ===== 1h. Navier–Stokes in CSF: exact solutions and reductions =====
+function womersleyPipe(R,Q0,w,mu,rho,nr){ // oscillatory flow in a rigid pipe (exact NS solution); R m, Q0 m³/s amplitude
+  const a=R*Math.sqrt(w*rho/mu), xs=linspace(0,1,nr||41), Gp=8*mu*Q0/(Math.PI*R**4);
+  if(a<0.3) return {alpha:a,G:Gp,Gp,xs,prof:[0,1,2,3,4,5,6,7].map(k=>xs.map(x=>2*Q0/(Math.PI*R*R)*(1-x*x)*Math.cos(k*Math.PI/4)))};
+  const L=C.mul(cplx(-Math.SQRT1_2,Math.SQRT1_2),cplx(a,0)), J0=besJ(0,L), J1=besJ(1,L);
+  const F=C.sub(cplx(1,0),C.div(C.mul(cplx(2,0),J1),C.mul(L,J0)));
+  const G=C.div(cplx(0,Q0*w*rho),C.mul(cplx(Math.PI*R*R,0),F)), A=C.div(G,cplx(0,w*rho));
+  const shape=xs.map(x=>C.mul(A,C.sub(cplx(1,0),C.div(besJ(0,C.mul(L,cplx(x,0))),J0))));
+  const prof=[0,1,2,3,4,5,6,7].map(k=>{ const e=cplx(Math.cos(k*Math.PI/4),Math.sin(k*Math.PI/4)); return shape.map(u=>C.mul(u,e).re); });
+  return {alpha:a,G:C.abs(G),Gp,xs,prof}; }
+function ccosh(z){ const a=cexp(z), b=cexp(cplx(-z.re,-z.im)); return cplx((a.re+b.re)/2,(a.im+b.im)/2); }
+function csinh(z){ const a=cexp(z), b=cexp(cplx(-z.re,-z.im)); return cplx((a.re-b.re)/2,(a.im-b.im)/2); }
+function womersleyChannel(b,W,Q0,w,mu,rho,nr){ // oscillatory flow between parallel walls a gap 2b apart, width W (annulus unrolled)
+  const s=Math.sqrt(w*rho/mu), k=cplx(s*Math.SQRT1_2,s*Math.SQRT1_2), kb=C.mul(k,cplx(b,0));
+  const F=C.sub(cplx(1,0),C.div(C.div(csinh(kb),ccosh(kb)),kb));
+  const G=C.div(cplx(0,Q0*w*rho),C.mul(cplx(2*b*W,0),F)), A=C.div(G,cplx(0,w*rho)), xs=linspace(-1,1,nr||41);
+  const shape=xs.map(x=>C.mul(A,C.sub(cplx(1,0),C.div(ccosh(C.mul(k,cplx(x*b,0))),ccosh(kb)))));
+  const prof=[0,1,2,3,4,5,6,7].map(j=>{ const e=cplx(Math.cos(j*Math.PI/4),Math.sin(j*Math.PI/4)); return shape.map(u=>C.mul(u,e).re); });
+  return {alpha:b*s,G:C.abs(G),xs,prof}; }
+function annulusR(R1,R2,mu){ // steady Poiseuille in a concentric annulus: pressure gradient per unit flow (Pa·s/m⁴)
+  return 8*mu/(Math.PI*((R2**4-R1**4)-(R2*R2-R1*R1)**2/Math.log(R2/R1))); }
+function leakDP(p,Q){ // transmural pressure (Pa) needed to drive Q (m³/s) through the leak path
+  if(p.path==='fistula'){ const r=p.fr/1000, Lf=p.fl/1000, U=Q/(Math.PI*r*r); return 8*p.mu*Lf*Q/(Math.PI*r**4)+1.5*0.5*p.rho*U*U; }
+  const a=p.hole/2000, U=Q/(0.62*Math.PI*a*a); return 3*p.mu*Q/a**3+0.5*p.rho*U*U+p.track*133.322*60e6*Q; }
+function leakQ(p,dP){ if(dP<=0) return 0; let lo=0, hi=1e-9; while(leakDP(p,hi)<dP&&hi<1e-2) hi*=4; return bisect(Q=>leakDP(p,Q)-dP,lo,hi,70); }
+function navierStokes(p){ // p in clinical units; returns every scenario
+  const rho=1007, mu=p.mu*1e-3, w=2*Math.PI*p.HR/60, PA=133.322, out={rho,mu,w};
+  // aqueduct
+  const R=p.aqR/1000, La=p.aqL/1000, Q0=p.aqSV*1e-9*w/2, A0=Math.PI*R*R, U0=Q0/A0, wp=womersleyPipe(R,Q0,w,mu,rho,41);
+  const fr=p.sten, r1=R*Math.sqrt(fr), Ls=Math.min(p.stL/1000,La), A1=A0*fr, U1=U0/fr;
+  const aqN={visc:wp.Gp*La,unst:rho*La*w*U0,conv:0,total:wp.G*La};
+  const aqS={visc:8*mu*Q0/Math.PI*(Ls/r1**4+(La-Ls)/R**4),unst:rho*w*Q0*(1.2*Ls/A1+(La-Ls)/A0),conv:1.52*0.5*rho*(1/fr-1)**2*U0*U0};
+  aqS.total=Math.hypot(aqS.visc+aqS.conv,aqS.unst);
+  out.aq={R,Q0,U0,U1,alpha:wp.alpha,Re:rho*U0*2*R/mu,ReS:rho*U1*2*r1/mu,alphaS:r1*Math.sqrt(w*rho/mu),wp,N:aqN,S:aqS,ratio:wp.G/wp.Gp};
+  // ETV stoma (thin-membrane aperture)
+  const etv=d=>{ const a=d/2000, Q=p.etvSV*1e-9*w/2, U=Q/(Math.PI*a*a); return {a,Q,U,visc:3*mu*Q/a**3,unst:rho*w*Q/(2*a),conv:0.5*rho*(Q/(0.62*Math.PI*a*a))**2,Re:rho*U*2*a/mu,alpha:a*Math.sqrt(w*rho/mu)}; };
+  out.etv=etv(p.etvD); out.etv.total=Math.hypot(out.etv.visc+out.etv.conv,out.etv.unst); out.etvFn=etv;
+  // cervical subarachnoid space (annulus)
+  const R1=p.cord/1000, R2=p.canal/1000, b=(R2-R1)/2, Wc=Math.PI*(R1+R2), Qs=p.spSV*1e-6*w/2, As=Math.PI*(R2*R2-R1*R1), Us=Qs/As;
+  const ch=womersleyChannel(b,Wc,Qs,w,mu,rho,41), Gst=annulusR(R1,R2,mu)*Qs;
+  out.sp={R1,R2,b,Qs,Us,Re:rho*Us*4*b/mu,alpha:ch.alpha,ch,Gst,G:ch.G,ratio:ch.G/Gst};
+  // VP shunt catheter (steady Hagen–Poiseuille)
+  const Dc=1.2e-3, Qc=p.If*1e-6/60, Uc=Qc/(Math.PI*Dc*Dc/4), Rec=rho*Uc*Dc/mu;
+  out.cath={Re:Rec,alpha:Dc/2*Math.sqrt(w*rho/mu),Le:0.06*Rec*Dc,De:Rec*Math.sqrt((Dc/2)/0.05),R:128*mu*1.0/(Math.PI*Dc**4)*(1e-6/60)/PA};
+  // leak
+  const lp={path:p.path,hole:p.hole,track:p.track,fr:p.fr,fl:p.fl,mu,rho}, If=p.If*1e-6/60;
+  const dPeq=leakDP(lp,If)/PA, down=p.path==='fistula'?p.Pv:p.Pepi, Pleak=down+dPeq;
+  const geo=p.path==='fistula'?{d:2*p.fr/1000}:{d:p.hole/1000}, Ul=If/(Math.PI*geo.d*geo.d/4);
+  out.leak={dPeq,Pleak,supine:Pleak,upright:Pleak-1.007*CMH2O*p.lvl,cap10:leakQ(lp,10*PA)*60e6,Re:rho*Ul*geo.d/mu,alpha:geo.d/2*Math.sqrt(w*rho/mu),lp,
+    hole:p.path==='fistula'?null:{visc:3*mu*If/(p.hole/2000)**3/PA,track:p.track*p.If}};
+  // perivascular space (Stokes regime)
+  const gap=p.pvsW*1e-6, Upvs=p.pvsU*1e-6; out.pvs={Re:rho*Upvs*gap/mu,alpha:gap/2*Math.sqrt(w*rho/mu)};
+  // RBC sedimentation in IVH (Stokes drag)
+  const sed=n=>{ const r=2.78e-6*Math.cbrt(n), v=2*93*9.81*r*r/(9*mu)*Math.pow(1-p.hct/100,4.65); return {r,v,Re:rho*v*2*r/mu,t:(p.horn/100)/v/3600}; };
+  out.sed=sed(p.agg); out.sedFn=sed;
+  return out; }
+
 function marmClosed(t,Pb,P0,Rout,E,Iinf){ const Ib=(Pb-P0)/Rout; return (Ib+Iinf)*(Pb-P0)/(Ib+Iinf*Math.exp(-E*(Ib+Iinf)*t))+P0; }
 
 // ===== 2. Pulsatility / RAP =====
@@ -1238,7 +1658,7 @@ function poroModel(p){
 function ogataBanks(x,t,v,D){ if(t<=0) return x<=0?1:0; const s=2*Math.sqrt(D*t); const z1=(x-v*t)/s, z2=(x+v*t)/s; return 0.5*(erfc(z1)+Math.exp(-z1*z1)*erfcx(z2)); }
 function t50(x,v,D,Tmax){ if(ogataBanks(x,Tmax,v,D)<0.5) return null; return bisect(t=>ogataBanks(x,t,v,D)-0.5,1e-6,Tmax,60); }
 
-if(typeof module!=='undefined'&&module.exports) module.exports={marmarouSim,marmClosed,pulseModel,bayesRout,ursinoSim,urSteadyQ,UR,postureICP,poroModel,ogataBanks,t50,erfc};
+if(typeof module!=='undefined'&&module.exports) module.exports={marmarouSim,marmClosed,womersleyPipe,womersleyChannel,annulusR,leakDP,leakQ,navierStokes,shuntCalc,shuntEquilibrium,prxSynth,prxAnalyse,nightSynth,nightAnalyse,movAvg,blockMeans,constPressureSim,bolusSim,pviFrom,roFrom,pulseModel,bayesRout,ursinoSim,urSteadyQ,UR,postureICP,poroModel,ogataBanks,t50,erfc};
 
 // ===== Part 2 models =====
 function cplx(re,im){ return {re,im:im||0}; }
@@ -1685,7 +2105,7 @@ function plot(cv,o){
   ctx.textAlign='center'; ctx.textBaseline='top';
   ticks(xl[0],xl[1],o.xticks||(pw<300?4:7)).forEach(v=>{ const x=X(v); if(!o.underlay){ctx.beginPath(); ctx.moveTo(x,m.t); ctx.lineTo(x,m.t+ph); ctx.stroke();} ctx.fillText(o.xfmt?o.xfmt(v):ft(v),x,m.t+ph+5); });
   ctx.textAlign='right'; ctx.textBaseline='middle';
-  ticks(yl[0],yl[1],o.yticks||5).forEach(v=>{ const y=Y(v); if(!o.underlay){ctx.beginPath(); ctx.moveTo(m.l,y); ctx.lineTo(m.l+pw,y); ctx.stroke();} ctx.fillText(ft(v),m.l-6,y); });
+  ticks(yl[0],yl[1],o.yticks||5).forEach(v=>{ const y=Y(v); if(!o.underlay){ctx.beginPath(); ctx.moveTo(m.l,y); ctx.lineTo(m.l+pw,y); ctx.stroke();} ctx.fillText(o.yfmt?o.yfmt(v):ft(v),m.l-6,y); });
   if(hasY2){ ctx.textAlign='left'; ticks(yl2[0],yl2[1],o.yticks||5).forEach(v=>ctx.fillText(ft(v),m.l+pw+6,Y2(v))); ctx.save(); ctx.translate(W-10,m.t+ph/2); ctx.rotate(Math.PI/2); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(o.y2label||'',0,0); ctx.restore(); }
   ctx.strokeStyle=line; ctx.strokeRect(m.l+.5,m.t+.5,pw-1,ph-1);
   ctx.fillStyle=muted; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(o.xlabel||'',m.l+pw/2,H-1);
@@ -1727,6 +2147,13 @@ function controls(host,specs,onChange){
       sel.addEventListener('change',()=>{ state[sp.id]=sel.value; onChange(); });
       setters[sp.id]=v=>{ sel.value=v; state[sp.id]=v; };
       row.append(sel); host.append(row); return; }
+    if(sp.type==='number'){
+      const row=document.createElement('label'); row.className='ctl';
+      row.innerHTML=`<div class="ctl-top"><span>${sp.label}</span><output>${sp.unit||''}</output></div>`;
+      const inp=document.createElement('input'); inp.type='number'; inp.step=sp.step; inp.value=sp.value; if(sp.min!==undefined) inp.min=sp.min; if(sp.max!==undefined) inp.max=sp.max; state[sp.id]=sp.value;
+      inp.addEventListener('input',()=>{ const v=parseFloat(inp.value); if(isFinite(v)){ state[sp.id]=v; onChange(); } });
+      setters[sp.id]=v=>{ inp.value=v; state[sp.id]=v; };
+      row.append(inp); host.append(row); return; }
     const row=document.createElement('label'); row.className='ctl';
     const top=document.createElement('div'); top.className='ctl-top'; top.innerHTML=`<span>${sp.label}</span><output></output>`;
     const inp=document.createElement('input'); inp.type='range';
@@ -1789,6 +2216,377 @@ const renders={};
     {id:'dur',label:'Infusion duration',min:5,max:45,step:1,value:25,unit:'min'}],throttle(draw));
   presets($('pre-mar'),[['Healthy adult',{Rout:8,E:0.12,Pb:10,P0:0,If:0.35}],['iNPH profile',{Rout:22,E:0.2,Pb:11,P0:2,If:0.35}],['Atrophy',{Rout:7,E:0.08,Pb:8,P0:0,If:0.35}],['IIH',{Rout:16,E:0.25,Pb:24,P0:4,If:0.35}]],ctl);
   renders['m-mar']=draw;
+})();
+
+// ========== 1b. Constant-pressure infusion ==========
+(function(){
+  let ctl; const draw=()=>{ if(!active('m-cpi')) return; const s=ctl.state;
+    const base={Pb:s.Pb,Rout:s.Rout,E:s.E,P0:s.P0,If:s.If}; const Pss=s.Pb-s.If*s.Rout;
+    const ups=[]; for(let k=1;k<=s.n;k++) ups.push(s.Pb+k*s.step);
+    const drain=s.drain==='on'?[Math.max(s.P0+0.5,Pss-3)]:[];
+    const levels=[...drain,s.Pb,...ups];
+    const r=constPressureSim(Object.assign({},base,{levels,stepMin:s.stepMin,tauS:s.tauS,noise:s.noise,seed:3}));
+    const nb=[]; for(let k=0;k<levels.length;k++) nb.push({axis:'x',from:k*s.stepMin+0.6*s.stepMin,to:(k+1)*s.stepMin,color:css('--shade')});
+    plot($('cv-cpi-t'),{series:[{x:r.T,y:r.I,color:css('--csf'),width:1.6,label:'Servo flow (mL/min)'},{x:r.T,y:r.P,color:css('--art'),width:2.2,label:'Held pressure (mmHg, right)',y2:true}],
+      xlabel:'Time (min)',ylabel:'Flow (mL/min)',y2label:'Pressure (mmHg)',legend:'tl',bands:nb,hlines:[{y:0,color:css('--muted'),dash:[1,3]},{y:-s.If,color:css('--amb'),label:'−I_f',left:true,dash:[3,3]}],
+      ylim:(()=>{ const v=r.I.filter((x,i)=>r.T[i]%s.stepMin>0.3*s.stepMin); const lo=Math.min(-s.If-0.2,...v), hi=Math.max(...v); return [lo,hi+(hi-lo)*0.45]; })()});
+    const ps=levels.slice().sort((a,b)=>a-b), xs=linspace(Math.min(...ps)-2,Math.max(...ps)+2,50);
+    const pts=r.steps.map(x=>({x:x.P,y:x.I,color:x.drain?css('--amb'):css('--csf')}));
+    const ser=[{x:xs,y:xs.map(P=>Math.max(0,(P-Pss)/s.Rout)-s.If),color:css('--muted'),width:1.4,dash:[5,4],label:'True steady flow'}];
+    if(r.RoutEst) ser.push({x:xs,y:xs.map(P=>r.fit.a+r.fit.b*P),color:css('--csf'),width:2,label:`Fit: slope ${f(r.fit.b,3)} mL/min/mmHg`});
+    plot($('cv-cpi-ip'),{series:ser,points:pts,xlabel:'Held pressure (mmHg)',ylabel:'Steady flow (mL/min)',legend:'tl',hlines:[{y:0,color:css('--muted'),dash:[1,3]}],vlines:[{x:Pss,color:css('--amb'),dash:[2,3],label:'P_ss'}]});
+    const cum=[0]; for(let i=1;i<r.T.length;i++) cum.push(cum[i-1]+(r.I[i]+r.I[i-1])/2*(r.T[i]-r.T[i-1]));
+    const stored=r.P.map(P=>Math.log((P-s.P0)/(s.Pb-s.P0))/s.E);
+    plot($('cv-cpi-v'),{series:[{x:r.T,y:cum,color:css('--csf'),width:2.2,label:'Net volume infused'},{x:r.T,y:stored,color:css('--vio'),width:2,label:'Stored (compliance)'},{x:r.T,y:cum.map((v,i)=>v-stored[i]),color:css('--amb'),width:2,dash:[5,4],label:'Absorbed above formation'}],
+      xlabel:'Time (min)',ylabel:'Volume (mL)',legend:'tl',hlines:[{y:0,color:css('--muted'),dash:[1,3]}]});
+    const dur=levels.length*s.stepMin;
+    table($('ro-cpi'),[
+      ['R<sub>out</sub> from conductance slope',r.RoutEst?f(r.RoutEst)+' mmHg·min/mL':'–',`True ${f(s.Rout)}${r.RoutEst&&r.RoutEst>=18?' · <span class="flag">At or above the Dutch NPH threshold (18)</span>':''}`],
+      ['Outflow conductance C<sub>out</sub>',r.RoutEst?f(r.fit.b,3)+' mL/min/mmHg':'–','Ekstedt reports conductance rather than resistance'],
+      ['Resting pressure P<sub>r</sub> (zero-flow intercept)',r.Pr!==null?f(r.Pr)+' mmHg':'–',`True baseline ${f(s.Pb)} mmHg`],
+      ['CSF formation from drainage step',r.IfEst!==null?f(r.IfEst,2)+' mL/min':'No drainage step',`True ${f(s.If,2)} mL/min`],
+      ['Sagittal sinus pressure, P<sub>r</sub> − I<sub>f</sub>R<sub>out</sub>',r.PssEst!==null?f(r.PssEst)+' mmHg':'Needs the drainage step',`True ${f(Pss)} mmHg`],
+      ['Test duration',f(dur,0)+' min',`${levels.length} levels × ${s.stepMin} min; shaded windows are averaged`]]);
+  };
+  ctl=controls($('ctl-cpi'),[
+    {id:'Rout',label:'R<sub>out</sub>',min:3,max:40,step:0.5,value:10,unit:'mmHg·min/mL'},
+    {id:'E',label:'Elastance E',min:0.03,max:0.5,step:0.01,value:0.15,unit:'/mL',fmt:v=>v.toFixed(2)},
+    {id:'Pb',label:'Baseline P<sub>b</sub>',min:2,max:30,step:0.5,value:10,unit:'mmHg'},
+    {id:'P0',label:'Reference P<sub>0</sub>',min:-5,max:8,step:0.5,value:0,unit:'mmHg'},
+    {id:'If',label:'Formation I<sub>f</sub>',min:0.1,max:0.7,step:0.01,value:0.35,unit:'mL/min',fmt:v=>v.toFixed(2)},
+    {id:'step',label:'Pressure step size',min:2,max:8,step:0.5,value:4,unit:'mmHg'},
+    {id:'n',label:'Number of steps above baseline',min:2,max:8,step:1,value:5,unit:''},
+    {id:'stepMin',label:'Duration of each level',min:3,max:15,step:1,value:8,unit:'min'},
+    {id:'tauS',label:'Servo time constant τ<sub>s</sub>',min:0.05,max:1.5,step:0.05,value:0.3,unit:'min',fmt:v=>v.toFixed(2)},
+    {id:'drain',label:'Drainage level below sinus pressure',type:'select',value:'on',options:[['on','Include (measures formation)'],['off','Omit']]},
+    {id:'noise',label:'Slow fluctuation (B-waves) in flow',min:0,max:0.08,step:0.005,value:0.02,unit:'mL/min',fmt:v=>v.toFixed(3)}],throttle(draw));
+  presets($('pre-cpi'),[['Healthy adult',{Rout:8,E:0.12,Pb:10,P0:0,If:0.35}],['iNPH profile',{Rout:22,E:0.2,Pb:11,P0:2,If:0.35}],['IIH',{Rout:16,E:0.25,Pb:24,P0:4,If:0.35}],['Noisy, short steps',{noise:0.06,stepMin:4}]],ctl);
+  renders['m-cpi']=draw;
+})();
+
+// ========== 1c. Bolus injection ==========
+(function(){
+  let ctl; const draw=()=>{ if(!active('m-bolus')) return; const s=ctl.state;
+    const dV=Math.abs(s.dV)<0.05?0.5:s.dV;
+    const base={Pb:s.Pb,Rout:s.Rout,E:s.E,P0:s.P0,If:s.If};
+    const r=bolusSim(Object.assign({},base,{dV,tInj:s.tInj,tEnd:3.5}));
+    const at=t=>{ const i=r.T.findIndex(x=>x>=t); return i<0?r.Y[r.Y.length-1]:r.Y[i]; };
+    const tr=r.tp+s.tRead, Pt=at(tr);
+    const PVIt=Math.LN10/s.E, PVIc=pviFrom(dV,s.Pb,r.Pp,0), PVIr=pviFrom(dV,s.Pb,r.Pp,s.P0);
+    const Roc=roFrom(s.tRead,s.Pb,r.Pp,Pt,PVIc,0), Ror=roFrom(s.tRead,s.Pb,r.Pp,Pt,PVIr,s.P0);
+    plot($('cv-bol-t'),{series:[{x:r.T,y:r.Y,color:css('--csf'),width:2.4}],xlabel:'Time (min)',ylabel:'ICP (mmHg)',xlim:[-0.25,3.5],ylim:(()=>{ const lo=Math.min(...r.Y), hi=Math.max(...r.Y), d=Math.max(hi-lo,1); return [lo-0.2*d,hi+0.25*d]; })(),
+      hlines:[{y:s.Pb,color:css('--muted'),dash:[2,3],label:`P₀ ${f(s.Pb)} mmHg`,left:true}],vlines:[{x:tr,color:css('--muted'),dash:[2,3],label:`t = ${f(s.tRead,2)} min`}],
+      points:[{x:r.tp,y:r.Pp,color:css('--art'),label:`P_p ${f(r.Pp,1)}`},{x:tr,y:Pt,color:css('--amb'),label:`P_t ${f(Pt,1)}`}]});
+    const vmax=Math.max(4*Math.abs(dV),10), vs=linspace(-Math.max(2*Math.abs(dV),6),vmax,160);
+    plot($('cv-bol-pv'),{series:[{x:vs,y:vs.map(v=>s.P0+(s.Pb-s.P0)*Math.exp(s.E*v)),color:css('--ven'),width:2.4,label:`True (PVI ${f(PVIt)} mL)`},{x:vs,y:vs.map(v=>s.Pb*Math.pow(10,v/PVIc)),color:css('--art'),width:1.8,dash:[5,4],label:`Classic (PVI ${f(PVIc)} mL)`}],
+      xlabel:'Added volume (mL)',ylabel:'ICP (mmHg)',legend:'tl',hlines:[{y:s.P0,color:css('--muted'),dash:[1,3],label:'P_ref (true)',left:true}],
+      ylim:[Math.min(s.P0,0)-1,Math.min(80,s.P0+(s.Pb-s.P0)*Math.exp(s.E*vmax))*1.05],points:[{x:0,y:s.Pb,color:css('--ink')},{x:dV,y:r.Pp,color:css('--art'),label:'Bolus'}]});
+    const ts=linspace(0.1,3,59), rc=[],rr=[];
+    ts.forEach(t=>{ const P=at(r.tp+t); rc.push(roFrom(t,s.Pb,r.Pp,P,PVIc,0)); rr.push(roFrom(t,s.Pb,r.Pp,P,PVIr,s.P0)); });
+    plot($('cv-bol-r'),{series:[{x:ts,y:rr,color:css('--csf'),width:2.4,label:'Referred to P_ref'},{x:ts,y:rc,color:css('--art'),width:1.8,dash:[5,4],label:'Classic (P_ref = 0)'}],
+      xlabel:'Reading time t after peak (min)',ylabel:'R_out (mmHg·min/mL)',legend:'br',xlim:[0,3],hlines:[{y:s.Rout,color:css('--muted'),label:'True R_out'}],vlines:[{x:s.tRead,color:css('--muted'),dash:[2,3]}],
+      ylim:[0,Math.max(s.Rout*2,...rr.filter(isFinite),...rc.filter(isFinite).map(x=>Math.min(x,s.Rout*3)))*1.05]});
+    const pct=v=>f(100*v/25.9,0)+'% of adult normal';
+    table($('ro-bolus'),[
+      [dV>0?'Peak pressure P<sub>p</sub>':'Trough pressure P<sub>p</sub> (withdrawal)',f(r.Pp,1)+' mmHg',`Change ${dV>0?'+':''}${f(r.Pp-s.Pb,1)} mmHg for ${f(dV,1)} mL${Math.abs(dV)!==Math.abs(s.dV)?' (0 mL replaced by 0.5 mL)':''}`],
+      ['PVI, classic (P<sub>ref</sub> = 0)',f(PVIc,1)+' mL',Math.abs(PVIc-PVIt)>0.1*PVIt?`<span class="flag">${PVIc>PVIt?'Overestimates':'Underestimates'} true PVI by ${f(100*(PVIc-PVIt)/PVIt,0)}%</span>`:pct(PVIc)],
+      ['PVI, referred to P<sub>ref</sub>',f(PVIr,1)+' mL',`True ${f(PVIt,1)} mL (ln 10 / E) · ${pct(PVIr)}`],
+      ['R<sub>out</sub>, classic, at t = '+f(s.tRead,2)+' min',Roc?f(Roc,1)+' mmHg·min/mL':'–',`True ${f(s.Rout,1)}`],
+      ['R<sub>out</sub>, referred to P<sub>ref</sub>',Ror?f(Ror,1)+' mmHg·min/mL':'–',Ror&&Math.abs(Ror-s.Rout)>0.05*s.Rout?'Residual error: absorption during the injection itself':'Recovers the true value'],
+      ['Compliance at baseline',f(1/(s.E*(s.Pb-s.P0)),2)+' mL/mmHg',`Pressure rise for a further 1 mL: ${f((s.Pb-s.P0)*(Math.exp(s.E)-1),2)} mmHg`]]);
+  };
+  ctl=controls($('ctl-bolus'),[
+    {id:'dV',label:'Bolus volume ΔV (negative = withdrawal)',min:-4,max:6,step:0.5,value:2,unit:'mL',fmt:v=>v.toFixed(1)},
+    {id:'tInj',label:'Injection time',min:0.5,max:10,step:0.5,value:1,unit:'s',fmt:v=>v.toFixed(1)},
+    {id:'tRead',label:'Reading time t after peak',min:0.25,max:3,step:0.05,value:1,unit:'min',fmt:v=>v.toFixed(2)},
+    {id:'Pb',label:'Baseline P<sub>0</sub>',min:2,max:35,step:0.5,value:10,unit:'mmHg'},
+    {id:'E',label:'Elastance E',min:0.03,max:0.5,step:0.005,value:0.09,unit:'/mL',fmt:v=>v.toFixed(3)},
+    {id:'P0',label:'True reference pressure P<sub>ref</sub>',min:-5,max:8,step:0.5,value:0,unit:'mmHg'},
+    {id:'Rout',label:'R<sub>out</sub>',min:3,max:40,step:0.5,value:10,unit:'mmHg·min/mL'},
+    {id:'If',label:'Formation I<sub>f</sub>',min:0.1,max:0.7,step:0.01,value:0.35,unit:'mL/min',fmt:v=>v.toFixed(2)}],throttle(draw));
+  presets($('pre-bolus'),[['Normal adult',{dV:2,E:0.09,Pb:10,P0:0,Rout:10}],['Reduced reserve',{dV:1,E:0.25,Pb:20,P0:0,Rout:12}],['Compliant (hydrocephalic infant)',{dV:2,E:0.08,Pb:12,P0:0,Rout:14}],['Withdrawal test',{dV:-2}],['Reference pressure 4 mmHg',{P0:4}],['Slow injection (10 s)',{tInj:10}]],ctl);
+  renders['m-bolus']=draw;
+})();
+
+// ========== 1d. PVI calculator ==========
+(function(){
+  let ctl; const NORM=25.9, NSD=3.7;
+  const draw=()=>{ if(!active('m-pvi')) return; const s=ctl.state;
+    const xb=s.P0-s.Pref, xp=s.Pp-s.Pref; const errs=[];
+    if(!(xb>0)) errs.push('Baseline pressure must be above the reference pressure.');
+    if(!(xp>0)) errs.push('Peak pressure must be above the reference pressure.');
+    if(s.dV===0) errs.push('Bolus volume cannot be zero.');
+    if(xb>0&&xp>0&&s.dV!==0&&Math.sign(s.Pp-s.P0)!==Math.sign(s.dV)) errs.push(s.dV>0?'For an injection, the peak must be above baseline.':'For a withdrawal, the trough must be below baseline.');
+    if(errs.length){ $('ro-pvi').innerHTML='<table class="ro"><tbody>'+errs.map(e=>`<tr><th scope="row"><span class="flag">Check inputs</span></th><td class="n">${e}</td></tr>`).join('')+'</tbody></table>'; ['cv-pvi-pv','cv-pvi-c'].forEach(id=>setup($(id))); return; }
+    const PVI=pviFrom(s.dV,s.P0,s.Pp,s.Pref), E=Math.LN10/PVI, C0=PVI/(Math.LN10*xb), PVR=xb*(Math.pow(10,1/PVI)-1);
+    const Vthr=s.Pthr>s.Pref?PVI*Math.log10((s.Pthr-s.Pref)/xb):null;
+    const Ro=(s.Pt!==s.P0)?roFrom(s.tRo,s.P0,s.Pp,s.Pt,PVI,s.Pref):null;
+    const vmax=Math.max(Vthr!==null?Vthr*1.25:0,Math.abs(s.dV)*2,10), vs=linspace(-Math.min(15,PVI*0.6),vmax,160);
+    plot($('cv-pvi-pv'),{series:[{x:vs,y:vs.map(v=>s.Pref+xb*Math.pow(10,v/PVI)),color:css('--ven'),width:2.4,label:`This patient (PVI ${f(PVI)} mL)`},{x:vs,y:vs.map(v=>s.Pref+xb*Math.pow(10,v/NORM)),color:css('--muted'),width:1.4,dash:[5,4],label:'Adult normal (25.9 mL)'}],
+      xlabel:'Volume added from baseline (mL)',ylabel:'ICP (mmHg)',legend:'br',ylim:[Math.min(s.Pref,0)-1,Math.max(s.Pthr*1.3,s.Pp*1.1)],
+      hlines:[{y:s.Pthr,color:css('--art'),label:`Threshold ${s.Pthr} mmHg`}],bands:Vthr>0?[{axis:'x',from:0,to:Vthr,color:css('--shade'),label:`Reserve ${f(Vthr,1)} mL`}]:[],
+      points:[{x:0,y:s.P0,color:css('--ink')},{x:s.dV,y:s.Pp,color:css('--art'),label:'Measured'}]});
+    const Ps=linspace(s.Pref+1,Math.max(40,s.Pthr+10),120);
+    plot($('cv-pvi-c'),{series:[{x:Ps,y:Ps.map(P=>PVI/(Math.LN10*(P-s.Pref))),color:css('--vio'),width:2.4,label:'This PVI'},{x:Ps,y:Ps.map(P=>NORM/(Math.LN10*(P-s.Pref))),color:css('--muted'),width:1.4,dash:[5,4],label:'Adult normal'}],
+      xlabel:'ICP (mmHg)',ylabel:'Compliance (mL/mmHg)',legend:'tr',ylim:[0,Math.min(5,Math.max(PVI,NORM)/(Math.LN10*Math.max(1,s.P0-s.Pref))*1.6)],vlines:[{x:s.P0,color:css('--muted'),dash:[2,3],label:'Baseline'}]});
+    const rel=PVI/NORM, z=(PVI-NORM)/NSD;
+    const interp=rel<0.8?'<span class="flag">Below 80% of adult normal: reduced compensatory reserve</span>':(PVI>NORM+2*NSD?'Above the normal range: unusually compliant (e.g. hydrocephalic infants, chronic shunt malfunction)':'Within the adult normal range');
+    table($('ro-pvi'),[
+      ['Pressure–volume index (PVI)',f(PVI,1)+' mL',`${f(100*rel,0)}% of adult normal 25.9 ± 3.7 mL (z = ${f(z,1)}) · ${interp}`],
+      ['Elastance coefficient E',f(E,3)+' /mL','ln 10 / PVI'],
+      ['Compliance at baseline',f(C0,2)+' mL/mmHg',`At the threshold ${s.Pthr} mmHg: ${s.Pthr>s.Pref?f(PVI/(Math.LN10*(s.Pthr-s.Pref)),2):'–'} mL/mmHg`],
+      ['Pressure rise for a further 1 mL (PVR)',f(PVR,2)+' mmHg','At current baseline'],
+      [`Reserve volume to ${s.Pthr} mmHg`,Vthr===null?'–':(Vthr>0?f(Vthr,1)+' mL':'<span class="flag">Already above threshold</span>'),'Volume that would take pressure from baseline to the threshold'],
+      ['Outflow resistance R<sub>out</sub>',Ro?f(Ro,1)+' mmHg·min/mL':'–',Ro?`From P<sub>t</sub> = ${s.Pt} mmHg at ${s.tRo} min after the peak; bolus normal 2.8 ± 0.8 (Shapiro 1980)`:'Enter a P<sub>t</sub> between baseline and peak']]);
+  };
+  ctl=controls($('ctl-pvi'),[
+    {id:'dV',label:'Bolus volume ΔV',type:'number',step:0.1,value:2,unit:'mL'},
+    {id:'P0',label:'Baseline pressure P<sub>0</sub>',type:'number',step:0.1,value:10,unit:'mmHg'},
+    {id:'Pp',label:'Peak (or trough) pressure P<sub>p</sub>',type:'number',step:0.1,value:12,unit:'mmHg'},
+    {id:'Pref',label:'Reference pressure P<sub>ref</sub>',type:'number',step:0.1,value:0,unit:'mmHg'},
+    {id:'tRo',label:'Time after peak for P<sub>t</sub> (optional)',type:'number',step:0.1,min:0.1,value:1,unit:'min'},
+    {id:'Pt',label:'Pressure P<sub>t</sub> at that time (optional)',type:'number',step:0.1,value:11.5,unit:'mmHg'},
+    {id:'Pthr',label:'Pressure threshold for reserve volume',type:'number',step:1,value:20,unit:'mmHg'}],throttle(draw));
+  presets($('pre-pvi'),[['Normal adult',{dV:2,P0:10,Pp:11.9,Pref:0,tRo:1,Pt:11.3,Pthr:20}],['Reduced reserve',{dV:1,P0:18,Pp:22.5,Pref:0,tRo:1,Pt:21,Pthr:20}],['Withdrawal',{dV:-2,P0:12,Pp:10.1,Pref:0,tRo:1,Pt:10.8,Pthr:20}],['Hydrocephalic infant',{dV:2,P0:12,Pp:13.8,Pref:0,tRo:1,Pt:13.5,Pthr:20}]],ctl);
+  renders['m-pvi']=draw;
+})();
+
+// ---------- file loading for recorded signals (read locally, never uploaded) ----------
+function parseTable(text){ const lines=text.split(/\r?\n/).filter(l=>l.trim().length); if(lines.length<2) return null;
+  const delim=[',','\t',';'].map(d=>[d,lines[0].split(d).length]).sort((a,b)=>b[1]-a[1])[0][0];
+  const cells=l=>l.split(delim).map(v=>v.trim().replace(/^"|"$/g,''));
+  const first=cells(lines[0]), hasHeader=first.some(v=>v!==''&&isNaN(+v));
+  const names=hasHeader?first:first.map((_,i)=>'col'+(i+1)), cols=names.map(()=>[]);
+  for(let i=hasHeader?1:0;i<lines.length;i++){ const v=cells(lines[i]); names.forEach((_,j)=>cols[j].push(parseFloat(v[j]))); }
+  return {names,cols}; }
+function findCol(names,res){ for(const re of res){ const i=names.findIndex(n=>re.test(n)); if(i>=0) return i; } return -1; }
+function fillGaps(a){ let last=a.find(isFinite); if(last===undefined) return null; return a.map(v=>isFinite(v)?(last=v):last); }
+function fsFromTime(t){ const d=[]; for(let i=1;i<Math.min(t.length,4001);i++){ const x=t[i]-t[i-1]; if(isFinite(x)&&x>0) d.push(x); } if(!d.length) return null; d.sort((a,b)=>a-b); return 1/d[Math.floor(d.length/2)]; }
+function fileLoader(host,onFile){ const row=document.createElement('div'); row.className='ctl';
+  row.innerHTML='<div class="ctl-top"><span>Your recording (CSV or TSV, read only in this browser)</span></div>';
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='.csv,.tsv,.txt';
+  const br=document.createElement('div'); br.className='btnrow'; const demo=document.createElement('button'); demo.type='button'; demo.textContent='Use demo data'; br.append(demo);
+  const st=document.createElement('div'); st.className='filestat'; st.textContent='Showing demo data.';
+  const say=(msg,err)=>{ st.textContent=msg; st.classList.toggle('err',!!err); };
+  inp.addEventListener('change',()=>{ const fl=inp.files[0]; if(!fl) return; say('Reading '+fl.name+'…'); const rd=new FileReader(); rd.onload=()=>onFile(parseTable(String(rd.result)),fl.name,say); rd.onerror=()=>say('Could not read the file.',true); rd.readAsText(fl); });
+  demo.addEventListener('click',()=>{ inp.value=''; onFile(null,null,say); });
+  row.append(inp,br,st); host.append(row); }
+function decimate(x,y,max){ const k=Math.max(1,Math.ceil(x.length/max)); const X=[],Y=[]; for(let i=0;i<x.length;i+=k){ X.push(x[i]); Y.push(y[i]); } return [X,Y]; }
+function mergeBands(flags,c2t,half,color){ const out=[]; let s=null; flags.forEach((v,i)=>{ if(v&&s===null) s=i; if((!v||i===flags.length-1)&&s!==null){ const e=v?i:i-1; out.push({axis:'x',from:c2t(s)-half,to:c2t(e)+half,color}); s=null; } }); return out; }
+
+// ========== 1e. Shunt equation ==========
+(function(){
+  let ctl; const draw=()=>{ if(!active('m-shunt')) return; const s=ctl.state;
+    const sp={H:s.H,Popen:s.Popen,Pgu:s.Pgu,Rv:s.Rv,D:s.D,L:s.L,mu:s.mu,Pabd:s.Pabd,If:s.If,Rout:s.Rout,Pss:s.Pss};
+    const r=shuntCalc(sp,s.P,s.theta), eq=shuntEquilibrium(sp,s.theta);
+    const sci=v=>Math.abs(v)<0.01&&v!==0?v.toExponential(1):f(v,2);
+    const items=[{label:'ICP at catheter tip',value:s.P,color:css('--csf')},{label:'Siphon ρgH sin θ',value:r.siph,color:css('--ven')},{label:'Intra-abdominal pressure',value:-s.Pabd,color:css('--amb')},
+      {label:'Valve opening pressure',value:-r.Pop,color:css('--art')},{label:'Valve resistive loss',value:-r.valveLoss,color:css('--vio')},{label:'Catheter loss (Poiseuille)',value:-r.cathLoss,color:css('--vio')},{label:'Velocity head ½ρv²',value:-r.kin,color:css('--muted')}];
+    hbars($('cv-sh-b'),items.map(i=>Object.assign({text:i.label.startsWith('Velocity')?sci(i.value):f(i.value,1)},i)),{xlabel:'mmHg (positive drives flow towards the peritoneum)',ref:0});
+    const Ps=linspace(-10,40,101), qs=th=>Ps.map(P=>shuntCalc(sp,P,th).Q);
+    const ser=[{x:Ps,y:qs(0),color:css('--ven'),width:2,label:'Supine'},{x:Ps,y:qs(90),color:css('--art'),width:2,label:'Upright'}];
+    if(s.theta>0&&s.theta<90) ser.push({x:Ps,y:qs(s.theta),color:css('--csf'),width:2.4,label:`${s.theta}° head-up`});
+    plot($('cv-sh-q'),{series:ser,xlabel:'ICP at catheter tip (mmHg)',ylabel:'Shunt flow (mL/min)',legend:'tl',xlim:[-10,40],ylim:[0,Math.max(2,...qs(90))*1.05],
+      hlines:[{y:s.If,color:css('--muted'),dash:[5,4],label:'Formation'}],vlines:[{x:s.P,color:css('--muted'),dash:[2,3]}],points:[{x:s.P,y:r.Q,color:css('--ink')}]});
+    const ths=linspace(0,90,46), alt=Object.assign({},sp,{Pgu:s.Pgu>0?0:20});
+    plot($('cv-sh-e'),{series:[{x:ths,y:ths.map(t=>shuntEquilibrium(sp,t).P),color:css('--csf'),width:2.4,label:s.Pgu>0?`With gravitational unit ${s.Pgu} cmH₂O`:'Current valve'},
+      {x:ths,y:ths.map(t=>shuntEquilibrium(alt,t).P),color:css('--amb'),width:1.8,dash:[5,4],label:s.Pgu>0?'Without gravitational unit':'Adding a 20 cmH₂O gravitational unit'},
+      {x:ths,y:ths.map(t=>shuntEquilibrium(sp,t,true).P),color:css('--muted'),width:1.4,dash:[2,3],label:'No shunt'}],
+      xlabel:'Head-up angle θ (°)',ylabel:'Equilibrium ICP (mmHg)',legend:'bl',xlim:[0,90],hlines:[{y:0,color:css('--muted'),dash:[1,3]}],vlines:[{x:s.theta,color:css('--muted'),dash:[2,3]}],points:[{x:s.theta,y:eq.P,color:css('--ink')}]});
+    const eqFlag=eq.P<-5?'<span class="flag">Overdrainage range: negative ICP, risk of slit ventricles, low-pressure headache and subdural collections</span>':(eq.P>15?'<span class="flag">Underdrainage: equilibrium ICP above 15 mmHg</span>':'Within a physiological range');
+    table($('ro-shunt'),[
+      [`Shunt flow at ICP ${s.P} mmHg, ${s.theta}° head-up`,f(r.Q,2)+' mL/min',r.drive<=0?`Valve closed: driving pressure ${f(-r.drive,1)} mmHg short of opening`:`${f(r.Q/s.If,1)} × CSF formation (would lower ICP until flow matches formation)`],
+      ['Siphon term ρgH sin θ',f(r.siph,1)+' mmHg',`${f(r.siph/CMH2O,0)} cmH₂O against a valve opening pressure of ${f(r.Pop/CMH2O,0)} cmH₂O at this angle`],
+      ['Catheter resistance (Hagen–Poiseuille)',f(r.Rc,2)+' mmHg·min/mL',`Total with valve ${f(r.Rt,2)}. Proportional to L/r⁴: halving the bore raises it 16-fold`],
+      ['Mean velocity and Reynolds number',`${f(r.v*1000,1)} mm/s · Re ${f(r.Re,0)}`,r.Re<2000?'Laminar flow, so Poiseuille applies':'<span class="flag">Turbulent</span>'],
+      ['Velocity head ½ρv²',sci(r.kin)+' mmHg','Negligible: Bernoulli reduces to a hydrostatic balance plus viscous losses'],
+      ['Equilibrium ICP at this posture',f(eq.P,1)+' mmHg',eqFlag],
+      ['Drainage at equilibrium',`Shunt ${f(eq.Q,2)} · absorption ${f(eq.Iabs,2)} mL/min`,eq.Iabs<0.01?'All CSF leaves through the shunt: physiological absorption has stopped':(eq.Q<0.01?'Valve closed at equilibrium: all CSF leaves by arachnoid absorption':'Shared between shunt and arachnoid absorption')]]);
+  };
+  ctl=controls($('ctl-shunt'),[
+    {id:'P',label:'ICP at catheter tip (for flow calculation)',min:-5,max:40,step:0.5,value:15,unit:'mmHg'},
+    {id:'theta',label:'Head-up angle θ',min:0,max:90,step:1,value:0,unit:'°'},
+    {id:'H',label:'Ventricle-to-peritoneum height when upright',min:20,max:70,step:1,value:45,unit:'cm'},
+    {id:'Popen',label:'Valve opening pressure',min:0,max:20,step:0.5,value:10,unit:'cmH₂O'},
+    {id:'Pgu',label:'Gravitational unit (added × sin θ)',min:0,max:40,step:5,value:0,unit:'cmH₂O'},
+    {id:'Rv',label:'Valve resistance',min:0.5,max:10,step:0.1,value:2,unit:'mmHg·min/mL',fmt:v=>v.toFixed(1)},
+    {id:'D',label:'Catheter internal diameter',min:0.6,max:1.6,step:0.05,value:1.2,unit:'mm',fmt:v=>v.toFixed(2)},
+    {id:'L',label:'Total catheter length',min:20,max:140,step:5,value:100,unit:'cm'},
+    {id:'mu',label:'CSF viscosity μ',min:0.7,max:1.2,step:0.05,value:0.8,unit:'mPa·s',fmt:v=>v.toFixed(2)},
+    {id:'Pabd',label:'Intra-abdominal pressure',min:0,max:25,step:0.5,value:5,unit:'mmHg'},
+    {id:'If',label:'CSF formation I<sub>f</sub>',min:0.1,max:0.7,step:0.01,value:0.35,unit:'mL/min',fmt:v=>v.toFixed(2)},
+    {id:'Rout',label:'Physiological R<sub>out</sub>',min:4,max:40,step:0.5,value:14,unit:'mmHg·min/mL'},
+    {id:'Pss',label:'Sagittal sinus pressure',min:2,max:15,step:0.5,value:6,unit:'mmHg'}],throttle(draw));
+  presets($('pre-shunt'),[['Supine',{theta:0,Pgu:0}],['Sitting upright',{theta:90,Pgu:0}],['Upright + gravitational unit 20',{theta:90,Pgu:20}],['Raised abdominal pressure',{theta:0,Pabd:15}],['Narrow, long catheter',{D:0.8,L:130}],['Low-pressure valve (5 cmH₂O)',{Popen:5}]],ctl);
+  renders['m-shunt']=draw;
+})();
+
+// ========== 1f. Pressure reactivity (PRx) ==========
+(function(){
+  let ctl, upload=null, cacheKey='', cache=null;
+  const draw=()=>{ if(!active('m-prx')) return; const s=ctl.state;
+    let d; if(upload) d=upload; else { const k=[s.hours,s.map0,s.drift,s.LLA,s.ULA,s.integrity,s.icp0,s.noise].join(); if(k!==cacheKey){ cache=prxSynth({hours:s.hours,map0:s.map0,drift:s.drift,LLA:s.LLA,ULA:s.ULA,integrity:s.integrity,icp0:s.icp0,noise:s.noise,seed:11}); cacheKey=k; } d=cache; }
+    const avg=+s.avg, a=prxAnalyse(d.abp,d.icp,d.fs,{avgSec:avg,win:s.win,step:Math.max(1,Math.round(60/avg)),binW:5});
+    if(a.prx.length<3){ $('ro-prx').innerHTML='<table class="ro"><tbody><tr><th scope="row"><span class="flag">Recording too short</span></th><td class="n">Need at least a few windows of '+s.win+' × '+avg+' s.</td></tr></tbody></table>'; return; }
+    const [tx,ta]=decimate(a.tm,a.A,3000), [,ti]=decimate(a.tm,a.I,3000);
+    plot($('cv-prx-t'),{series:[{x:tx,y:ta,color:css('--art'),width:1.4,label:'ABP'},{x:tx,y:ti,color:css('--csf'),width:1.4,label:'ICP (right)',y2:true}],xlabel:'Time (h)',ylabel:'ABP (mmHg)',y2label:'ICP (mmHg)',legend:'tl'});
+    plot($('cv-prx-p'),{series:[{x:a.t,y:a.prx,color:css('--vio'),width:1.6}],xlabel:'Time (h)',ylabel:'PRx',ylim:[-1,1],
+      bands:[{axis:'y',from:0.25,to:1,color:'rgba(179,38,62,.10)'}],hlines:[{y:0.25,color:css('--art'),label:'0.25',dash:[4,3]},{y:0.05,color:css('--amb'),label:'0.05',dash:[4,3]},{y:0,color:css('--muted'),dash:[1,3]}]});
+    const cs=a.use.length?linspace(a.use[0].c-2.5,a.use[a.use.length-1].c+2.5,80):[];
+    const ser=a.fit?[{x:cs,y:cs.map(c=>a.fit[0]+a.fit[1]*c+a.fit[2]*c*c),color:css('--csf'),width:2.2,label:'Weighted parabola'}]:[];
+    plot($('cv-prx-c'),{series:ser,xlabel:'CPP (mmHg)',ylabel:'PRx',ylim:[-1,1],legend:'bl',
+      points:a.B.map(b=>({x:b.c,y:b.m,color:a.use.includes(b)?css('--vio'):css('--muted'),r:3.5})),
+      overlay:(ctx,X,Y)=>{ ctx.strokeStyle=css('--vio'); ctx.lineWidth=1.2; a.use.forEach(b=>{ ctx.beginPath(); ctx.moveTo(X(b.c),Y(b.m-b.se)); ctx.lineTo(X(b.c),Y(b.m+b.se)); ctx.stroke(); }); },
+      hlines:[{y:0,color:css('--muted'),dash:[1,3]}],vlines:a.opt?[{x:a.opt,color:css('--csf'),label:'CPPopt '+f(a.opt,0)}]:[]});
+    const tot=a.B.reduce((x,b)=>x+b.n,0);
+    hbars($('cv-prx-h'),a.B.map(b=>({label:`${f(b.c-2.5,0)}–${f(b.c+2.5,0)}`,value:100*b.n/tot,color:a.use.includes(b)?css('--vio'):css('--muted'),text:f(100*b.n/tot,0)+'%'})),{xlabel:'% of windows',min:0});
+    const P=a.prx.filter(isFinite), mC=mean(a.C), pct=th=>100*P.filter(v=>v>th).length/P.length;
+    table($('ro-prx'),[
+      ['Source',upload?upload.name:'Demo (synthetic)',`${f(a.tm[a.tm.length-1],1)} h · ${a.prx.length} PRx windows of ${s.win} × ${avg} s`],
+      ['Mean PRx',f(mean(P),2),mean(P)>0.25?'<span class="flag">Above 0.25: associated with mortality</span>':(mean(P)>0.05?'<span class="flag">Above 0.05: associated with unfavourable outcome</span>':'Reactive on average')],
+      ['Time with PRx above 0.25 / above 0.05',`${f(pct(0.25),0)}% / ${f(pct(0.05),0)}%`,'Sorrentino et al. 2012 thresholds'],
+      ['Mean ABP / ICP / CPP',`${f(mean(a.A),0)} / ${f(mean(a.I),1)} / ${f(mC,0)} mmHg`,mean(a.I)>22?'<span class="flag">ICP above 22 mmHg</span>':(mC<70?'CPP below 70 mmHg':'')],
+      ['CPPopt',a.opt?f(a.opt,0)+' mmHg':'Not identifiable',a.opt?`Mean CPP is ${mC>=a.opt?'+':''}${f(mC-a.opt,0)} mmHg from CPPopt`:'No U-shaped PRx–CPP curve within the observed range (pressure-passive throughout, or too little CPP variation)']]);
+  };
+  ctl=controls($('ctl-prx'),[
+    {id:'avg',label:'Averaging period',type:'select',value:'10',options:[['5','5 s (Czosnyka 1997)'],['6','6 s (Steiner 2002)'],['10','10 s']]},
+    {id:'win',label:'PRx window (number of averages)',min:20,max:60,step:1,value:30,unit:''},
+    {id:'hours',label:'Demo: duration',min:2,max:12,step:1,value:6,unit:'h'},
+    {id:'map0',label:'Demo: mean arterial pressure',min:60,max:120,step:1,value:90,unit:'mmHg'},
+    {id:'drift',label:'Demo: slow ABP drift (±)',min:0,max:30,step:1,value:20,unit:'mmHg'},
+    {id:'icp0',label:'Demo: mean ICP',min:5,max:40,step:1,value:15,unit:'mmHg'},
+    {id:'LLA',label:'Demo: lower limit of autoregulation (CPP)',min:40,max:85,step:1,value:65,unit:'mmHg'},
+    {id:'ULA',label:'Demo: upper limit (CPP)',min:75,max:130,step:1,value:95,unit:'mmHg'},
+    {id:'integrity',label:'Demo: autoregulation integrity',min:0,max:1,step:0.05,value:1,unit:'',fmt:v=>v.toFixed(2)},
+    {id:'noise',label:'Demo: intrinsic ICP slow waves',min:0,max:3,step:0.1,value:0.8,unit:'mmHg',fmt:v=>v.toFixed(1)},
+    {id:'fs',label:'Sampling rate of your file if it has no time column',type:'number',step:1,min:0.1,value:1,unit:'Hz'}],throttle(draw));
+  fileLoader($('ctl-prx'),(tab,name,say)=>{ if(!tab){ upload=null; say('Showing demo data.'); draw(); return; }
+    const ia=findCol(tab.names,[/\babp\b/i,/abp/i,/art/i,/\bmap\b/i,/\bbp\b/i]), ii=findCol(tab.names,[/icp/i]), it=findCol(tab.names,[/^time/i,/^t$/i,/sec/i]);
+    if(ia<0||ii<0){ say('Need an arterial pressure column (ABP, ART, MAP or BP) and an ICP column. Found: '+tab.names.join(', '),true); return; }
+    const abp=fillGaps(tab.cols[ia]), icp=fillGaps(tab.cols[ii]); if(!abp||!icp){ say('No numeric values found.',true); return; }
+    const fs=(it>=0&&fsFromTime(tab.cols[it]))||ctl.state.fs;
+    upload={abp,icp,fs,name}; say(`${name}: ${abp.length} samples at ${f(fs,fs<10?2:0)} Hz (${tab.names[ia]}, ${tab.names[ii]}). Demo sliders are ignored.`); draw(); });
+  presets($('pre-prx'),[['Intact (U-shaped curve)',{integrity:1,drift:20,icp0:15}],['Partly impaired',{integrity:0.5}],['Pressure-passive',{integrity:0}],['Little CPP variation',{drift:4}],['Raised ICP 30',{icp0:30}]],ctl);
+  renders['m-prx']=draw;
+})();
+
+// ========== 1g. Overnight ICP and B-waves ==========
+(function(){
+  let ctl, upload=null, cacheKey='', cache=null;
+  const draw=()=>{ if(!active('m-night')) return; const s=ctl.state;
+    let d; if(upload) d=upload; else { const k=[s.hours,s.icp0,s.bAmp,s.bFrac].join(); if(k!==cacheKey){ cache=nightSynth({hours:s.hours,icp0:s.icp0,bAmp:s.bAmp,bFrac:s.bFrac,seed:5}); cacheKey=k; } d=cache; }
+    if(1/d.fs>10){ $('ro-night').innerHTML='<table class="ro"><tbody><tr><th scope="row"><span class="flag">Sampling too slow</span></th><td class="n">One value every '+f(1/d.fs,0)+' s cannot resolve B-waves (periods 30–120 s).</td></tr></tbody></table>'; return; }
+    const r=nightAnalyse(d.icp,d.fs,{thr:s.thr,hi:s.hi}), dt=r.dt, hrs=i=>i*dt/3600;
+    const k10=Math.max(1,Math.round(10/dt)), m10=blockMeans(Array.from(r.x),k10), t10=m10.map((_,i)=>(i+0.5)*k10*dt/3600);
+    const bands=mergeBands(r.flags,i=>hrs(r.blocks[i].c),5/3600,'rgba(106,78,158,.30)');
+    plot($('cv-ng-t'),{series:[{x:t10,y:m10,color:css('--csf'),width:1.3}],xlabel:'Time (h)',ylabel:'ICP (mmHg)',bands,xlim:[0,r.hours],hlines:[{y:s.hi,color:css('--art'),dash:[4,3],label:s.hi+' mmHg'}]});
+    const z0=Math.max(0,Math.min(s.zoom,r.hours-0.5)), i0=Math.floor(z0*3600/dt), i1=Math.min(r.x.length,Math.floor((z0+0.5)*3600/dt));
+    const zx=[],zy=[],zb=[]; for(let i=i0;i<i1;i++){ zx.push(hrs(i)*60); zy.push(r.x[i]); zb.push(r.bw[i]); }
+    plot($('cv-ng-z'),{series:[{x:zx,y:zy,color:css('--csf'),width:1.2,label:'ICP'},{x:zx,y:zb,color:css('--vio'),width:1.6,label:'B-wave band (right)',y2:true}],xlabel:'Time (min)',ylabel:'ICP (mmHg)',y2label:'Band-passed (mmHg)',legend:'tl',xlim:[z0*60,z0*60+30],
+      bands:mergeBands(r.flags,i=>hrs(r.blocks[i].c)*60,5/60,'rgba(106,78,158,.30)').filter(b=>b.to>z0*60&&b.from<z0*60+30)});
+    const lo=Math.floor(r.p10-3), hi=Math.ceil(r.p90+3), edges=linspace(lo,hi,Math.max(8,Math.min(60,(hi-lo)*2))+1), cnt=new Array(edges.length-1).fill(0);
+    r.x.forEach(v=>{ const j=Math.floor((v-lo)/(edges[1]-edges[0])); if(j>=0&&j<cnt.length) cnt[j]++; });
+    const hx=[],hy=[]; cnt.forEach((c,j)=>{ const p=100*c/r.x.length; hx.push(edges[j],edges[j+1]); hy.push(p,p); });
+    plot($('cv-ng-h'),{series:[{x:hx,y:hy,color:css('--csf'),width:2}],xlabel:'ICP (mmHg)',ylabel:'% of time',ylim:[0,Math.max(...hy)*1.15],vlines:[{x:r.mean,color:css('--art'),label:'Mean '+f(r.mean,1)},{x:r.median,color:css('--amb'),dash:[2,3]}]});
+    plot($('cv-ng-c'),{series:[{x:r.thrs,y:r.curve,color:css('--vio'),width:2.4}],xlabel:'Amplitude threshold (mmHg, peak-to-peak)',ylabel:'% B-waves',ylim:[0,100],xlim:[0.5,6],vlines:[{x:s.thr,color:css('--muted'),dash:[2,3]}],points:[{x:s.thr,y:r.pctB,color:css('--vio'),label:f(r.pctB,0)+'%'}]});
+    const truth=!upload&&d.truth?100*d.truth.reduce((x,y)=>x+y,0)/d.truth.length:null;
+    table($('ro-night'),[
+      ['Source',upload?upload.name:'Demo (synthetic)',`${f(r.hours,1)} h analysed at ${dt<1.5?'1-s':f(dt,0)+'-s'} resolution`],
+      ['Mean ICP',f(r.mean,1)+' mmHg',`Median ${f(r.median,1)} · SD ${f(r.sd,1)} · 10th–90th centile ${f(r.p10,1)}–${f(r.p90,1)} mmHg`],
+      [`Time with ICP above ${s.hi} mmHg`,f(r.pctHi,1)+'%',''],
+      [`% B-waves (amplitude ≥ ${s.thr} mmHg)`,f(r.pctB,1)+'%',truth!==null?`Demo ground truth: ${f(truth,1)}% (windows overlapping the edges of a wave train add a little)`:'Percentage of total monitoring time'],
+      ['Mean B-wave amplitude and frequency',r.bAmp!==null?`${f(r.bAmp,1)} mmHg · ${f(r.bCpm,2)} /min`:'–','Peak-to-peak in the band-passed signal; zero-crossing frequency']]);
+  };
+  ctl=controls($('ctl-night'),[
+    {id:'thr',label:'B-wave amplitude threshold',min:0.5,max:6,step:0.25,value:2,unit:'mmHg',fmt:v=>v.toFixed(2)},
+    {id:'hi',label:'High-ICP threshold',min:5,max:30,step:1,value:15,unit:'mmHg'},
+    {id:'zoom',label:'Zoom window start',min:0,max:11.5,step:0.25,value:2,unit:'h',fmt:v=>v.toFixed(2)},
+    {id:'hours',label:'Demo: recording length',min:4,max:12,step:1,value:8,unit:'h'},
+    {id:'icp0',label:'Demo: baseline ICP',min:0,max:30,step:0.5,value:10,unit:'mmHg'},
+    {id:'bAmp',label:'Demo: B-wave amplitude',min:0,max:10,step:0.5,value:4,unit:'mmHg'},
+    {id:'bFrac',label:'Demo: B-wave time fraction',min:0,max:0.8,step:0.05,value:0.3,unit:'',fmt:v=>(100*v).toFixed(0)+'%'},
+    {id:'fs',label:'Sampling rate of your file if it has no time column',type:'number',step:1,min:0.05,value:1,unit:'Hz'}],throttle(draw));
+  fileLoader($('ctl-night'),(tab,name,say)=>{ if(!tab){ upload=null; say('Showing demo data.'); draw(); return; }
+    const ii=findCol(tab.names,[/icp/i]), it=findCol(tab.names,[/^time/i,/^t$/i,/sec/i]);
+    if(ii<0){ say('Need a column named ICP. Found: '+tab.names.join(', '),true); return; }
+    const icp=fillGaps(tab.cols[ii]); if(!icp){ say('No numeric ICP values found.',true); return; }
+    const fs=(it>=0&&fsFromTime(tab.cols[it]))||ctl.state.fs;
+    upload={icp,fs,name}; say(`${name}: ${icp.length} samples at ${f(fs,fs<10?2:0)} Hz (${f(icp.length/fs/3600,1)} h). Demo sliders are ignored.`); draw(); });
+  presets($('pre-night'),[['Few B-waves',{icp0:8,bAmp:2,bFrac:0.05}],['iNPH-like',{icp0:11,bAmp:5,bFrac:0.4}],['Raised ICP',{icp0:24,bAmp:4,bFrac:0.2}],['Threshold 0.5 mmHg',{thr:0.5}],['Threshold 5 mmHg',{thr:5}]],ctl);
+  renders['m-night']=draw;
+})();
+
+// ========== 1h. Navier–Stokes in CSF ==========
+(function(){
+  let ctl; const draw=()=>{ if(!active('m-ns')) return; const s=ctl.state, PA=133.322;
+    const n=navierStokes(Object.assign({},s,{HR:s.HR}));
+    const lg=v=>Math.log10(Math.max(v,1e-9)), pw=v=>{ const e=Math.round(v); return Math.abs(v-e)<1e-6?(e===0?'1':e===1?'10':'10^'+e):''; };
+    const sites=[['Perivascular space',n.pvs,css('--vio')],['Shunt catheter',n.cath,css('--muted')],[s.path==='fistula'?'CSF–venous fistula':'Dural hole leak',n.leak,css('--amb')],
+      ['Aqueduct',n.aq,css('--csf')],...(s.sten<0.999?[['Aqueduct stenosis',{Re:n.aq.ReS,alpha:n.aq.alphaS},css('--art')]]:[]),['ETV stoma',n.etv,css('--ven')],['Cervical SAS',n.sp,css('--ink')]];
+    plot($('cv-ns-map'),{series:sites.map(([lab,o,c])=>({x:[Math.max(-1.95,Math.min(1.45,lg(o.alpha)))],y:[Math.max(-3.9,Math.min(3.9,lg(o.Re)))],dots:true,r:5.5,color:c,label:lab})),xlabel:'Womersley number α (pulsatility)',ylabel:'Peak Reynolds number Re',xlim:[-2,1.5],ylim:[-4,4.5],xfmt:pw,yfmt:pw,legend:'tl',
+      bands:[{axis:'y',from:-4,to:0,color:css('--shade'),label:'Stokes (creeping) flow: Re < 1, inertia negligible'},{axis:'x',from:-2,to:0,color:'rgba(106,78,158,.08)'}],
+      hlines:[{y:Math.log10(2000),color:css('--art'),dash:[4,3],label:'Pipe turbulence ≈ 2000'}],vlines:[{x:0,color:css('--muted'),dash:[2,3],label:'α = 1'}],
+      });
+    const aq=n.aq, cm=v=>v*100, U0p=2*aq.U0;
+    plot($('cv-ns-aq'),{series:[...aq.wp.prof.map((pr,k)=>({x:aq.wp.xs,y:pr.map(cm),color:css('--csf'),width:k===0?2.4:1.2,alpha:k===0?1:0.55})),{x:aq.wp.xs,y:aq.wp.xs.map(x=>cm(U0p*(1-x*x))),color:css('--art'),width:1.6,dash:[5,4]}],
+      xlabel:'Radial position r/R (0 = axis, 1 = wall)',ylabel:'Velocity (cm/s)',xlim:[0,1],hlines:[{y:0,color:css('--muted'),dash:[1,3]}]});
+    const N=aq.N, S=aq.S, sten=s.sten<0.999;
+    hbars($('cv-ns-st'),[{label:'Normal: viscous',value:N.visc,color:css('--vio')},{label:'Normal: unsteady ∂u/∂t',value:N.unst,color:css('--ven')},{label:'Normal: convective u·∇u',value:N.conv,color:css('--art'),text:'0 (uniform tube)'},
+      {label:'Stenosis: viscous',value:sten?S.visc:N.visc,color:css('--vio')},{label:'Stenosis: unsteady',value:sten?S.unst:N.unst,color:css('--ven')},{label:'Stenosis: convective',value:sten?S.conv:0,color:css('--art')}].map(i=>Object.assign({text:f(i.value,i.value<10?2:0)},i)),{xlabel:'Pressure-drop amplitude over the aqueduct (Pa); 133 Pa = 1 mmHg',min:0});
+    const ds=linspace(1,10,60), ev=ds.map(d=>n.etvFn(d));
+    plot($('cv-ns-etv'),{series:[{x:ds,y:ev.map(e=>lg(e.visc)),color:css('--vio'),width:2,label:'Viscous (Sampson)'},{x:ds,y:ev.map(e=>lg(e.conv)),color:css('--art'),width:2,label:'Convective (orifice)'},{x:ds,y:ev.map(e=>lg(e.unst)),color:css('--ven'),width:2,label:'Unsteady (inertance)'}],
+      xlabel:'Stoma diameter (mm)',ylabel:'ΔP amplitude (Pa)',yfmt:pw,legend:'tr',xlim:[1,10],vlines:[{x:s.etvD,color:css('--muted'),dash:[2,3]}]});
+    const sp=n.sp;
+    plot($('cv-ns-sp'),{series:[...sp.ch.prof.map((pr,k)=>({x:sp.ch.xs,y:pr.map(cm),color:css('--csf'),width:k===0?2.4:1.2,alpha:k===0?1:0.55})),{x:sp.ch.xs,y:sp.ch.xs.map(x=>cm(1.5*sp.Us*(1-x*x))),color:css('--art'),width:1.6,dash:[5,4]}],
+      xlabel:'Position across the gap (cord −1, dura +1)',ylabel:'Velocity (cm/s)',xlim:[-1,1],hlines:[{y:0,color:css('--muted'),dash:[1,3]}]});
+    const dPs=linspace(0.02,20,120), qs=dPs.map(d=>leakQ(n.leak.lp,d*PA)*60e6);
+    plot($('cv-ns-lk'),{series:[{x:dPs,y:qs.map(lg),color:css('--amb'),width:2.4}],xlabel:'Transmural pressure, CSF minus '+(s.path==='fistula'?'vein':'epidural')+' (mmHg)',ylabel:'Leak flow (mL/min)',yfmt:pw,xlim:[0,20],
+      hlines:[{y:lg(s.If),color:css('--muted'),dash:[5,4],label:'Formation '+s.If+' mL/min',left:true}],points:[{x:Math.max(0.02,n.leak.dPeq),y:lg(s.If),color:css('--ink')}]});
+    const ag=linspace(0,3,61), st=ag.map(e=>n.sedFn(Math.pow(10,e)).t);
+    plot($('cv-ns-sd'),{series:[{x:ag,y:st.map(lg),color:css('--art'),width:2.4}],xlabel:'Cells per aggregate (rouleaux)',ylabel:'Time to settle (h)',xfmt:pw,yfmt:pw,xlim:[0,3],vlines:[{x:lg(s.agg),color:css('--muted'),dash:[2,3]}],hlines:[{y:0,color:css('--muted'),dash:[1,3],label:'1 h',left:true}]});
+    const pa=v=>v<133.322?f(v,v<1?3:1)+' Pa':f(v/PA,2)+' mmHg', sci=v=>v<0.01?v.toExponential(1):f(v,v<10?2:0);
+    const rows=[
+      ['Aqueduct',sci(aq.Re),f(aq.alpha,1),'Womersley (unsteady, linear); convective term zero in a uniform tube',`ΔP amplitude ${pa(N.total)} · ${f(aq.ratio,2)} × quasi-steady Poiseuille · peak mean velocity ${f(cm(aq.U0),1)} cm/s`],
+      ['Aqueduct stenosis',sci(aq.ReS),f(aq.alphaS,1),sten?'Convective (Bernoulli-like) loss at the narrowing (Young–Tsai)':'No stenosis selected',sten?`ΔP amplitude ${pa(S.total)} · convective ${f(100*S.conv/(S.visc+S.conv+S.unst),0)}% of the terms`:'–'],
+      ['ETV stoma',sci(n.etv.Re),f(n.etv.alpha,1),'Sampson aperture flow + orifice inertia',`ΔP amplitude ${pa(n.etv.total)} at ${s.etvD} mm · dominant: ${['viscous','convective','unsteady'][[n.etv.visc,n.etv.conv,n.etv.unst].indexOf(Math.max(n.etv.visc,n.etv.conv,n.etv.unst))]}`],
+      ['Cervical subarachnoid space',sci(sp.Re),f(sp.alpha,1),'Oscillatory channel (exact): blunt profile, near-wall peaks',`Pressure-gradient amplitude ${f(sp.G,1)} Pa/m (${f(sp.ratio,1)} × steady annular Poiseuille) · ${f(sp.G*0.1/PA,3)} mmHg per 10 cm`],
+      ['Shunt catheter (1.2 mm, 1 m)',sci(n.cath.Re),'steady','Hagen–Poiseuille (exact)',`R ${f(n.cath.R,2)} mmHg·min/mL · entrance length ${f(n.cath.Le*1000,1)} mm · Dean number ${f(n.cath.De,2)} (coil curvature negligible)`],
+      [s.path==='fistula'?'CSF–venous fistula':'Dural hole leak',sci(n.leak.Re),f(n.leak.alpha,2),s.path==='fistula'?'Poiseuille through the fistula + entrance loss':'Sampson aperture + orifice + tissue track',`Carries ${f(n.leak.cap10,1)} mL/min at 10 mmHg (${f(n.leak.cap10/s.If,0)} × formation) · pressure to pass formation ${sci(n.leak.dPeq)} mmHg`],
+      ['ICP with this leak',' ',' ','Hydrostatics (u = 0): ∇p = ρg',`Supine ${f(n.leak.supine,1)} mmHg · upright ${f(n.leak.upright,1)} mmHg at the foramen of Monro${n.leak.upright<-5?' · <span class="flag">orthostatic intracranial hypotension</span>':''}`],
+      ['Perivascular space',sci(n.pvs.Re),f(n.pvs.alpha,2),'Stokes flow (inertia negligible)','Viscous forces dominate completely; flow follows the instantaneous driving pressure'],
+      ['Red-cell settling (IVH)',sci(n.sed.Re),'–','Stokes drag on a sphere',`${f(n.sed.v*3.6e6,1)} mm/h · ${f(n.sed.t,n.sed.t<1?2:1)} h to settle ${s.horn} cm (aggregates of ${f(s.agg,0)})`]];
+    $('ro-ns').innerHTML='<table class="ro mx"><thead><tr><th scope="col">Site</th><th scope="col">Re (peak)</th><th scope="col">α</th><th scope="col">Navier–Stokes reduction</th><th scope="col">Result</th></tr></thead><tbody>'+
+      rows.map(r=>`<tr><th scope="row">${r[0]}</th><td class="v">${r[1]}</td><td class="v">${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('')+'</tbody></table>';
+  };
+  ctl=controls($('ctl-ns'),[
+    {id:'HR',label:'Heart rate',min:40,max:140,step:1,value:70,unit:'/min'},
+    {id:'mu',label:'CSF viscosity μ',min:0.7,max:1.2,step:0.05,value:0.8,unit:'mPa·s',fmt:v=>v.toFixed(2)},
+    {id:'aqR',label:'Aqueduct: radius',min:0.3,max:2,step:0.05,value:0.8,unit:'mm',fmt:v=>v.toFixed(2)},
+    {id:'aqL',label:'Aqueduct: length',min:8,max:20,step:0.5,value:15,unit:'mm'},
+    {id:'aqSV',label:'Aqueduct: stroke volume',min:5,max:300,step:5,value:40,unit:'µL'},
+    {id:'sten',label:'Aqueduct: area remaining at stenosis',min:0.05,max:1,step:0.01,value:1,unit:'',fmt:v=>(100*v).toFixed(0)+'%'},
+    {id:'stL',label:'Aqueduct: stenosis length',min:1,max:10,step:0.5,value:3,unit:'mm'},
+    {id:'etvD',label:'ETV: stoma diameter',min:1,max:10,step:0.25,value:4,unit:'mm',fmt:v=>v.toFixed(2)},
+    {id:'etvSV',label:'ETV: stroke volume through stoma',min:10,max:500,step:10,value:150,unit:'µL'},
+    {id:'canal',label:'Spine: dural radius (cervical)',min:5,max:12,step:0.25,value:8,unit:'mm',fmt:v=>v.toFixed(2)},
+    {id:'cord',label:'Spine: cord radius',min:2,max:7,step:0.25,value:4.5,unit:'mm',fmt:v=>v.toFixed(2)},
+    {id:'spSV',label:'Spine: stroke volume at C2',min:0.1,max:2,step:0.05,value:0.8,unit:'mL',fmt:v=>v.toFixed(2)},
+    {id:'path',label:'Leak: path',type:'select',value:'hole',options:[['hole','Dural tear (hole into epidural space)'],['fistula','CSF–venous fistula']]},
+    {id:'hole',label:'Leak: dural hole diameter',min:0.05,max:5,step:0.05,value:1,unit:'mm',fmt:v=>v.toFixed(2)},
+    {id:'track',label:'Leak: epidural tissue track resistance',min:0,max:40,step:0.5,value:0,unit:'mmHg·min/mL'},
+    {id:'fr',label:'Leak: fistula radius',min:0.02,max:0.6,step:0.01,value:0.2,unit:'mm',fmt:v=>v.toFixed(2)},
+    {id:'fl',label:'Leak: fistula length',min:2,max:30,step:1,value:10,unit:'mm'},
+    {id:'Pepi',label:'Leak: epidural pressure',min:-5,max:10,step:0.5,value:0,unit:'mmHg'},
+    {id:'Pv',label:'Leak: venous pressure (fistula)',min:0,max:15,step:0.5,value:5,unit:'mmHg'},
+    {id:'lvl',label:'Leak: height of Monro above leak (upright)',min:5,max:60,step:1,value:40,unit:'cm'},
+    {id:'If',label:'CSF formation',min:0.1,max:0.7,step:0.01,value:0.35,unit:'mL/min',fmt:v=>v.toFixed(2)},
+    {id:'pvsW',label:'Perivascular gap',min:5,max:200,step:5,value:50,unit:'µm'},
+    {id:'pvsU',label:'Perivascular velocity',min:1,max:100,step:1,value:20,unit:'µm/s'},
+    {id:'agg',label:'IVH: cells per aggregate',min:1,max:1000,log:true,value:1,unit:'',fmt:v=>v.toFixed(0)},
+    {id:'hct',label:'IVH: haematocrit of ventricular fluid',min:0,max:30,step:0.5,value:2,unit:'%',fmt:v=>v.toFixed(1)},
+    {id:'horn',label:'IVH: depth of occipital horn fluid',min:0.5,max:4,step:0.1,value:2,unit:'cm',fmt:v=>v.toFixed(1)}],throttle(draw));
+  presets($('pre-ns'),[['Normal',{sten:1,etvD:4,canal:8,cord:4.5,path:'hole',hole:1,track:0,agg:1}],['Aqueductal stenosis (10% area)',{sten:0.1}],['Small ETV stoma (2 mm)',{etvD:2}],['Narrow cervical SAS (Chiari-like)',{canal:6,cord:4.5}],['Dural tear 1 mm',{path:'hole',hole:1,track:0}],['Tear sealed by tissue (track 20)',{path:'hole',track:20}],['CSF–venous fistula',{path:'fistula',fr:0.2,fl:10}],['IVH with rouleaux (100 cells)',{agg:100,hct:5}]],ctl);
+  renders['m-ns']=draw;
 })();
 
 // ========== 2. Pulsatility ==========
