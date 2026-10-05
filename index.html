@@ -84,6 +84,9 @@ table.ro th{font-weight:500;width:34%;}
 table.ro td.v{font-variant-numeric:tabular-nums;color:var(--csf);font-weight:600;white-space:nowrap;width:18%;}
 table.ro td.n{color:var(--muted);}
 .flag{color:var(--art);}
+table.ro.mx th,table.ro.mx td{width:auto;white-space:nowrap;}
+table.ro.mx thead th{color:var(--muted);font-size:.8rem;font-weight:600;}
+table.ro.mx td{font-variant-numeric:tabular-nums;}
 .notes{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;margin-top:26px;}
 .notes h3{font-size:1.12rem;margin:0 0 .5rem;}
 .notes p,.notes li{max-width:72ch;}
@@ -121,7 +124,7 @@ ol.refs em{color:var(--ink);font-style:italic;}
 <nav class="side" aria-label="Models">
   <div class="brand">
     <h1>CSF dynamics, modelled</h1>
-    <p>Twenty-five interactive models in three groups: foundations, clinical models and special scenarios.</p>
+    <p>Twenty-six interactive models in four groups: foundations, clinical models, special scenarios and mission profiles.</p>
   </div>
   <ul class="navlist" id="navlist"></ul>
   <div class="foot">Teaching models with simplified physiology. Parameter values are representative, not patient-specific.</div>
@@ -1032,6 +1035,53 @@ ol.refs em{color:var(--ink);font-style:italic;}
     </div>
   </div>
 </section>
+<section class="model" id="m-orbit" data-group="Mission profiles" data-dim="ISS" data-name="Launch to orbit" hidden>
+  <header>
+    <h2>An ISS astronaut from the launch pad to orbit</h2>
+    <p>One astronaut's day of launch and the months that follow. Walking out to the rocket, the astronaut is upright under 1 g along the body axis (G<sub>z</sub>). In the capsule they lie on their back, legs raised. During ascent the load runs chest to back (G<sub>x</sub>) and builds to 3–4 g. At engine cut-off, about 9 minutes after lift-off, the load falls to zero. Over the following weeks the ventricles slowly enlarge and the subarachnoid space over the vertex narrows. Once in orbit, ICP and the CSF volumes are the same whether the astronaut is "vertical" or "upside down": with no gravity vector there is no hydrostatic column, so orientation in the cabin has no effect.</p>
+  </header>
+  <div class="work">
+    <div class="controls" id="ctl-orbit"><h3>Presets</h3><div class="btnrow" id="pre-orbit"></div><h3>Parameters</h3></div>
+    <div class="figs">
+      <figure class="wide"><figcaption>Launch day: ICP at the foramen of Monro, the hydrostatic pressure difference across the head and sensed load (right axis)</figcaption><canvas id="cv-orb-day"></canvas></figure>
+      <figure><figcaption>Ascent in detail: ICP at the frontal pole, foramen of Monro and occiput</figcaption><canvas id="cv-orb-asc"></canvas></figure>
+      <figure><figcaption>ICP at the foramen of Monro by phase, posture and orientation</figcaption><canvas id="cv-orb-bar"></canvas></figure>
+      <figure class="wide"><figcaption>Months in orbit: ventricular and convexity subarachnoid CSF volume (% of preflight supine value) and ICP (right axis)</figcaption><canvas id="cv-orb-mis"></canvas></figure>
+    </div>
+  </div>
+  <div class="readout" id="ro-orbit"></div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class="eq">\[P_{ss}=P_{ss,0}+k_x\,(G_x-1)-\rho_b\,g_0\,G_z\,L_z^{*}-\rho_b\,g_0\,G_x\,d_x+\Delta P_{legs},\qquad \mathrm{ICP}=P_{ss}+I_fR_{out}\]</div>
+      <div class="eq">\[\Delta P_{head}=\rho_{csf}\,g_0\sqrt{(G_zH_z)^2+(G_xH_x)^2},\qquad \Delta V_{ic}=\int_{\mathrm{ICP}_{sup}}^{\mathrm{ICP}}\min\!\Big(C_{max},\frac{1}{E\,P}\Big)\,dP\]</div>
+      <div class="eq">\[V_{vent}=V_{v0}+\varphi\,\Delta V_{ic}+f_vV_{v0}\,c(t),\qquad V_{SAS}=V_{s0}+(1-\varphi)\,\Delta V_{ic}-k_S\big(B+f_vV_{v0}\big)\,c(t),\qquad c(t)=1-e^{-t/\tau}\]</div>
+      <p>Load is resolved into body axes. G<sub>z</sub> acts head to foot (positive when the head is up). G<sub>x</sub> acts chest to back, as when lying supine in the seat, so the seat-back angle β splits the rocket's sensed load into G<sub>z</sub> = n sin β and G<sub>x</sub> = n cos β. Sinus pressure follows the venous column between the right atrium and the head. When the head is above the heart, jugular collapse caps that column at L<sub>v</sub>; head down, the full column L<sub>z</sub> applies. The thoracic-loading term k<sub>x</sub>(G<sub>x</sub> − 1) is the change relative to lying supine on Earth. Removing the weight of the chest and abdomen lowers central venous pressure: Lawley et al. measured a fall from 7 to 4 mmHg on entering 0 g from supine, with ICP falling from 17 to 13 mmHg. Higher G<sub>x</sub> raises it. Inside the skull, CSF has its own hydrostatic gradient across the head height H in the direction of the load, so frontal and occipital pressures diverge during ascent while ICP at the foramen of Monro moves much less.</p>
+      <p>Volume changes on the scale of minutes come from the exponential pressure–volume curve: CSF moves between the cranium and the spinal sac, and a fraction φ of the change is in the ventricles. Adaptation over weeks follows the spaceflight MRI findings: the ventricles enlarge by a fraction f<sub>v</sub>, and brain tissue expands by B mL and shifts upwards. A fraction k<sub>S</sub> of that combined expansion is taken from the convexity subarachnoid space, which narrows at the vertex. An optional rise in R<sub>out</sub> represents the reduced CSF absorption proposed by Van Ombergen et al.</p>
+      <p><strong>"Vertical" vs "upside down" in orbit.</strong> On the ISS, the station and the crew fall freely together, so the only loads left are residual quasi-steady accelerations of the order of micro-g (adjustable). The pressure difference down a 12 cm head at 1 µg is about 10<sup>−5</sup> mmHg, eight orders of magnitude smaller than pulse pressure, and it reverses sign but not size when the astronaut turns over. The inverted posture on Earth is shown for contrast. There, head-down loading fills the jugular veins and the full venous column raises ICP.</p>
+      <p><strong>Cabin pressure.</strong> The capsule and the ISS are held near sea-level pressure (about 101 kPa) from the pad to orbit, and the model assumes this throughout. ICP is a gauge pressure referenced to the surrounding atmosphere. A uniform change in cabin pressure is transmitted equally through the incompressible tissues, blood and CSF, so it would not change ICP or CSF volumes at steady state. Only a rapid change (decompression) or a change in gas composition matters. Cabin CO<sub>2</sub> on the ISS has ranged from about 1 to 9 mmHg, against about 0.3 mmHg on Earth. That is a plausible additional cerebral vasodilator not included here.</p>
+      <p class="caveat">The ascent profiles are approximate and illustrative, not flight data. Thoracic venous loading under G<sub>x</sub>, the legs-up effect, the ventricular and subarachnoid partition φ, and k<sub>S</sub> are assumptions with plausible defaults. Pressures are steady state; cerebral autoregulation, venous valves, the anti-g straining response, brain sag under G<sub>x</sub>, optic nerve sheath compartments and the 24-hour cycle (see the "Spaceflight" tab) are not modelled. Long-duration ICP has not been measured invasively in orbit.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Lawley JS, Petersen LG, Howden EJ, et al. <em>Effect of gravity and microgravity on intracranial pressure.</em> J Physiol 2017;595:2115–2127. doi:10.1113/JP273557</li>
+        <li>Marshall-Goebel K, Laurie SS, Alferova IV, et al. <em>Assessment of jugular venous blood flow stasis and thrombosis during spaceflight.</em> JAMA Netw Open 2019;2:e1915011. doi:10.1001/jamanetworkopen.2019.15011</li>
+        <li>Alperin N, Hushek SG, Lee SH, Sivaramakrishnan A, Lichtor T. <em>MRI study of cerebral blood flow and CSF flow dynamics in an upright posture: the effect of posture on the intracranial compliance and pressure.</em> Acta Neurochir Suppl 2005;95:177–181. doi:10.1007/3-211-32318-x_38</li>
+        <li>Alperin N, Lee SH, Bagci AM. <em>MRI measurements of intracranial pressure in the upright posture: the effect of the hydrostatic pressure gradient.</em> J Magn Reson Imaging 2015;42:1158–1163. doi:10.1002/jmri.24882</li>
+        <li>Alperin N, Burman R, Lee SH. <em>Role of the spinal canal compliance in regulating posture-related cerebrospinal fluid hydrodynamics in humans.</em> J Magn Reson Imaging 2021;54:206–214. doi:10.1002/jmri.27505</li>
+        <li>Roberts DR, Albrecht MH, Collins HR, et al. <em>Effects of spaceflight on astronaut brain structure as indicated on MRI.</em> N Engl J Med 2017;377:1746–1753. doi:10.1056/NEJMoa1705129</li>
+        <li>Van Ombergen A, Jillings S, Jeurissen B, et al. <em>Brain ventricular volume changes induced by long-duration spaceflight.</em> PNAS 2019;116:10531–10536. doi:10.1073/pnas.1820354116</li>
+        <li>Kramer LA, Hasan KM, Stenger MB, et al. <em>Intracranial effects of microgravity: a prospective longitudinal MRI study.</em> Radiology 2020;295:640–648. doi:10.1148/radiol.2020191413</li>
+        <li>McGregor HR, Hupfeld KE, Pasternak O, et al. <em>Impacts of spaceflight experience on human brain structure.</em> Sci Rep 2023;13:7878. doi:10.1038/s41598-023-33331-8</li>
+        <li>Barisano G, Sepehrband F, Collins HR, et al. <em>The effect of prolonged spaceflight on cerebrospinal fluid and perivascular spaces of astronauts and cosmonauts.</em> PNAS 2022;119:e2120439119. doi:10.1073/pnas.2120439119</li>
+        <li>Carter KJ, Laurie SS, Warthen KG, et al. <em>Normal variation in brain volumetrics, CSF dynamics, and ocular structures from magnetic resonance images of healthy participants over two years.</em> J Appl Physiol 2025;139:1–13. doi:10.1152/japplphysiol.00596.2024</li>
+        <li>Marmarou A, Shulman K, Rosende RM. <em>A nonlinear analysis of the cerebrospinal fluid system and intracranial pressure dynamics.</em> J Neurosurg 1978;48:332–344. doi:10.3171/jns.1978.48.3.0332</li>
+        <li>Law J, Van Baalen M, Foy M, et al. <em>Relationship between carbon dioxide levels and reported headaches on the International Space Station.</em> J Occup Environ Med 2014;56:477–483. doi:10.1097/JOM.0000000000000158</li>
+      </ol>
+    </div>
+  </div>
+</section>
 
 <footer class="credit bottom">Conceived, directed and curated by <strong>Dr G Narenthiran</strong> BSc(MedSci)(Hons) MB ChB MRCS(Ed.) FEBNS FRCS(SN), <a href="mailto:g_narenthiran@hotmail.com">g_narenthiran@hotmail.com</a><br>© G Narenthiran. All rights reserved.</footer>
 </main>
@@ -1559,6 +1609,50 @@ function coughSim(p){ // valve-like tonsillar block: resistance higher for cauda
 function syrinxGrowth(drive,Cy,months,Gin){ // syrinx volume: dV/dt = Gin*(drive - V/Cy), mL, months
   const t=linspace(0,months,121); return t.map(m=>Math.max(0,drive*Cy*(1-Math.exp(-Gin*m/Cy)))); }
 if(typeof module!=='undefined'&&module.exports) Object.assign(module.exports,{makeValve,valveLoop,valvePatient,negph,syrinxPulse,coughSim,syrinxGrowth});
+
+// ===== Part 6: launch to orbit (ISS) =====
+var ASCENT={ // sensed load along the vehicle axis (g) against seconds from lift-off; approximate, illustrative profiles
+  soyuz:{name:'Soyuz MS',ins:528,pts:[[0,1.3],[60,1.8],[117,3.4],[118,1.6],[286,3.6],[287,1.1],[527,3.7],[528,0]]},
+  dragon:{name:'Falcon 9 / Crew Dragon',ins:527,pts:[[0,1.3],[55,1.8],[70,1.6],[150,3.2],[151,0],[158,0],[160,0.8],[480,2.7],[526,3.4],[527,0]]}};
+function ascentLoad(veh,t){ const v=ASCENT[veh], q=v.pts; if(t<0) return 1; if(t>=v.ins) return 0;
+  for(let i=1;i<q.length;i++) if(t<=q[i][0]){ const [t0,a0]=q[i-1],[t1,a1]=q[i]; return a0+(a1-a0)*(t-t0)/(t1-t0); } return 0; }
+function orbitICP(p,Gz,Gx,legs){ // Gz: footward load along the body axis (g, negative = head down); Gx: chest-to-back load (g)
+  const kv=1.05*CMH2O, kc=1.007*CMH2O; // mmHg per cm of blood and of CSF at 1 g
+  const colZ=Gz>=0?Math.min(p.Lz,p.Lv):p.Lz; // jugular collapse caps the column only when the head is above the heart
+  const Pss=p.Pss0+p.kx*(Gx-1)-kv*Gz*colZ-kv*Gx*p.dx+(legs?p.legs:0);
+  const P=Math.max(Pss,p.Pss0-25)+p.If*p.Rout;
+  const gx=kc*Gx*p.Hx/2, gz=kc*Gz*p.Hz/2;
+  return {P,Pss,front:P-gx,occ:P+gx,vertex:P-gz,fm:P+gz,dH:kc*Math.hypot(Gz*p.Hz,Gx*p.Hx),wBrain:(1.040-1.007)*p.Vbrain*Math.hypot(Gz,Gx)}; }
+function icVol(P,Pref,E,Cmax){ // intracranial CSF volume change (mL) between Pref and P on the exponential P–V curve (P0 = 0)
+  const C=x=>Math.min(Cmax,1/(E*Math.max(x,1e-9))); const n=200, h=(P-Pref)/n; let s=0;
+  for(let i=0;i<n;i++) s+=h*(C(Pref+h*i)+C(Pref+h*(i+1)))/2; return s; }
+function orbitVols(p,P,days){ // ventricular and convexity SAS CSF (mL) for ICP P after a number of days in weightlessness
+  const c=days>0?1-Math.exp(-days/p.tau):0; const dV=icVol(P,p.Pref,p.E,p.Cmax);
+  const dVent=p.fv*p.Vv0*c, Vv=p.Vv0+p.phiV*dV+dVent;
+  const Vs=Math.max(0.05*p.Vs0,p.Vs0+(1-p.phiV)*dV-p.kS*(p.B*c+dVent));
+  return {Vv,Vs,dV,c}; }
+function orbitChronicICP(p,days){ const c=days>0?1-Math.exp(-days/p.tau):0; return orbitICP(p,0,0,false).P+p.If*p.Rout*p.rR*c; }
+function launchDay(p){ // minutes from lift-off, −300 to +60
+  const v=ASCENT[p.veh], b=p.beta*Math.PI/180, out={t:[],P:[],n:[],dH:[],Vv:[],Vs:[]};
+  const push=(tm,Gz,Gx,legs,n)=>{ const r=orbitICP(p,Gz,Gx,legs), V=orbitVols(p,r.P,0); out.t.push(tm); out.P.push(r.P); out.n.push(n); out.dH.push(r.dH); out.Vv.push(V.Vv); out.Vs.push(V.Vs); };
+  for(let tm=-300;tm<-180;tm+=2) push(tm,1,0,false,1);
+  for(let tm=-180;tm<0;tm+=2) push(tm,Math.sin(b),Math.cos(b),true,1);
+  for(let ts=0;ts<=v.ins+20;ts+=2){ const n=ts<v.ins?p.scale*ascentLoad(p.veh,ts):0; push(ts/60,n*Math.sin(b),n*Math.cos(b),n>0,n); }
+  for(let tm=(v.ins+22)/60;tm<=60;tm+=1) push(tm,0,0,false,0);
+  return out; }
+function ascentDetail(p){ const v=ASCENT[p.veh], b=p.beta*Math.PI/180, o={t:[],n:[],P:[],front:[],occ:[]};
+  for(let ts=-30;ts<=v.ins+60;ts+=1){ const n=ts<0?1:(ts<v.ins?p.scale*ascentLoad(p.veh,ts):0); const r=orbitICP(p,n*Math.sin(b),n*Math.cos(b),n>0);
+    o.t.push(ts); o.n.push(n); o.P.push(r.P); o.front.push(r.front); o.occ.push(r.occ); }
+  return o; }
+function orbitStates(p){ const b=p.beta*Math.PI/180; let nmax=0; for(let t=0;t<ASCENT[p.veh].ins;t+=0.5) nmax=Math.max(nmax,p.scale*ascentLoad(p.veh,t));
+  const res=p.resid*1e-6;
+  const S=[['Ground, standing',1,0,false,0],['Ground, supine',0,1,false,0],['On the pad, supine seat, legs up',Math.sin(b),Math.cos(b),true,0],
+    [`Ascent, peak load (${nmax.toFixed(1)} g)`,nmax*Math.sin(b),nmax*Math.cos(b),true,0],['Orbit, day 1, "vertical" in cabin',res,0,false,1],['Orbit, day 1, "upside down" in cabin',-res,0,false,1],
+    [`Orbit, day ${p.days}, either orientation`,res,0,false,p.days],['Contrast: Earth, inverted (head down)',-1,0,false,0]];
+  return S.map(([name,Gz,Gx,legs,days])=>{ const r=orbitICP(p,Gz,Gx,legs); const P=days>1?orbitChronicICP(p,days)+(r.P-orbitICP(p,0,0,false).P):r.P; const V=orbitVols(p,P,days);
+    return Object.assign({name,Gz,Gx,days},r,{P},V); }); }
+function orbitMission(p){ const d=linspace(0,p.days,121); return {d,P:d.map(x=>orbitChronicICP(p,x)),V:d.map(x=>orbitVols(p,orbitChronicICP(p,x),x))}; }
+if(typeof module!=='undefined'&&module.exports) Object.assign(module.exports,{ASCENT,ascentLoad,orbitICP,icVol,orbitVols,orbitChronicICP,launchDay,ascentDetail,orbitStates,orbitMission});
 
 </script>
 <script>
@@ -2627,6 +2721,59 @@ const logT=v=>{ const h=Math.pow(10,v); if(h<1) return f(h*60,0)+' min'; if(h<48
     {id:'HR',label:'Heart rate',min:45,max:120,step:1,value:70,unit:'/min'}],throttle(draw));
   presets($('pre-syrinx'),[['Normal',{pat:1,Ct:0}],['Chiari I, moderate',{pat:0.45,Ct:0.3}],['Chiari I, severe',{pat:0.2,Ct:0.5}],['After decompression',{pat:0.9,Ct:0.05}],['Arachnoiditis, no piston',{pat:0.25,Ct:0}]],ctl);
   renders['m-syrinx']=draw;
+})();
+
+// ================= PART 6 =================
+// ========== M1. Launch to orbit ==========
+(function(){
+  let ctl; const draw=()=>{ if(!active('m-orbit')) return; const s=ctl.state;
+    const p={veh:s.veh,scale:s.scale,beta:s.beta,Pss0:7,kx:s.kx,Lz:30,Lv:12,dx:s.dx,legs:s.legs,If:0.35,Rout:s.Rout,Hx:15,Hz:12,Vbrain:1300,E:0.15,Cmax:1,
+      Vv0:s.Vv0,Vs0:s.Vs0,phiV:0.2,fv:s.fv/100,B:s.B,kS:s.kS,tau:s.tau,rR:s.rR/100,days:Math.round(s.days),resid:s.resid};
+    p.Pref=orbitICP(p,0,1,false).P;
+    const ins=ASCENT[p.veh].ins/60, clear='rgba(0,0,0,0)';
+    const day=launchDay(p);
+    plot($('cv-orb-day'),{series:[{x:day.t,y:day.P,color:css('--csf'),width:2.4,label:'ICP at foramen of Monro'},{x:day.t,y:day.dH,color:css('--amb'),width:1.8,dash:[5,4],label:'Hydrostatic difference across the head'},{x:day.t,y:day.n,color:css('--muted'),width:1.4,label:'Sensed load (g, right)',y2:true}],
+      xlabel:'Minutes from lift-off',ylabel:'mmHg',y2label:'Load (g)',y2lim:[0,4.5],legend:'bl',xlim:[-300,60],ylim:[Math.min(-30,Math.min(...day.P)-25),Math.max(...day.dH,...day.P)*1.12],hlines:[{y:0,color:css('--muted'),dash:[1,3]}],
+      bands:[{axis:'x',from:-180,to:0,color:css('--shade'),label:'Supine in capsule'},{axis:'x',from:0,to:ins,color:'rgba(179,38,62,.14)'},{axis:'x',from:ins,to:60,color:clear,label:'Orbit'},{axis:'x',from:-300,to:-180,color:clear,label:'Upright'}]});
+    const a=ascentDetail(p);
+    plot($('cv-orb-asc'),{series:[{x:a.t,y:a.occ,color:css('--art'),width:2,label:'Occiput'},{x:a.t,y:a.P,color:css('--csf'),width:2.4,label:'Foramen of Monro'},{x:a.t,y:a.front,color:css('--ven'),width:2,label:'Frontal pole'},{x:a.t,y:a.n,color:css('--muted'),width:1.3,dash:[4,3],label:'Load (g, right)',y2:true}],
+      xlabel:'Seconds from lift-off',ylabel:'ICP (mmHg)',y2label:'Load (g)',y2lim:[0,7],legend:'tl',xlim:[-30,ASCENT[p.veh].ins+150],ylim:(()=>{ const lo=Math.min(...a.front)-3, hi=Math.max(...a.occ); return [lo,hi+(hi-lo)*0.7]; })(),hlines:[{y:0,color:css('--muted'),dash:[1,3]}],vlines:[{x:ASCENT[p.veh].ins,color:css('--muted'),dash:[2,3],label:'Cut-off'}]});
+    const st=orbitStates(p);
+    const cols=[css('--ven'),css('--ven'),css('--amb'),css('--art'),css('--csf'),css('--csf'),css('--vio'),css('--muted')];
+    const short=['Ground, standing','Ground, supine','Pad, legs up','Ascent, peak','Orbit, "vertical"','Orbit, "upside down"',`Orbit, day ${p.days}`,'Earth, inverted'];
+    hbars($('cv-orb-bar'),st.map((x,i)=>({label:short[i],value:x.P,color:cols[i],text:f(x.P,1)})),{xlabel:'ICP at foramen of Monro (mmHg)',ref:0});
+    const m=orbitMission(p); const pc=(v,b)=>100*(v-b)/b;
+    plot($('cv-orb-mis'),{series:[{x:m.d,y:m.V.map(v=>pc(v.Vv,p.Vv0)),color:css('--csf'),width:2.4,label:'Ventricular CSF'},{x:m.d,y:m.V.map(v=>pc(v.Vs,p.Vs0)),color:css('--amb'),width:2.4,label:'Convexity subarachnoid CSF'},{x:m.d,y:m.P,color:css('--art'),width:1.6,dash:[5,4],label:'ICP (right)',y2:true}],
+      xlabel:'Days in orbit',ylabel:'% change from preflight supine',y2label:'ICP (mmHg)',y2lim:[0,Math.max(15,...m.P)*1.15],legend:'tl',xlim:[0,p.days],ylim:(()=>{ const v=m.V.flatMap(z=>[pc(z.Vv,p.Vv0),pc(z.Vs,p.Vs0)]); const lo=Math.min(-2,...v)-2, hi=Math.max(2,...v); return [lo,hi+(hi-lo)*0.55]; })(),hlines:[{y:0,color:css('--muted'),dash:[1,3]}]});
+    const sig=v=>Math.abs(v)<0.05&&v!==0?v.toExponential(1):f(v,1);
+    const g=x=>{ const n=Math.hypot(x.Gz,x.Gx); return n<1e-3?(n*1e6).toPrecision(2)+' µg':n.toFixed(2)+' g'; };
+    const ax=x=>{ const n=Math.hypot(x.Gz,x.Gx); if(n<1e-3) return x.Gz>0?'head-to-foot':'foot-to-head'; if(x.Gx<1e-3) return x.Gz>0?'G<sub>z</sub> head-to-foot':'G<sub>z</sub> foot-to-head'; return Math.abs(x.Gz)<1e-3?'G<sub>x</sub> chest-to-back':'mostly G<sub>x</sub>'; };
+    const sgn=v=>{ const r=Math.round(v); return (r>0?'+':'')+r+'%'; };
+    $('ro-orbit').innerHTML='<table class="ro mx"><thead><tr><th scope="col">Phase</th><th scope="col">Load</th><th scope="col">Direction</th><th scope="col">ICP, Monro (mmHg)</th><th scope="col">Head ΔP (mmHg)</th><th scope="col">Ventricular CSF (mL)</th><th scope="col">Convexity SAS CSF (mL)</th><th scope="col">Brain weight in CSF (g)</th></tr></thead><tbody>'+
+      st.map(x=>`<tr><th scope="row">${x.name}</th><td>${g(x)}</td><td>${ax(x)}</td><td class="v">${f(x.P,1)}</td><td>${sig(x.dH)}</td><td class="v">${f(x.Vv,1)} <span class="n">(${sgn(pc(x.Vv,p.Vv0))})</span></td><td class="v">${f(x.Vs,1)} <span class="n">(${sgn(pc(x.Vs,p.Vs0))})</span></td><td>${x.wBrain<0.01?'≈ 0':f(x.wBrain,0)}</td></tr>`).join('')+
+      `</tbody></table><table class="ro"><tbody><tr><th scope="row">"Vertical" vs "upside down" in orbit</th><td class="v">ΔICP ${sig(st[4].P-st[5].P)} mmHg</td><td class="n">Hydrostatic difference across the head is ${sig(st[4].dH)} mmHg at ${s.resid.toPrecision(2)} µg. Orientation in the cabin is physiologically irrelevant.</td></tr>`+
+      `<tr><th scope="row">Weightlessness vs lying supine on Earth</th><td class="v">${(st[4].P-st[1].P>=0?'+':'')+f(st[4].P-st[1].P,1)} mmHg</td><td class="n">Lower than supine but ${f(st[4].P-st[0].P,1)} mmHg above standing: the daily upright relief is lost (Lawley 2017)</td></tr>`+
+      `<tr><th scope="row">Frontal–occipital split at peak ascent</th><td class="v">${f(st[3].occ-st[3].front,1)} mmHg</td><td class="n">The load runs chest to back, so the occiput is dependent; the brain weighs ${f(st[3].wBrain,0)} g in CSF instead of ${f(st[1].wBrain,0)} g</td></tr></tbody></table>`;
+  };
+  ctl=controls($('ctl-orbit'),[
+    {id:'veh',label:'Launch vehicle (approximate profile)',type:'select',value:'soyuz',options:[['soyuz','Soyuz MS'],['dragon','Falcon 9 / Crew Dragon']]},
+    {id:'scale',label:'Ascent load scaling',min:0.5,max:1.5,step:0.05,value:1,unit:'×',fmt:v=>v.toFixed(2)},
+    {id:'beta',label:'Seat-back elevation β',min:0,max:45,step:1,value:10,unit:'°'},
+    {id:'dx',label:'Foramen of Monro above right atrium (supine)',min:-5,max:10,step:0.5,value:0,unit:'cm',fmt:v=>v.toFixed(1)},
+    {id:'kx',label:'Thoracic loading gain k<sub>x</sub>',min:0,max:6,step:0.5,value:3,unit:'mmHg/g',fmt:v=>v.toFixed(1)},
+    {id:'legs',label:'Legs-up venous effect',min:0,max:4,step:0.5,value:1,unit:'mmHg',fmt:v=>v.toFixed(1)},
+    {id:'Rout',label:'R<sub>out</sub>',min:5,max:20,step:0.5,value:10,unit:'mmHg·min/mL'},
+    {id:'resid',label:'Residual acceleration in orbit',min:0.1,max:100,log:true,value:1,unit:'µg',fmt:v=>v.toPrecision(2)},
+    {id:'days',label:'Time in orbit',min:7,max:365,step:1,value:180,unit:'days'},
+    {id:'tau',label:'Adaptation time constant τ',min:10,max:150,step:5,value:60,unit:'days'},
+    {id:'fv',label:'Ventricular enlargement f<sub>v</sub>',min:0,max:30,step:0.5,value:12,unit:'%',fmt:v=>v.toFixed(1)},
+    {id:'B',label:'Brain tissue expansion B',min:0,max:50,step:1,value:25,unit:'mL'},
+    {id:'kS',label:'Share taken from convexity SAS k<sub>S</sub>',min:0,max:1,step:0.05,value:0.5,unit:'',fmt:v=>v.toFixed(2)},
+    {id:'rR',label:'Rise in R<sub>out</sub> in flight',min:0,max:60,step:5,value:0,unit:'%'},
+    {id:'Vv0',label:'Preflight ventricular CSF',min:10,max:60,step:1,value:22,unit:'mL'},
+    {id:'Vs0',label:'Preflight convexity SAS CSF',min:30,max:150,step:5,value:70,unit:'mL'}],throttle(draw));
+  presets($('pre-orbit'),[['Soyuz, 6 months',{veh:'soyuz',scale:1,days:180,fv:12,B:25,rR:0}],['Crew Dragon, 6 months',{veh:'dragon',scale:1,days:180,fv:12,B:25,rR:0}],['Short mission, 14 days',{days:14}],['One year',{days:365}],['Reduced absorption (R<sub>out</sub> +30%)'.replace(/<[^>]+>/g,''),{rR:30}],['No adaptation',{fv:0,B:0,rR:0}]],ctl);
+  renders['m-orbit']=draw;
 })();
 
 // ---------- presets go before "Parameters" heading: reorder control panels ----------
