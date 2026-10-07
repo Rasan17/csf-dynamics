@@ -122,13 +122,45 @@ ol.refs em{color:var(--ink);font-style:italic;}
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;}}
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+.xm{--text-primary:var(--ink);--text-secondary:var(--muted);--text-muted:var(--muted);--surface-1:var(--panel);--surface-2:var(--panel);--border:var(--line);--border-strong:var(--line);--radius:8px;
+ --bg-success:#EAF3DE;--text-success:#27500A;--bg-warning:#FAEEDA;--text-warning:#854F0B;--bg-danger:#FCEBEB;--text-danger:#A32D2D;--bg-accent:#E6F1FB;--text-accent:#0C447C;--border-accent:#378ADD;
+ background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 16px 12px;min-width:0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .xm{--bg-success:#173404;--text-success:#C0DD97;--bg-warning:#412402;--text-warning:#FAC775;--bg-danger:#501313;--text-danger:#F7C1C1;--bg-accent:#0C447C;--text-accent:#B5D4F4;--surface-1:var(--bg)}}
+:root[data-theme="dark"] .xm{--bg-success:#173404;--text-success:#C0DD97;--bg-warning:#412402;--text-warning:#FAC775;--bg-danger:#501313;--text-danger:#F7C1C1;--bg-accent:#0C447C;--text-accent:#B5D4F4;--surface-1:var(--bg)}
+:root:not([data-theme="dark"]) .xm{--surface-1:var(--bg)}
+.xm .ctl{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:14px;color:var(--text-secondary);margin:0 0 8px}
+.xm .sl{display:flex;align-items:center;gap:8px;flex:1;min-width:230px}
+.xm .sl span.v{color:var(--text-primary);min-width:60px;font-size:13px}
+.xm input[type=range]{width:auto;margin:0}
+.xm canvas{height:auto}
+.xm button{font:inherit;font-size:14px;color:var(--text-primary);background:transparent;border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer;min-height:34px}
+.xm button:hover{border-color:var(--csf)}
+.xm .mc{background:var(--surface-1);border-radius:var(--radius);padding:10px 12px}
+.xm .mc .l{font-size:12px;color:var(--text-secondary)}
+.xm .mc .v{font-size:20px;font-weight:500;color:var(--text-primary)}
+.xm .pb{font-size:13px;padding:5px 10px}
+.xm .pb.on{border-color:var(--border-accent);background:var(--bg-accent);color:var(--text-accent)}
+.xm .cl,.xm .lbl{font-size:12px;fill:var(--text-secondary)}
+.xm .ch,.xm .ttl{font-size:13px;fill:var(--text-primary);font-weight:500}
+.xm .op{font-size:22px;fill:var(--text-secondary)}
+.xm .msg{font-size:14px;color:var(--text-primary);padding:10px 12px;background:var(--surface-1);border-radius:var(--radius);margin-top:6px}
+.xm .sg{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:5px 0;border-bottom:1px solid var(--grid)}
+.xm .sg span:first-child{color:var(--text-secondary)}
+.xm .pill{font-size:12px;padding:2px 8px;border-radius:var(--radius);white-space:nowrap}
+.xm .ok{background:var(--bg-success);color:var(--text-success)}
+.xm .wn{background:var(--bg-warning);color:var(--text-warning)}
+.xm .bd{background:var(--bg-danger);color:var(--text-danger)}
+.xm .hd{font-size:12px;color:var(--text-muted);margin:10px 0 2px}
+</style>
 </head>
 <body>
 <div class="shell">
 <nav class="side" aria-label="Models">
   <div class="brand">
     <h1>CSF dynamics, modelled</h1>
-    <p>Thirty-three interactive models in four groups: foundations, clinical models, special scenarios and mission profiles.</p>
+    <p>Thirty-eight interactive models in five groups: foundations, clinical models, special scenarios, pulsatility and the windkessel, and mission profiles.</p>
   </div>
   <ul class="navlist" id="navlist"></ul>
   <div class="foot">Teaching models with simplified physiology. Parameter values are representative, not patient-specific.</div>
@@ -1014,6 +1046,86 @@ ol.refs em{color:var(--ink);font-style:italic;}
   </div>
 </section>
 
+<section class="model" id="m-etvmri" data-group="Special scenarios" data-dim="MRI" data-name="ETV flow void and stoma failure" hidden>
+  <header>
+    <h2>ETV flow void on MRI and the signs of stoma failure</h2>
+    <p>After endoscopic third ventriculostomy, the to-and-fro jet through the stoma shows as a flow void on sagittal T2. As the stoma narrows, jet velocity first rises (the void becomes more conspicuous) and then falls as resistance throttles flow and the jet becomes smaller than a voxel. Failure also shows in the third ventricle floor, lamina terminalis, anterior recesses and sella. Communicating hydrocephalus damps brain pulsation, so the void can fade even with a patent stoma.</p>
+  </header>
+  <div class="xm">
+<div class="ctl">
+  <label style="display:flex;align-items:center;gap:8px;flex:1;min-width:260px">Stoma diameter <input type="range" id="x5-d" min="0" max="8" step="0.1" value="5" style="flex:1"><span id="x5-dv" style="color:var(--text-primary);min-width:52px">5.0 mm</span></label>
+  <button id="x5-close">Simulate stoma closure</button>
+  <button id="x5-pp" aria-label="Pause"><i class="ti ti-player-pause" aria-hidden="true"></i></button>
+</div>
+<div class="ctl">
+  <label style="display:flex;align-items:center;gap:8px;flex:1;min-width:260px">Communicating hydrocephalus <input type="range" id="x5-ch" min="0" max="100" step="1" value="0" style="flex:1"><span id="x5-chv" style="color:var(--text-primary);min-width:52px">none</span></label>
+  <label style="display:flex;align-items:center;gap:8px">Speed <input type="range" id="x5-spd" min="0.2" max="1.5" step="0.1" value="0.6" style="width:80px"></label>
+</div>
+<div class="ctl">
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x5-chr"> Long-standing (bony remodelling)</label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x5-prt" checked> CSF particles</label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x5-vd" checked> Flow void</label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x5-avg"> Ungated T2</label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x5-ann" checked> Labels</label>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:0 0 14px">
+  <div class="mc"><div class="l">Brain pulsation</div><div class="v" id="x5-mA">–</div></div>
+  <div class="mc"><div class="l">Stroke volume via stoma</div><div class="v" id="x5-mQ">–</div></div>
+  <div class="mc"><div class="l">Flow-void conspicuity</div><div class="v" id="x5-mC">–</div></div>
+  <div class="mc"><div class="l">Pressure drop across stoma</div><div class="v" id="x5-mP">–</div></div>
+  <div class="mc"><div class="l">Pituitary height</div><div class="v" id="x5-mH">–</div></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px">
+  <div>
+    <canvas id="x5-mri" style="width:100%;aspect-ratio:320/340;display:block;border-radius:var(--radius)"></canvas>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+      <span style="font-size:12px;color:var(--text-secondary);min-width:64px" id="x5-phl">Systole</span>
+      <div style="flex:1;height:6px;background:var(--surface-1);border-radius:3px;position:relative"><div id="x5-phb" style="position:absolute;top:0;bottom:0;width:4px;background:var(--text-primary);border-radius:2px"></div></div>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:6px">Simulated sagittal T2 (anterior left), aqueductal stenosis.</div>
+  </div>
+  <div>
+    <svg viewBox="0 0 340 240" width="100%" style="display:block" role="img">
+      <title>Flow, velocity and conspicuity against stoma diameter</title>
+      <rect id="x5-zone1" x="40" y="20" width="0" height="170" fill="#E24B4A" fill-opacity="0.08"/>
+      <rect id="x5-zone2" x="40" y="20" width="0" height="170" fill="#EF9F27" fill-opacity="0.10"/>
+      <line x1="40" y1="190" x2="330" y2="190" stroke="var(--border-strong)" stroke-width="0.5"/>
+      <line x1="40" y1="20" x2="40" y2="190" stroke="var(--border-strong)" stroke-width="0.5"/>
+      <g id="x5-ticks"></g>
+      <text x="185" y="222" text-anchor="middle" style="font-size:12px;fill:var(--text-secondary)">Stoma diameter (mm)</text>
+      <text x="14" y="105" text-anchor="middle" transform="rotate(-90 14 105)" style="font-size:12px;fill:var(--text-secondary)">Relative value</text>
+      <path id="x5-cB" fill="none" stroke="#D85A30" stroke-width="1.2" stroke-opacity="0.35" stroke-dasharray="2 3"/>
+      <path id="x5-cQ" fill="none" stroke="#1D9E75" stroke-width="1.8" stroke-dasharray="5 3"/>
+      <path id="x5-cV" fill="none" stroke="#378ADD" stroke-width="1.8"/>
+      <path id="x5-cC" fill="none" stroke="#D85A30" stroke-width="2.6"/>
+      <line id="x5-mk" x1="0" y1="20" x2="0" y2="190" stroke="var(--text-primary)" stroke-width="1" stroke-dasharray="3 3"/>
+      <circle id="x5-mkC" r="4" fill="#D85A30"/>
+    </svg>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--text-secondary);margin:2px 0 6px">
+      <span><span style="display:inline-block;width:16px;border-top:2.6px solid #D85A30;vertical-align:middle"></span> Conspicuity</span>
+      <span><span style="display:inline-block;width:16px;border-top:1.8px solid #378ADD;vertical-align:middle"></span> Velocity</span>
+      <span><span style="display:inline-block;width:16px;border-top:1.8px dashed #1D9E75;vertical-align:middle"></span> Stroke volume</span>
+      <span><span style="display:inline-block;width:16px;border-top:1.2px dashed #D85A30;opacity:0.5;vertical-align:middle"></span> Normal pulsation</span>
+    </div>
+    <div id="x5-signs"></div>
+  </div>
+</div>
+
+
+  </div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <p>Stroke volume through the stoma follows Q = 1/(1 + (d₀/d)³), a thin-aperture resistance in series with a fixed upstream resistance. Jet velocity ∝ Q/d². Flow-void conspicuity combines velocity-dependent dephasing, jet reach and partial-volume loss (0.8 mm voxel). The pressure drop across the stoma drives floor bowing, anterior third ventricle and lamina terminalis ballooning, recess ballooning and sellar changes. Communicating hydrocephalus is modelled as damped pulsation.</p>
+      <p class="caveat">Conceptual model with relative units and assumed parameters. It is not fitted to patient data. Sellar features show the direction of change only.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs"><li>Morota N, et al. <em>Anatomical variants in the floor of the third ventricle; implications for endoscopic third ventriculostomy.</em> J Neurol Neurosurg Psychiatry 2000;69:531–534. doi:10.1136/jnnp.69.4.531</li><li>Kobayashi S, et al. <em>Herniation of the third ventricle into empty sella caused by surgery for pituitary apoplexy.</em> Neurol Med Chir 1996;36:451–454. doi:10.2176/nmc.36.451</li><li>Montemurro N, et al. <em>Surgical treatment of long-standing overt ventriculomegaly in adults (LOVA).</em> Int J Environ Res Public Health 2022;19:1926. doi:10.3390/ijerph19041926</li><li>Moravec T, et al. Case Rep Neurol 2026. doi:10.1159/000550933</li><li>González-Tortosa et al. <em>Reversible primary empty sella.</em> Neurocirugía 2010. doi:10.4321/s1130-14732010000400005</li><li>Bruno OD, et al. Endocrinol Diabetes Metab Case Rep 2017. doi:10.1530/EDM-16-0157</li><li>Hamilton et al. Br J Neurosurg 2018. doi:10.1080/02688697.2018.1435849</li></ol>
+    </div>
+  </div>
+</section>
+
 <section class="model" id="m-dc" data-group="Special scenarios" data-dim="Surgery" data-name="Decompressive craniectomy" hidden>
   <header>
     <h2>Decompressive craniectomy and CSF dynamics</h2>
@@ -1303,6 +1415,304 @@ ol.refs em{color:var(--ink);font-style:italic;}
     </div>
   </div>
 </section>
+<section class="model" id="m-csfpulse" data-group="Pulsatility and the windkessel" data-dim="Cardiac" data-name="CSF to-and-fro motion" hidden>
+  <header>
+    <h2>To-and-fro movement of CSF with the cardiac cycle</h2>
+    <p>In systole, arterial inflow expands the brain inside the rigid skull and pushes CSF caudally through the aqueduct and foramen magnum into the distensible spinal sac. In diastole it flows back. Net bulk flow is tiny compared with this oscillation. Toggle respiration (inspiration draws CSF cranially) and net bulk flow.</p>
+  </header>
+  <div class="xm">
+<div class="ctl">
+  <button id="x1-play" aria-label="Pause"><i class="ti ti-player-pause" aria-hidden="true"></i></button>
+  <label style="display:flex;align-items:center;gap:8px">Heart rate <input type="range" id="x1-hr" min="20" max="120" step="1" value="45" style="width:120px"><span id="x1-hrv" style="color:var(--text-primary);min-width:64px">45 bpm</span></label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x1-resp"> Respiration</label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x1-net"> Net bulk flow</label>
+</div>
+<div id="x1-status" style="font-size:14px;color:var(--text-primary);margin:0 0 6px;min-height:22px"></div>
+<svg viewBox="0 0 680 470" width="100%" role="img" style="display:block">
+  <title>CSF to-and-fro movement</title>
+  <ellipse cx="195" cy="160" rx="165" ry="128" fill="#378ADD" fill-opacity="0.22" stroke="#888780" stroke-width="2"/>
+  <rect x="194" y="282" width="62" height="180" rx="14" fill="#378ADD" fill-opacity="0.22" stroke="#888780" stroke-width="2"/>
+  <rect x="198" y="270" width="54" height="22" fill="#378ADD" fill-opacity="0.22"/>
+  <g id="x1-brain">
+    <ellipse cx="190" cy="145" rx="145" ry="100" fill="#B4B2A9" fill-opacity="0.75"/>
+    <ellipse cx="290" cy="238" rx="55" ry="34" fill="#B4B2A9" fill-opacity="0.85"/>
+    <path d="M198,200 L242,200 L238,300 L212,300 Z" fill="#B4B2A9" fill-opacity="0.9"/>
+    <path d="M120,120 C140,88 232,84 262,115 C272,130 264,152 250,150 C236,128 172,120 142,145 C126,150 112,136 120,120 Z" fill="#378ADD" fill-opacity="0.55"/>
+    <path d="M196,148 L226,148 L223,196 L200,190 Z" fill="#378ADD" fill-opacity="0.55"/>
+    <path d="M222,192 L248,226" stroke="#378ADD" stroke-opacity="0.7" stroke-width="5" fill="none"/>
+    <path d="M241,214 L268,240 L244,264 Z" fill="#378ADD" fill-opacity="0.55"/>
+  </g>
+  <rect x="214" y="296" width="22" height="166" rx="8" fill="#B4B2A9" fill-opacity="0.9"/>
+  <path id="x1-p0" d="M135,128 C170,104 225,104 245,128 L211,152 L212,186 L234,212 L250,238 L250,262 L247,292 L245,458" fill="none"/>
+  <path id="x1-p1" d="M175,228 L203,268 L204,458" fill="none"/>
+  <path id="x1-p2" d="M40,175 C30,90 110,38 195,35 C280,38 358,90 350,175" fill="none"/>
+  <g id="x1-dots"></g>
+  <line x1="130" y1="112" x2="78" y2="80" stroke="var(--text-muted)" stroke-width="0.5"/>
+  <text class="lbl" x="74" y="76" text-anchor="end">Lateral ventricle</text>
+  <line x1="236" y1="205" x2="330" y2="150" stroke="var(--text-muted)" stroke-width="0.5"/>
+  <text class="lbl" x="334" y="148">Aqueduct</text>
+  <line x1="262" y1="242" x2="360" y2="200" stroke="var(--text-muted)" stroke-width="0.5"/>
+  <text class="lbl" x="364" y="198">4th ventricle</text>
+  <line x1="256" y1="290" x2="300" y2="300" stroke="var(--text-muted)" stroke-width="0.5"/>
+  <text class="lbl" x="304" y="304">Foramen magnum</text>
+  <line x1="254" y1="400" x2="300" y2="400" stroke="var(--text-muted)" stroke-width="0.5"/>
+  <text class="lbl" x="304" y="404">Spinal subarachnoid space</text>
+  <line x1="195" y1="34" x2="195" y2="14" stroke="var(--text-muted)" stroke-width="0.5"/>
+  <text class="lbl" x="200" y="16">Cortical subarachnoid space</text>
+  <text class="lbl" x="20" y="455">Anterior</text>
+  <text class="ttl" x="440" y="250">ECG</text>
+  <path id="x1-ecg" d="" fill="none" stroke="#E24B4A" stroke-width="1.5"/>
+  <text class="ttl" x="440" y="345">Aqueductal CSF flow</text>
+  <line x1="440" y1="400" x2="665" y2="400" stroke="var(--border-strong)" stroke-width="0.5"/>
+  <text class="lbl" x="440" y="368">caudal</text>
+  <text class="lbl" x="440" y="440">cranial</text>
+  <path id="x1-flow" d="" fill="none" stroke="#378ADD" stroke-width="1.8"/>
+  <line id="x1-cur" x1="440" y1="255" x2="440" y2="445" stroke="var(--text-primary)" stroke-width="1" stroke-dasharray="3 3"/>
+  <circle id="x1-fdot" cx="440" cy="400" r="4" fill="#185FA5"/>
+</svg>
+
+
+  </div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <p>Particles move along the ventricular, cortical and spinal subarachnoid paths with a displacement proportional to the aqueductal flow waveform. The flow waveform is synchronised to an ECG-like trace, with caudal flow peaking shortly after the R wave.</p>
+      <p class="caveat">Schematic, not to scale. Amplitudes and timing are approximate.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs"><li>Greitz D. <em>Cerebrospinal fluid circulation and associated intracranial dynamics. A radiologic investigation using MR imaging and radionuclide cisternography.</em> Acta Radiol Suppl 1993;386:1–23.</li></ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-wkclass" data-group="Pulsatility and the windkessel" data-dim="RC" data-name="Classical Windkessel" hidden>
+  <header>
+    <h2>The classical Windkessel: the fire-engine air chamber</h2>
+    <p>The German word Windkessel means air chamber. Hand-pumped fire engines had a sealed air dome between the pump and the hose that turned jerky strokes into a steady jet. Stephen Hales (1733) compared the elastic arteries to it, and Otto Frank (1899) formalised the two-element Windkessel: compliance C (the aorta) and resistance R (the arterioles).</p>
+  </header>
+  <div class="xm">
+<div class="ctl">
+  <label class="sl">Compliance (air chamber size) <input type="range" id="x2-C" min="0.3" max="4" step="0.05" value="1.6" style="flex:1"><span class="v" id="x2-Cv"></span></label>
+  <label class="sl">Peripheral resistance (nozzle) <input type="range" id="x2-R" min="0.5" max="2" step="0.05" value="1" style="flex:1"><span class="v" id="x2-Rv"></span></label>
+</div>
+<div class="ctl">
+  <label class="sl">Heart rate (pump strokes) <input type="range" id="x2-hr" min="40" max="140" step="1" value="72" style="flex:1"><span class="v" id="x2-hrv"></span></label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x2-noair"> Remove air chamber</label>
+  <label style="display:flex;align-items:center;gap:8px">Speed <input type="range" id="x2-spd" min="0.1" max="1" step="0.05" value="0.35" style="width:90px"></label>
+  <button id="x2-pp" aria-label="Pause"><i class="ti ti-player-pause" aria-hidden="true"></i></button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:6px 0 10px">
+  <div class="mc"><div class="l">Blood pressure</div><div class="v" id="x2-mBP">–</div></div>
+  <div class="mc"><div class="l">Mean pressure</div><div class="v" id="x2-mM">–</div></div>
+  <div class="mc"><div class="l">Time constant τ = RC</div><div class="v" id="x2-mT">–</div></div>
+  <div class="mc"><div class="l">Outflow pulsatility</div><div class="v" id="x2-mP">–</div></div>
+</div>
+<svg viewBox="0 0 680 270" width="100%" style="display:block" role="img">
+  <title>Fire engine with Windkessel air chamber</title>
+  <rect x="14" y="214" width="150" height="40" rx="4" fill="#378ADD" fill-opacity="0.35" stroke="#888780"/>
+  <text class="cl" x="22" y="266">water supply (veins)</text>
+  <rect x="62" y="70" width="48" height="140" fill="none" stroke="#888780" stroke-width="2"/>
+  <rect id="x2-wcyl" x="63" y="120" width="46" height="89" fill="#378ADD" fill-opacity="0.45"/>
+  <rect id="x2-pist" x="63" y="112" width="46" height="9" fill="#5F5E5A"/>
+  <line id="x2-rod" x1="86" y1="112" x2="86" y2="40" stroke="#5F5E5A" stroke-width="4"/>
+  <line id="x2-lev" x1="20" y1="30" x2="150" y2="50" stroke="#5F5E5A" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="120" cy="45" r="4" fill="#5F5E5A"/>
+  <text class="ch" x="12" y="18">Pump = heart</text>
+  <path d="M86,210 L86,222" stroke="#888780" stroke-width="2"/>
+  <rect x="110" y="190" width="193" height="14" fill="#378ADD" fill-opacity="0.45" stroke="#888780"/>
+  <rect id="x2-pipe2" x="303" y="190" width="193" height="14" fill="#378ADD" fill-opacity="0.45" stroke="#888780"/>
+  <path id="x2-valve" d="M180,190 L192,197 L180,204 Z" fill="#5F5E5A"/>
+  <text class="cl" x="150" y="226">one-way valve</text>
+  <g id="x2-dome">
+    <rect id="x2-domeR" x="258" y="55" width="90" height="150" rx="40" fill="#D3D1C7" fill-opacity="0.9" stroke="#888780" stroke-width="2"/>
+    <clipPath id="x2-dclip"><rect id="x2-domeC" x="258" y="55" width="90" height="150" rx="40"/></clipPath>
+    <rect id="x2-wat" x="200" y="120" width="210" height="100" fill="#378ADD" fill-opacity="0.75" clip-path="url(#x2-dclip)"/>
+    <text id="x2-airT" class="cl" x="303" y="88" text-anchor="middle">compressed air</text>
+  </g>
+  <text id="x2-domeL" class="ch" x="303" y="42" text-anchor="middle">Windkessel = aorta</text>
+  <path id="x2-noz" d="M496,186 L526,193 L526,201 L496,208 Z" fill="#888780"/>
+  <text class="ch" x="470" y="172" text-anchor="middle">Nozzle = arterioles</text>
+  <path id="x2-jet" fill="none" stroke="#378ADD" stroke-linecap="round"/>
+  <g id="x2-drops"></g>
+  <line x1="520" y1="254" x2="676" y2="254" stroke="var(--border-strong)" stroke-width="0.5"/>
+  <text class="cl" x="600" y="268" text-anchor="middle">jet = capillary flow</text>
+</svg>
+<svg viewBox="0 0 680 250" width="100%" style="display:block;margin-top:4px" role="img">
+  <title>Inflow, pressure and outflow traces</title>
+  <g id="x2-trc"></g>
+  <line id="x2-cur" x1="120" y1="8" x2="120" y2="240" stroke="var(--text-primary)" stroke-width="1" stroke-dasharray="3 3"/>
+</svg>
+<div id="x2-msg" class="msg"></div>
+
+  </div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class='eq'>\[Q_{in}(t)=C\,\frac{dP}{dt}+\frac{P}{R},\qquad \tau=RC\]</div><p>Cardiac ejection is a half-sine (stroke volume 70 mL). In systole, inflow exceeds outflow through R, so the surplus is stored by stretching C. In diastole the aortic valve is closed and the stored volume drains through R, with pressure decaying exponentially with time constant τ.</p>
+      <p class="caveat">The two-element model slightly overestimates pulse pressure and ignores wave reflection and characteristic impedance, which three- and four-element models add.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs"><li>Hales S. <em>Statical Essays: containing Haemastaticks.</em> London, 1733.</li><li>Frank O. <em>Die Grundform des arteriellen Pulses.</em> Z Biol 1899;37:483–526.</li><li>Westerhof N, Lankhaar JW, Westerhof BE. <em>The arterial Windkessel.</em> Med Biol Eng Comput 2009;47:131–141.</li></ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-wkcirc" data-group="Pulsatility and the windkessel" data-dim="Circuit" data-name="Cerebral windkessel (hypothesis)" hidden>
+  <header>
+    <h2>Cerebral windkessel impairment: a hypothesis of hydrocephalus</h2>
+    <p>Egnor and colleagues propose that hydrocephalus from subarachnoid obstruction is not CSF malabsorption but failure of the cerebral windkessel. Normally the pulsatile (AC) part of arterial inflow passes through the subarachnoid CSF to the veins, and the capillaries see only steady (DC) flow. Blocking the subarachnoid path redistributes pulsatility to the ventricles and capillaries. Ventricular dilation is an adaptation, and shunts act as accessory windkessels. Use the presets in order.</p>
+  </header>
+  <div class="xm">
+<div class="ctl" id="x3-presets"></div>
+<div class="ctl">
+  <label class="sl">SAS damping (obstruction) <input type="range" id="x3-rs" min="0" max="100" step="1" value="0" style="flex:1"><span class="v" id="x3-rsv"></span></label>
+  <label class="sl">Ventricular dilation (radius) <input type="range" id="x3-vr" min="1" max="2" step="0.01" value="1" style="flex:1"><span class="v" id="x3-vrv"></span></label>
+</div>
+<div class="ctl">
+  <label class="sl">SAS pulse inertia <input type="range" id="x3-li" min="0.2" max="1.5" step="0.01" value="1" style="flex:1"><span class="v" id="x3-liv"></span></label>
+  <label class="sl">SAS path stiffness <input type="range" id="x3-st" min="0.2" max="1.5" step="0.01" value="1" style="flex:1"><span class="v" id="x3-stv"></span></label>
+</div>
+<div class="ctl">
+  <label class="sl">Heart rate <input type="range" id="x3-hr" min="40" max="150" step="1" value="72" style="flex:1"><span class="v" id="x3-hrv"></span></label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x3-sh"> Shunt</label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x3-etv"> ETV</label>
+  <button id="x3-pp" aria-label="Pause"><i class="ti ti-player-pause" aria-hidden="true"></i></button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:6px 0 12px">
+  <div class="mc"><div class="l">Windkessel effectiveness W</div><div class="v" id="x3-mW">–</div></div>
+  <div class="mc"><div class="l">SAS pulsatility</div><div class="v" id="x3-mS">–</div></div>
+  <div class="mc"><div class="l">Aqueduct pulsatility</div><div class="v" id="x3-mV">–</div></div>
+  <div class="mc"><div class="l">Capillary pulsatile stress</div><div class="v" id="x3-mC">–</div></div>
+</div>
+<svg viewBox="0 0 680 300" width="100%" style="display:block" role="img">
+  <title>Pulsatile energy flow through parallel intracranial paths</title>
+  <g id="x3-chan"></g>
+  <g id="x3-dots"></g>
+  <circle cx="48" cy="150" r="24" fill="#E24B4A" fill-opacity="0.18" stroke="#E24B4A" stroke-width="1"/>
+  <text class="ch" x="48" y="154" text-anchor="middle">Heart</text>
+  <text class="cl" x="48" y="194" text-anchor="middle">arterial pulse</text>
+  <rect x="588" y="40" width="64" height="232" rx="10" fill="#378ADD" fill-opacity="0.10" stroke="#378ADD" stroke-opacity="0.4"/>
+  <text class="ch" x="620" y="150" text-anchor="middle">Veins</text>
+  <text class="cl" x="620" y="168" text-anchor="middle">(ground)</text>
+  <g id="x3-labs"></g>
+</svg>
+<svg viewBox="0 0 680 210" width="100%" style="display:block;margin-top:6px" role="img">
+  <title>Pulsatile flow waveforms in each path</title>
+  <line x1="50" y1="110" x2="670" y2="110" stroke="var(--border-strong)" stroke-width="0.5"/>
+  <line x1="50" y1="12" x2="50" y2="190" stroke="var(--border-strong)" stroke-width="0.5"/>
+  <text class="cl" x="14" y="110" transform="rotate(-90 14 110)" text-anchor="middle">Pulsatile flow</text>
+  <text class="cl" x="360" y="206" text-anchor="middle">Time (3 s window)</text>
+  <path id="x3-wS" fill="none" stroke="#1D9E75" stroke-width="1.8" stroke-dasharray="6 3"/>
+  <path id="x3-wV" fill="none" stroke="#378ADD" stroke-width="1.8" stroke-dasharray="3 2"/>
+  <path id="x3-wC" fill="none" stroke="#E24B4A" stroke-width="2.2"/>
+  <path id="x3-wH" fill="none" stroke="#7F77DD" stroke-width="1.8" stroke-dasharray="1 2"/>
+  <line id="x3-cur" x1="50" y1="12" x2="50" y2="190" stroke="var(--text-primary)" stroke-width="1" stroke-dasharray="3 3"/>
+</svg>
+<div style="display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--text-secondary);margin:4px 0 8px">
+  <span><span style="display:inline-block;width:18px;border-top:1.8px dashed #1D9E75;vertical-align:middle"></span> Subarachnoid CSF</span>
+  <span><span style="display:inline-block;width:18px;border-top:1.8px dashed #378ADD;vertical-align:middle"></span> Ventricular (aqueduct) CSF</span>
+  <span><span style="display:inline-block;width:18px;border-top:2.2px solid #E24B4A;vertical-align:middle"></span> Capillary blood</span>
+  <span><span style="display:inline-block;width:18px;border-top:1.8px dotted #7F77DD;vertical-align:middle"></span> Shunt</span>
+</div>
+<div id="x3-msg" class="msg"></div>
+
+  </div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class='eq'>\[W=\frac{I\times S}{D}\]</div><p>A current divider at the heart-rate frequency, driven by a fixed arterial pulsatile inflow. The subarachnoid and ventricular CSF paths are series RLC branches tuned to resonance at 72 bpm, the capillary bed is resistive, and the shunt is an optional resistive branch. Normal resistances (2, 112, 150), shunt resistance (5.155) and the ventriculomegaly radius (about 1.73×) follow the paper. W is the windkessel effectiveness (inertia × stiffness / damping), shown relative to normal.</p>
+      <p class="caveat">The paper held voltage fixed and set each path's resistance per state to match Greitz's MRI flows, including lowering capillary resistance in the SAH state. Here a fixed inflow drives the redistribution, and inertance is scaled up so that inertia and stiffness have a visible effect. The single-node circuit cannot represent aqueductal obstruction or herniation.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs"><li>Egnor M, Shirdel Abdolmaleki N, Ravishankar A, Mani R, Wang Y, Fiore S, Djurić PM. <em>A model of hydrocephalus due to windkessel impairment caused by subarachnoid space obstruction.</em> J Neurosurg Pediatr 2026;37:373–381. doi:10.3171/2025.8.PEDS24604</li><li>Greitz D. <em>Cerebrospinal fluid circulation and associated intracranial dynamics. A radiologic investigation using MR imaging and radionuclide cisternography.</em> Acta Radiol Suppl 1993;386:1–23.</li></ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-wkanim" data-group="Pulsatility and the windkessel" data-dim="Animation" data-name="Normal cerebral windkessel" hidden>
+  <header>
+    <h2>The normal cerebral windkessel, with the ventricular system</h2>
+    <p>The arterial wave is a steady (DC) part plus a pulsatile (AC) part. In systole, subarachnoid arteries swell; CSF is pushed into the spinal sac (the main route) and a little down the aqueduct, and venous outflow surges, while capillary flow stays almost steady. Block the subarachnoid space to see the pulse diverted into the ventricles and capillaries.</p>
+  </header>
+  <div class="xm">
+<div class="ctl">
+  <button id="x4-pp" aria-label="Pause"><i class="ti ti-player-pause" aria-hidden="true"></i></button>
+  <label style="display:flex;align-items:center;gap:8px">Speed <input type="range" id="x4-spd" min="0.15" max="1.2" step="0.05" value="0.45" style="width:110px"></label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x4-blk"> Block the subarachnoid space (windkessel impaired)</label>
+</div>
+<div id="x4-st" style="font-size:14px;color:var(--text-primary);min-height:44px;margin:0 0 4px"></div>
+<svg viewBox="0 0 680 480" width="100%" style="display:block" role="img">
+  <title>Cerebral windkessel with ventricular system</title>
+  <text class="ch" x="20" y="18">Arterial pressure</text>
+  <text class="ch" x="250" y="18">Steady (DC) part</text>
+  <text class="ch" x="470" y="18">Pulsatile (AC) part</text>
+  <text class="op" x="222" y="78" text-anchor="middle">=</text>
+  <text class="op" x="442" y="78" text-anchor="middle">+</text>
+  <line x1="20" y1="70" x2="205" y2="70" stroke="var(--border-strong)" stroke-width="0.5" stroke-dasharray="3 3"/>
+  <line x1="250" y1="70" x2="425" y2="70" stroke="var(--border-strong)" stroke-width="0.5" stroke-dasharray="3 3"/>
+  <line x1="470" y1="70" x2="660" y2="70" stroke="var(--border-strong)" stroke-width="0.5" stroke-dasharray="3 3"/>
+  <path id="x4-dA" fill="none" stroke="#E24B4A" stroke-width="1.8"/>
+  <path id="x4-dD" fill="none" stroke="#E24B4A" stroke-width="1.8"/>
+  <path id="x4-dC" fill="none" stroke="#378ADD" stroke-width="1.8"/>
+  <circle id="x4-kA" r="3.5" fill="#E24B4A"/><circle id="x4-kD" r="3.5" fill="#E24B4A"/><circle id="x4-kC" r="3.5" fill="#378ADD"/>
+  <text class="cl" x="20" y="120">~120/80 mmHg</text>
+  <text class="cl" x="250" y="120">mean ~93 mmHg → capillaries</text>
+  <text class="cl" x="470" y="120">±20 mmHg swing → CSF → veins</text>
+  <line x1="10" y1="138" x2="670" y2="138" stroke="var(--border)" stroke-width="0.5"/>
+  <ellipse cx="260" cy="290" rx="140" ry="115" fill="none" stroke="#888780" stroke-width="3"/>
+  <ellipse cx="260" cy="290" rx="135" ry="110" fill="#378ADD" fill-opacity="0.2"/>
+  <ellipse cx="260" cy="290" rx="115" ry="90" fill="#B4B2A9" fill-opacity="0.55"/>
+  <rect id="x4-sac" x="240" y="398" width="40" height="66" rx="12" fill="#378ADD" fill-opacity="0.25" stroke="#888780" stroke-width="1.5"/>
+  <g id="x4-vent">
+    <path d="M208,248 C218,222 280,218 306,242 C313,253 306,268 295,265 C280,247 234,244 219,262 C208,267 202,258 208,248 Z" fill="#378ADD" fill-opacity="0.55"/>
+    <path d="M262,262 L288,262 L286,300 L266,296 Z" fill="#378ADD" fill-opacity="0.55"/>
+    <path d="M286,298 L302,324" stroke="#378ADD" stroke-opacity="0.75" stroke-width="4" fill="none"/>
+    <path d="M298,320 L320,340 L301,356 Z" fill="#378ADD" fill-opacity="0.55"/>
+    <path d="M304,354 L292,392" stroke="#378ADD" stroke-opacity="0.5" stroke-width="4" fill="none"/>
+  </g>
+  <g id="x4-blkmark" style="display:none">
+    <path d="M146,320 L170,340 M170,320 L146,340" stroke="#E24B4A" stroke-width="3"/>
+    <path d="M352,226 L376,246 M376,226 L352,246" stroke="#E24B4A" stroke-width="3"/>
+  </g>
+  <path id="x4-art" d="M140,475 C160,440 190,410 215,388 C235,372 285,372 305,388" fill="none" stroke="#E24B4A" stroke-width="9" stroke-linecap="round"/>
+  <path d="M212,388 C200,384 186,380 180,372" fill="none" stroke="#E24B4A" stroke-width="3" stroke-opacity="0.6"/>
+  <path id="x4-cap" d="M180,372 L180,348 C158,342 158,326 180,320 C202,314 202,300 180,294 C158,288 158,274 180,268 L180,232" fill="none" stroke="#E24B4A" stroke-opacity="0.35" stroke-width="3"/>
+  <path id="x4-ven" d="M180,232 L182,182 C262,170 372,198 392,250 L395,320 C400,350 420,385 448,412" fill="none" stroke="#534AB7" stroke-opacity="0.45" stroke-width="7" stroke-linecap="round"/>
+  <path id="x4-csfp" d="M168,206 C126,256 132,340 196,388 L248,404 L258,460" fill="none"/>
+  <path id="x4-csfp2" d="M352,212 C392,262 388,342 330,392 L274,404 L264,460" fill="none"/>
+  <path id="x4-vp" d="M215,250 C235,236 278,234 296,248 L276,268 L276,292 L294,312 L304,336 L300,372 L292,394 L270,406 L262,460" fill="none"/>
+  <g id="x4-pd"></g>
+  <text class="cl" x="62" y="462">carotid</text>
+  <text class="cl" x="300" y="384" text-anchor="start">SAS arteries</text>
+  <text class="cl" x="110" y="300">capillaries</text>
+  <text class="cl" x="276" y="178">sinus</text>
+  <text class="cl" x="452" y="426">jugular</text>
+  <text class="cl" x="290" y="458">spinal sac</text>
+  <text class="cl" x="98" y="198">CSF in SAS</text>
+  <text class="cl" x="232" y="215">lateral ventricle</text>
+  <text class="cl" x="318" y="318">aqueduct</text>
+  <text class="cl" x="326" y="350">4th ventricle</text>
+  <g id="x4-tr"></g>
+  <line id="x4-tcur" x1="470" y1="152" x2="470" y2="470" stroke="var(--text-primary)" stroke-width="1" stroke-dasharray="3 3"/>
+</svg>
+
+  </div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <p>An illustrative animation, not a calculation. The amplitudes of each path are set to roughly match Greitz's flow-MRI ratios: foramen magnum to aqueduct stroke volume about 56:1 normally. With subarachnoid obstruction, subarachnoid pulsatility roughly halves and aqueductal pulsatility rises about 9-fold.</p>
+      <p class="caveat">In reality cerebral capillary flow is strongly damped rather than completely pulseless.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs"><li>Egnor M, Shirdel Abdolmaleki N, Ravishankar A, Mani R, Wang Y, Fiore S, Djurić PM. <em>A model of hydrocephalus due to windkessel impairment caused by subarachnoid space obstruction.</em> J Neurosurg Pediatr 2026;37:373–381. doi:10.3171/2025.8.PEDS24604</li><li>Greitz D. <em>Cerebrospinal fluid circulation and associated intracranial dynamics. A radiologic investigation using MR imaging and radionuclide cisternography.</em> Acta Radiol Suppl 1993;386:1–23.</li><li>Butler WE. <em>Wavelet brain angiography suggests arteriovenous pulse wave phase locking.</em> PLoS One 2017;12:e0187014.</li></ol>
+    </div>
+  </div>
+</section>
+
 <section class="model" id="m-orbit" data-group="Mission profiles" data-dim="ISS" data-name="Launch to orbit" hidden>
   <header>
     <h2>An ISS astronaut from the launch pad to orbit</h2>
@@ -3594,6 +4004,525 @@ try{ matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>re
 new MutationObserver(()=>renders[current]&&renders[current]()).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 })();
 
+</script>
+<script>
+(function(){
+const __sec=document.getElementById("m-etvmri");
+const __g=id=>document.getElementById("x5-"+id);
+const requestAnimationFrame=f=>window.requestAnimationFrame(function w(t){ if(__sec.hidden) window.requestAnimationFrame(w); else f(t); });
+let __done=false;
+function __init(){ if(__done||__sec.hidden) return; __done=true;
+
+(function(){
+const D0=2.5,VOX=0.8,VTH=0.35,ANG=-0.52,PX=4.5,KC=0.7,VS=8000;
+const $=id=>__g(id);
+const Qf=d=>d<=0.05?0:1/(1+Math.pow(D0/d,3));
+const Vraw=d=>d<=0.05?0:Qf(d)/(d*d)*6.25;
+const Craw=(d,A)=>{if(d<=0.05||A<=0)return 0;const v=A*Vraw(d),pv=d*d/(d*d+VOX*VOX);return pv*(1-Math.exp(-v/VTH))*Math.min(1,v*d/2.5)};
+let vMax=0,cMax=0,cPeakD=0;
+for(let d=0.05;d<=8;d+=0.01){const v=Vraw(d),c=Craw(d,1);if(v>vMax)vMax=v;if(c>cMax){cMax=c;cPeakD=d}}
+const X=d=>40+d/8*290,Y=y=>190-y*165;
+let lowEdge=0;for(let d=0.05;d<cPeakD;d+=0.01){if(Craw(d,1)/cMax>=0.25){lowEdge=d;break}}
+$("zone1").setAttribute("width",X(lowEdge)-40);
+$("zone2").setAttribute("x",X(lowEdge));$("zone2").setAttribute("width",X(cPeakD+0.6)-X(lowEdge));
+const tk=$("ticks");
+for(let d=0;d<=8;d+=2){tk.insertAdjacentHTML("beforeend",`<text x="${X(d)}" y="205" text-anchor="middle" style="font-size:11px;fill:var(--text-muted)">${d}</text>`)}
+[0,0.5,1].forEach(y=>tk.insertAdjacentHTML("beforeend",`<text x="34" y="${Y(y)+4}" text-anchor="end" style="font-size:11px;fill:var(--text-muted)">${y}</text>`));
+tk.insertAdjacentHTML("beforeend",`<text x="${(40+X(lowEdge))/2}" y="32" text-anchor="middle" style="font-size:11px;fill:var(--text-danger)">failing</text><text x="${(X(lowEdge)+X(cPeakD+0.6))/2}" y="32" text-anchor="middle" style="font-size:11px;fill:var(--text-warning)">narrowing</text><text x="${(X(cPeakD+0.6)+330)/2}" y="32" text-anchor="middle" style="font-size:11px;fill:var(--text-success)">widely patent</text>`);
+let pB="";for(let i=0;i<=320;i++){const d=i/40;pB+=(i?"L":"M")+X(d).toFixed(1)+","+Y(Craw(d,1)/cMax).toFixed(1)}$("cB").setAttribute("d",pB);
+let A=1,sev=0;
+function curves(){let pQ="",pV="",pC="";for(let i=0;i<=320;i++){const d=i/40;const s=(i?"L":"M")+X(d).toFixed(1)+",";pQ+=s+Y(A*Qf(d)).toFixed(1);pV+=s+Y(A*Vraw(d)/vMax).toFixed(1);pC+=s+Y(Craw(d,A)/cMax).toFixed(1)}$("cQ").setAttribute("d",pQ);$("cV").setAttribute("d",pV);$("cC").setAttribute("d",pC);$("cB").style.display=sev>0?"":"none"}
+
+const parts=[];for(let i=0;i<70;i++){const u=-95+Math.random()*205;parts.push({u,f:Math.random()-0.5})}
+const volOf=(u,w0)=>u>=0?(Math.pow(w0+KC*u,3)-w0*w0*w0)/(3*KC):-(Math.pow(w0-KC*u,3)-w0*w0*w0)/(3*KC);
+const uOf=(V,w0)=>V>=0?(Math.cbrt(w0*w0*w0+3*KC*V)-w0)/KC:-(Math.cbrt(w0*w0*w0-3*KC*V)-w0)/KC;
+
+const cv=$("mri"),ctx=cv.getContext("2d");
+const W=320,H=340,dpr=window.devicePixelRatio||1;
+cv.width=W*dpr;cv.height=H*dpr;ctx.scale(dpr,dpr);
+const nz=document.createElement("canvas");nz.width=W;nz.height=H;
+{const n=nz.getContext("2d"),im=n.createImageData(W,H);for(let i=0;i<im.data.length;i+=4){const g=Math.random()*255;im.data[i]=im.data[i+1]=im.data[i+2]=g;im.data[i+3]=255}n.putImageData(im,0,0)}
+const dS=$("d"),chS=$("ch"),ann=$("ann"),avg=$("avg"),prt=$("prt"),vd=$("vd"),chr=$("chr"),spd=$("spd"),pp=$("pp"),cl=$("close");
+let D=+dS.value,phase=0,last=null,running=true,closing=false;
+dS.oninput=()=>{D=+dS.value;closing=false;cl.textContent="Simulate stoma closure";upd();draw()};
+chS.oninput=()=>{sev=chS.value/100;A=1-0.85*sev;curves();upd();draw()};
+[avg,ann,prt,vd].forEach(e=>e.onchange=draw);
+chr.onchange=()=>{upd();draw()};
+cl.onclick=()=>{closing=!closing;if(closing&&D<0.5){D=6}cl.textContent=closing?"Stop":"Simulate stoma closure";if(!running)pp.click()};
+pp.onclick=()=>{running=!running;pp.innerHTML=running?'<i class="ti ti-player-pause" aria-hidden="true"></i>':'<i class="ti ti-player-play" aria-hidden="true"></i>';pp.setAttribute("aria-label",running?"Pause":"Play");last=null;if(running)requestAnimationFrame(tick)};
+
+function state(){const q=Qf(D),phi=1-q,pa=Math.max(0,phi-0.35)/0.65;const empt=Math.min(1,Math.max(pa*0.95,sev*0.8));return {q,phi,pa,empt,ex:chr.checked?empt*14:0}}
+function pill(t,c){return `<span class="pill ${c}">${t}</span>`}
+function upd(){
+  dS.value=D.toFixed(1);$("dv").textContent=D<0.05?"closed":D.toFixed(1)+" mm";
+  $("chv").textContent=sev===0?"none":sev<0.35?"mild":sev<0.7?"moderate":"severe";
+  const {q,phi,pa,empt}=state(),c=Craw(D,A)/cMax;
+  $("mA").textContent=Math.round(A*100)+"%";$("mQ").textContent=Math.round(A*q*100)+"%";$("mC").textContent=c.toFixed(2);$("mP").textContent=Math.round(phi*100)+"%";$("mH").textContent=Math.round((1-0.8*empt)*100)+"%";
+  $("mk").setAttribute("x1",X(D));$("mk").setAttribute("x2",X(D));$("mkC").setAttribute("cx",X(D));$("mkC").setAttribute("cy",Y(c));
+  const fv=c>0.6?pill("prominent jet","wn"):c>0.25?pill("visible","ok"):c>0.08?pill("faint","wn"):pill("absent","bd");
+  const fl=phi<0.3?pill("flat / bowed up","ok"):phi<0.6?pill("flattening","wn"):pill("bowed down","bd");
+  const lt=pa+0.3*sev<0.15?pill("flat / concave","ok"):pa<0.45&&sev<0.6?pill("bulging forward","wn"):pill("ballooned forward","bd");
+  const asz=pa<0.1&&sev<0.2?pill("decreasing","ok"):pa<0.4&&sev<0.5?pill("static / enlarging","wn"):pill("enlarged","bd");
+  const pat=pa>0.3&&pa>sev?pill("anterior-predominant","bd"):sev>0.2?pill("global, symmetric","wn"):pill("–","ok");
+  const ed=phi<0.8&&sev<0.6?pill("none","ok"):pill("possible","bd");
+  const dia=empt<0.25?pill("flat","ok"):empt<0.6?pill("depressed","wn"):pill("markedly depressed","bd");
+  const sc=empt<0.25?pill("normal pituitary","ok"):empt<0.6?pill("partially empty","wn"):(pa>=sev*0.8?pill("recess herniated into sella","bd"):pill("empty sella","bd"));
+  const bone=!chr.checked?pill("unchanged (acute)","ok"):empt<0.4?pill("normal","ok"):pill("expanded, dorsum thinned","bd");
+  let interp;
+  if(D<0.05||phi>0.6)interp=pill("stoma failure pattern","bd");
+  else if(sev>0.35&&c<0.35)interp=pill("patent stoma, damped pulsation","wn");
+  else if(c<0.25&&D>4)interp=pill("wide, low-velocity stoma","ok");
+  else if(phi>0.4)interp=pill("narrowing stoma","wn");
+  else interp=pill("functioning ETV","ok");
+  const r=(a,b)=>`<div class="sg"><span>${a}</span>${b}</div>`;
+  $("signs").innerHTML=`<div class="hd">Stoma and third ventricle</div>${r("Flow void through stoma",fv)}${r("Third ventricle floor",fl)}${r("Lamina terminalis",lt)}${r("Anterior third ventricle",asz)}${r("Pattern of enlargement",pat)}${r("Periventricular T2 signal",ed)}<div class="hd">Sella</div>${r("Diaphragma sellae",dia)}${r("Sellar contents",sc)}${r("Sella turcica (bone)",bone)}<div class="sg" style="border-bottom:none;margin-top:4px"><span style="color:var(--text-primary)">Interpretation</span>${interp}</div>`;
+}
+function lbl(t,x,y,a){ctx.font="11px sans-serif";ctx.textAlign=a||"left";ctx.fillStyle="rgba(255,214,120,0.95)";ctx.fillText(t,x,y)}
+function lobe(w,L,dir,alpha){
+  ctx.fillStyle=`rgba(12,12,12,${alpha})`;ctx.beginPath();
+  ctx.moveTo(-w/2,0);ctx.quadraticCurveTo(-w*0.85,dir*L*0.55,0,dir*L);ctx.quadraticCurveTo(w*0.85,dir*L*0.55,w/2,0);ctx.closePath();ctx.fill();
+}
+function draw(){
+  const {phi,pa,empt,ex}=state(),p=Math.sin(2*Math.PI*phase),amp=Math.abs(p)*A,gated=!avg.checked;
+  const s=1+0.15*sev,bow=(phi-0.25)*30+(gated?3*p*A*(phi>0.3?phi:0):0);
+  const lt=pa*42+sev*10,ax=pa*14+sev*4;
+  ctx.fillStyle="#555";ctx.fillRect(0,0,W,H);
+  ctx.fillStyle="#e2e2e2";ctx.beginPath();ctx.moveTo(30,205);ctx.lineTo(108,218);ctx.lineTo(150,207);ctx.lineTo(188,207);ctx.lineTo(194,218);ctx.quadraticCurveTo(206,262,212,340);ctx.lineTo(176,340);ctx.lineTo(110,240);ctx.lineTo(30,240);ctx.fill();
+  if(sev>0){ctx.fillStyle=`rgba(226,226,226,${0.5*sev})`;ctx.fillRect(0,0,W,10+14*sev)}
+  const T=[44-ex*0.3,238],Bot=282+ex,Dt=[106+ex*0.35,234+ex*0.2];
+  const pocket=new Path2D();
+  pocket.moveTo(T[0],T[1]);pocket.bezierCurveTo(38-ex*0.6,262,50-ex*0.6,Bot,74,Bot);pocket.bezierCurveTo(98+ex*0.6,Bot,103+ex*0.6,262,Dt[0]-2,240);pocket.lineTo(Dt[0]-2,T[1]);pocket.closePath();
+  ctx.fillStyle="#1c1c1c";ctx.beginPath();ctx.moveTo(0,T[1]);ctx.lineTo(T[0],T[1]);ctx.bezierCurveTo(38-ex*0.6,262,50-ex*0.6,Bot,74,Bot);ctx.bezierCurveTo(98+ex*0.6,Bot,103+ex*0.6,262,Dt[0]-2,240);ctx.lineTo(Dt[0],Dt[1]);ctx.lineTo(Dt[0]+4,Dt[1]+2);ctx.lineTo(178,340);ctx.lineTo(0,340);ctx.closePath();ctx.fill();
+  const h=26*(1-0.8*empt),pTop=Bot-h;
+  ctx.save();ctx.clip(pocket);
+  ctx.fillStyle="#e2e2e2";ctx.fillRect(0,200,140,140);
+  ctx.fillStyle="#6c6c6c";ctx.beginPath();ctx.moveTo(0,pTop);ctx.quadraticCurveTo(74,pTop+7*empt,150,pTop);ctx.lineTo(150,340);ctx.lineTo(0,340);ctx.closePath();ctx.fill();
+  ctx.restore();
+  const dd=empt*24,dMid=T[1]+dd;
+  ctx.strokeStyle="#333";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(T[0],T[1]);ctx.quadraticCurveTo(74,T[1]+2*dd,Dt[0]-2,T[1]);ctx.stroke();
+  const gap=5+empt*18;ctx.strokeStyle="#e2e2e2";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(74-gap/2,dMid-0.5);ctx.lineTo(74+gap/2,dMid-0.5);ctx.stroke();
+  ctx.strokeStyle="#111";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(192,222);ctx.quadraticCurveTo(200,270,204,340);ctx.stroke();
+  ctx.strokeStyle="#e2e2e2";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(228,150);ctx.lineTo(246,176);ctx.moveTo(258,194);ctx.lineTo(272,214);ctx.stroke();
+  ctx.save();ctx.translate(165,130);ctx.scale(s,s);ctx.translate(-165,-130);
+  const top=[100-ax,68-pa*4],oR=[100-ax-pa*10,178+pa*10],iR=[125-pa*48,212+pa*44];
+  const vent=new Path2D();
+  vent.moveTo(top[0],top[1]);vent.bezierCurveTo(140,52-pa*2,190,54,215,72);vent.lineTo(228,150);vent.lineTo(220,168);vent.lineTo(190,185);
+  vent.quadraticCurveTo(158-pa*6,205+2*bow,iR[0],iR[1]);vent.quadraticCurveTo(108-pa*20,200+pa*20,oR[0],oR[1]);vent.quadraticCurveTo(92-2*lt,125,top[0],top[1]);vent.closePath();
+  const edm=Math.max(phi-0.75,sev-0.6,0);
+  if(edm>0){ctx.strokeStyle=`rgba(225,225,225,${Math.min(0.5,edm*1.6)})`;ctx.lineWidth=14;ctx.beginPath();ctx.moveTo(top[0]-4,top[1]+6);ctx.bezierCurveTo(140,46,190,48,219,70);ctx.stroke()}
+  ctx.strokeStyle="#5c5c5c";ctx.lineWidth=5;ctx.stroke(vent);
+  ctx.fillStyle="#ececec";ctx.fill(vent);
+  ctx.fillStyle="#5c5c5c";ctx.beginPath();ctx.ellipse(178,112,14-pa*3,9-pa*2,0,0,7);ctx.fill();
+  ctx.restore();
+  const iRs=[165+(iR[0]-165)*s,130+(iR[1]-130)*s];
+  ctx.strokeStyle="#6c6c6c";ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(iRs[0],iRs[1]+3);ctx.lineTo(74,pTop+2);ctx.stroke();
+  ctx.fillStyle="#3a3a3a";ctx.beginPath();ctx.ellipse(70-pa*16,206+pa*12,22,6,-0.15-pa*0.35,0,7);ctx.fill();
+  const fy=0.25*185+0.5*(205+2*bow)+0.25*iR[1],fx=0.25*190+0.5*(158-pa*6)+0.25*iR[0];
+  const sx=165+(fx-165)*s,sy=130+(fy-130)*s;
+  const w=D*PX;
+  ctx.save();ctx.translate(sx,sy+2);ctx.rotate(ANG);
+  if(D>0.05){ctx.fillStyle="#ececec";ctx.beginPath();ctx.ellipse(0,0,w/2,6,0,0,7);ctx.fill()}
+  const pv=D*D/(D*D+VOX*VOX);
+  if(vd.checked&&D>0.05&&A>0){
+    if(gated){
+      const v=amp*Vraw(D),a=Math.min(0.97,pv*(1-Math.exp(-v/VTH))*1.35),L=8+105*Math.min(1,v*D/2.5);
+      if(a>0.01)lobe(w,L,p>0?1:-1,a*0.85);
+    }else{
+      const v=A*Vraw(D),a=Math.min(0.95,pv*(1-Math.exp(-v/VTH))*1.1),reach=Math.min(1,v*D/2.5);
+      lobe(w,8+95*reach,1,a);lobe(w,6+70*reach,-1,a*0.9);
+    }
+  }
+  if(prt.checked){
+    const w0=Math.max(w,1.2)/2,Vst=D>0.05?A*Qf(D)*VS*p:0;
+    for(const pt of parts){
+      const u=uOf(volOf(pt.u,w0)+Vst,w0);
+      if(u<-110||u>125)continue;
+      const half=w0+KC*Math.abs(u),fade=Math.min(1,(u+110)/15,(125-u)/15);
+      ctx.fillStyle=`rgba(24,95,165,${0.9*fade})`;ctx.beginPath();ctx.arc(pt.f*2*half*0.9,u,2.3,0,7);ctx.fill();
+    }
+  }
+  ctx.restore();
+  ctx.globalAlpha=0.07;ctx.drawImage(nz,0,0);ctx.globalAlpha=1;
+  if(ann.checked){
+    ctx.strokeStyle="rgba(255,214,120,0.6)";ctx.lineWidth=0.7;
+    lbl("3rd ventricle",188,92,"center");
+    lbl("lamina terminalis",6,40);ctx.beginPath();ctx.moveTo(50,44);ctx.lineTo(Math.max(20,92-lt*1.1-ax),118);ctx.stroke();
+    lbl("floor / stoma",250,236);ctx.beginPath();ctx.moveTo(248,232);ctx.lineTo(sx+w/2+4,sy);ctx.stroke();
+    lbl("prepontine cistern",150,322,"center");
+    lbl("basilar a.",214,300);
+    lbl("aqueductal stenosis",230,170);
+    lbl("pons",262,280);
+    lbl("chiasm",6,192);
+    lbl("diaphragma sellae",6,226);ctx.beginPath();ctx.moveTo(40,230);ctx.lineTo(56,T[1]+dd*0.7);ctx.stroke();
+    lbl("pituitary",22,318);ctx.beginPath();ctx.moveTo(48,310);ctx.lineTo(66,Math.min(Bot-3,pTop+h/2));ctx.stroke();
+    lbl("dorsum",112,262);
+    if(sev>0.3)lbl("widened sulci / SAS",W-6,34,"right");
+    lbl(gated?(p>0?"systole: CSF down":"diastole: CSF up"):"ungated: averaged over cycle",W-6,18,"right");
+  }
+  $("phb").style.left=(phase*100)+"%";
+  $("phl").textContent=p>=0?"Systole":"Diastole";
+}
+function tick(t){
+  if(!running)return;
+  const dt=last==null?0:Math.min((t-last)/1000,0.05);last=t;
+  phase=(phase+dt*(+spd.value))%1;
+  if(closing){D=Math.max(0,D-dt*0.28);upd();if(D<=0){closing=false;cl.textContent="Simulate stoma closure"}}
+  draw();requestAnimationFrame(tick);
+}
+curves();upd();draw();requestAnimationFrame(tick);
+})();
+
+}
+new MutationObserver(__init).observe(__sec,{attributes:true,attributeFilter:["hidden"]});
+__init();
+})();
+</script>
+<script>
+(function(){
+const __sec=document.getElementById("m-csfpulse");
+const __g=id=>document.getElementById("x1-"+id);
+const requestAnimationFrame=f=>window.requestAnimationFrame(function w(t){ if(__sec.hidden) window.requestAnimationFrame(w); else f(t); });
+let __done=false;
+function __init(){ if(__done||__sec.hidden) return; __done=true;
+
+(function(){
+const NS="http://www.w3.org/2000/svg";
+const X0=440,W=225,E0=290,F0=400;
+const ecgF=p=>{const g=(m,s,a)=>a*Math.exp(-((p-m)**2)/(2*s*s));return g(0.03,0.008,1)-g(0.01,0.006,0.12)-g(0.05,0.007,0.2)+g(0.32,0.04,0.25)+g(0.9,0.025,0.12)};
+const flowF=p=>Math.sin(2*Math.PI*(p-0.05));
+let e="",f="";
+for(let i=0;i<=200;i++){const p=i/200,x=X0+p*W;e+=(i?"L":"M")+x.toFixed(1)+","+(E0-ecgF(p)*28).toFixed(1);f+=(i?"L":"M")+x.toFixed(1)+","+(F0-flowF(p)*30).toFixed(1)}
+__g("ecg").setAttribute("d",e);
+__g("flow").setAttribute("d",f);
+const defs=[{id:"p0",A:9,sp:9,r:3},{id:"p1",A:9,sp:10,r:3},{id:"p2",A:5,sp:12,r:2.5}];
+const g=__g("dots");
+const sets=defs.map(d=>{const el=__g(d.id),L=el.getTotalLength(),ps=[];
+  for(let s=0;s<L;s+=d.sp){const c=document.createElementNS(NS,"circle");c.setAttribute("r",d.r);c.setAttribute("fill","#185FA5");g.appendChild(c);ps.push({s0:s,c})}
+  return {...d,el,L,ps}});
+const brain=__g("brain"),cur=__g("cur"),fdot=__g("fdot"),st=__g("status");
+const hr=__g("hr"),hrv=__g("hrv"),resp=__g("resp"),net=__g("net"),play=__g("play");
+let running=true,phase=0,rphase=0,drift=0,last=null;
+hr.oninput=()=>hrv.textContent=hr.value+" bpm";
+play.onclick=()=>{running=!running;play.innerHTML=running?'<i class="ti ti-player-pause" aria-hidden="true"></i>':'<i class="ti ti-player-play" aria-hidden="true"></i>';play.setAttribute("aria-label",running?"Pause":"Play");last=null;if(running)requestAnimationFrame(tick)};
+function tick(t){
+  if(!running)return;
+  const dt=last==null?0:Math.min((t-last)/1000,0.05);last=t;
+  phase=(phase+dt*hr.value/60)%1;rphase=(rphase+dt*0.2)%1;
+  if(net.checked)drift+=dt*5;
+  const q=flowF(phase),rq=resp.checked?0.8*Math.sin(2*Math.PI*rphase):0;
+  const disp=q+rq;
+  for(const S of sets){for(const p of S.ps){
+    let s=((p.s0+drift)%S.L+S.L)%S.L, sd=s+S.A*disp;
+    sd=Math.max(0,Math.min(S.L,sd));
+    const pt=S.el.getPointAtLength(sd);
+    p.c.setAttribute("cx",pt.x);p.c.setAttribute("cy",pt.y);
+    p.c.setAttribute("opacity",Math.max(0,Math.min(1,s/12,(S.L-s)/12)).toFixed(2));
+  }}
+  const sc=1+0.012*Math.sin(2*Math.PI*(phase-0.05)+0.6);
+  brain.setAttribute("transform","translate(190 160) scale("+sc.toFixed(4)+") translate(-190 -160)");
+  const x=X0+phase*W;cur.setAttribute("x1",x);cur.setAttribute("x2",x);
+  fdot.setAttribute("cx",x);fdot.setAttribute("cy",F0-q*30);
+  st.innerHTML=disp>0.05?'<i class="ti ti-arrow-down" aria-hidden="true" style="color:#378ADD"></i> Systole: arterial inflow expands the brain, pushing CSF caudally out of the skull'
+    :disp<-0.05?'<i class="ti ti-arrow-up" aria-hidden="true" style="color:#378ADD"></i> Diastole: CSF flows back cranially into the skull'
+    :'<i class="ti ti-arrows-vertical" aria-hidden="true" style="color:var(--text-muted)"></i> Flow reversing';
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+})();
+
+}
+new MutationObserver(__init).observe(__sec,{attributes:true,attributeFilter:["hidden"]});
+__init();
+})();
+</script>
+<script>
+(function(){
+const __sec=document.getElementById("m-wkclass");
+const __g=id=>document.getElementById("x2-"+id);
+const requestAnimationFrame=f=>window.requestAnimationFrame(function w(t){ if(__sec.hidden) window.requestAnimationFrame(w); else f(t); });
+let __done=false;
+function __init(){ if(__done||__sec.hidden) return; __done=true;
+
+(function(){
+const $=id=>__g(id);const NS="http://www.w3.org/2000/svg";
+const SV=70;let sim=null;
+function simulate(){
+  const C=$("noair").checked?0.04:+$("C").value,R=+$("R").value,hr=+$("hr").value;
+  const T=60/hr,Ts=Math.min(0.33,0.3+0.1*(T-0.83)),Qm=SV*Math.PI/(2*Ts),dt=0.0005;
+  const Q=t=>{const u=t%T;return u<Ts?Qm*Math.sin(Math.PI*u/Ts):0};
+  let P=80,t=0;
+  for(let b=0;b<12;b++){for(let i=0;i<T/dt;i++){P+=dt*(Q(t)-P/R)/C;t+=dt}}
+  const N=400,arr=[];let sub=Math.max(1,Math.round(2*T/dt/N));t=0;
+  for(let i=0;i<N;i++){arr.push({q:Q(t),p:P,o:P/R});for(let k=0;k<sub;k++){P+=dt*(Q(t)-P/R)/C;t+=dt}}
+  const ps=arr.map(a=>a.p),os=arr.map(a=>a.o);
+  sim={arr,T,Ts,C,R,hr,Pmax:Math.max(...ps),Pmin:Math.min(...ps),Pm:ps.reduce((a,b)=>a+b)/N,Omax:Math.max(...os),Omin:Math.min(...os),Om:os.reduce((a,b)=>a+b)/N,dur:2*T};
+}
+const rows=[{k:"q",lab:"Inflow from pump / heart (ml/s)",col:"#E24B4A",y:10},{k:"p",lab:"Pressure in Windkessel / aorta (mmHg)",col:"#534AB7",y:90},{k:"o",lab:"Outflow through nozzle / capillaries (ml/s)",col:"#378ADD",y:170}];
+const trc=$("trc");
+rows.forEach(r=>{trc.insertAdjacentHTML("beforeend",`<text class="ch" x="60" y="${r.y+10}">${r.lab}</text><line x1="60" y1="${r.y+70}" x2="670" y2="${r.y+70}" stroke="var(--border-strong)" stroke-width="0.5"/>`);
+  r.lo=document.createElementNS(NS,"text");r.lo.setAttribute("class","cl");r.lo.setAttribute("x","54");r.lo.setAttribute("text-anchor","end");r.lo.setAttribute("y",r.y+72);trc.appendChild(r.lo);
+  r.hi=document.createElementNS(NS,"text");r.hi.setAttribute("class","cl");r.hi.setAttribute("x","54");r.hi.setAttribute("text-anchor","end");r.hi.setAttribute("y",r.y+26);trc.appendChild(r.hi);
+  r.path=document.createElementNS(NS,"path");r.path.setAttribute("fill","none");r.path.setAttribute("stroke",r.col);r.path.setAttribute("stroke-width","1.8");trc.appendChild(r.path);
+  r.dot=document.createElementNS(NS,"circle");r.dot.setAttribute("r","3.5");r.dot.setAttribute("fill",r.col);trc.appendChild(r.dot);
+  if(r.k!=="q"){r.mean=document.createElementNS(NS,"line");r.mean.setAttribute("stroke",r.col);r.mean.setAttribute("stroke-dasharray","4 4");r.mean.setAttribute("stroke-opacity","0.5");trc.appendChild(r.mean)}});
+function draw(){
+  const a=sim.arr,N=a.length;
+  rows.forEach(r=>{
+    const mx=r.k==="q"?Math.max(...a.map(x=>x.q)):r.k==="p"?Math.max(160,sim.Pmax):Math.max(160,sim.Omax);
+    const Y=v=>r.y+70-Math.min(1,v/mx)*52;
+    let d="";a.forEach((x,i)=>{d+=(i?"L":"M")+(60+i/(N-1)*610).toFixed(1)+","+Y(x[r.k]).toFixed(1)});r.path.setAttribute("d",d);
+    r.lo.textContent="0";r.hi.textContent=Math.round(mx);
+    if(r.mean){const m=r.k==="p"?sim.Pm:sim.Om;r.mean.setAttribute("x1",60);r.mean.setAttribute("x2",670);r.mean.setAttribute("y1",Y(m));r.mean.setAttribute("y2",Y(m))}
+    r.Y=Y;
+  });
+  const noair=$("noair").checked;
+  $("Cv").textContent=noair?"none":(+$("C").value).toFixed(2)+" ml/mmHg";$("Rv").textContent=(+$("R").value).toFixed(2)+" mmHg·s/ml";$("hrv").textContent=$("hr").value+" bpm";
+  $("mBP").textContent=Math.round(sim.Pmax)+"/"+Math.round(sim.Pmin);
+  $("mM").textContent=Math.round(sim.Pm)+" mmHg";
+  $("mT").textContent=(sim.C*sim.R).toFixed(2)+" s";
+  const puls=(sim.Omax-sim.Omin)/sim.Om;$("mP").textContent=Math.round(puls*100)+"%";
+  $("mP").style.color=puls>1?"var(--text-danger)":puls>0.6?"var(--text-warning)":"var(--text-primary)";
+  const w=noair?16:40+28*(+$("C").value);
+  ["domeR","domeC"].forEach(id=>{$(id).setAttribute("x",303-w/2);$(id).setAttribute("width",w);$(id).setAttribute("rx",Math.min(40,w/2))});
+  $("airT").style.display=noair?"none":"";$("domeL").textContent=noair?"no air chamber (stiff pipe)":"Windkessel = aorta";
+  const nozH=Math.max(4,22/(+$("R").value));$("noz").setAttribute("d",`M496,186 L526,${197-nozH/2} L526,${197+nozH/2} L496,208 Z`);
+  $("msg").textContent=noair
+    ?"Without the air chamber, the jet spurts with each stroke and stops between strokes. In the body this is a stiff arterial tree: high systolic pressure, low diastolic pressure and pulsatile capillary flow."
+    :puls<0.35?"The air chamber stores part of each stroke as compressed air (elastic energy). It keeps pushing water out between strokes, so the intermittent pump gives a nearly steady jet. In the body, the elastic aorta does the same, and τ = RC sets how slowly pressure decays in diastole."
+    :"Smaller compliance (a stiffer aorta, as in ageing) gives a wider pulse pressure and more pulsatile outflow, and less of each stroke is stored for diastole.";
+}
+const drops=[];for(let i=0;i<14;i++){const e=document.createElementNS(NS,"circle");e.setAttribute("r","2.2");e.setAttribute("fill","#378ADD");$("drops").appendChild(e);drops.push({e,u:i/14})}
+let tt=0,last=null,run=true;
+$("pp").onclick=()=>{run=!run;$("pp").innerHTML=run?'<i class="ti ti-player-pause" aria-hidden="true"></i>':'<i class="ti ti-player-play" aria-hidden="true"></i>';$("pp").setAttribute("aria-label",run?"Pause":"Play");last=null;if(run)requestAnimationFrame(tick)};
+["C","R","hr","noair"].forEach(id=>$(id).addEventListener(id==="noair"?"change":"input",()=>{simulate();draw()}));
+function tick(ts){
+  if(!run)return;
+  const dt=last==null?0:Math.min((ts-last)/1000,0.05);last=ts;
+  tt=(tt+dt*(+$("spd").value))%sim.dur;
+  const a=sim.arr,i=Math.min(a.length-1,Math.floor(tt/sim.dur*a.length)),s=a[i];
+  rows.forEach(r=>{r.dot.setAttribute("cx",60+i/(a.length-1)*610);r.dot.setAttribute("cy",r.Y(s[r.k]))});
+  $("cur").setAttribute("x1",60+i/(a.length-1)*610);$("cur").setAttribute("x2",60+i/(a.length-1)*610);
+  const u=(tt%sim.T),ej=u<sim.Ts?(1-Math.cos(Math.PI*u/sim.Ts))/2:1-(u-sim.Ts)/(sim.T-sim.Ts);
+  const py=78+ej*110;
+  $("pist").setAttribute("y",py);$("rod").setAttribute("y1",py);$("rod").setAttribute("y2",40+ej*8);
+  $("wcyl").setAttribute("y",py+9);$("wcyl").setAttribute("height",Math.max(0,200-py));
+  $("lev").setAttribute("y1",30-ej*18);$("lev").setAttribute("y2",50+ej*6);
+  $("valve").setAttribute("fill",s.q>1?"#378ADD":"#5F5E5A");
+  const lvl=Math.min(190,30+0.8*s.p);$("wat").setAttribute("y",205-lvl+20);
+  const P=s.p,reach=Math.max(0,8*Math.sqrt(Math.max(0,P))),th=Math.max(0.5,Math.min(9,s.o/20));
+  $("jet").setAttribute("d",P>2?`M526,197 Q${526+reach*0.55},${197-reach*0.25} ${526+reach},254`:"");
+  $("jet").setAttribute("stroke-width",th.toFixed(2));
+  drops.forEach(d=>{d.u=(d.u+dt*(+$("spd").value)*2.5)%1;const x=526+reach*d.u,y=197+(254-197)*d.u*d.u-reach*0.5*d.u*(1-d.u);d.e.setAttribute("cx",x);d.e.setAttribute("cy",y);d.e.style.display=P>5?"":"none"});
+  requestAnimationFrame(tick);
+}
+simulate();draw();requestAnimationFrame(tick);
+})();
+
+}
+new MutationObserver(__init).observe(__sec,{attributes:true,attributeFilter:["hidden"]});
+__init();
+})();
+</script>
+<script>
+(function(){
+const __sec=document.getElementById("m-wkcirc");
+const __g=id=>document.getElementById("x3-"+id);
+const requestAnimationFrame=f=>window.requestAnimationFrame(function w(t){ if(__sec.hidden) window.requestAnimationFrame(w); else f(t); });
+let __done=false;
+function __init(){ if(__done||__sec.hidden) return; __done=true;
+
+(function(){
+const $=id=>__g(id);
+const HARM=[[1,0]];
+const L0=2,WT=2*Math.PI*1.2,C0=1/(WT*WT*L0),RV0=112,RC=150,RSH=5.155;
+const cdiv=(a,b)=>{const d=b[0]*b[0]+b[1]*b[1];return [(a[0]*b[0]+a[1]*b[1])/d,(a[1]*b[0]-a[0]*b[1])/d]};
+const cmul=(a,b)=>[a[0]*b[0]-a[1]*b[1],a[0]*b[1]+a[1]*b[0]];
+const Rs=v=>2*Math.pow(150,v/100);
+const P={rs:0,vr:1,li:1,st:1,hr:72,sh:false,etv:false};
+function solve(p){
+  const w0=2*Math.PI*p.hr/60,out={S:[],V:[],C:[],H:[]};
+  const RS=Rs(p.rs),LS=L0*p.li,CS=C0/p.st;
+  let RVv=RV0/Math.pow(p.vr,4),CV=C0;
+  if(p.etv){RVv=RVv/4;CV=C0*2}
+  HARM.forEach(([a,ph],k)=>{
+    const n=k+1,w=n*w0,I=[a*Math.cos(ph),a*Math.sin(ph)];
+    const zs=[RS,w*LS-1/(w*CS)],zv=[RVv,w*L0-1/(w*CV)];
+    const ys=cdiv([1,0],zs),yv=cdiv([1,0],zv),yc=[1/RC,0],yh=[p.sh?1/RSH:0,0];
+    const Y=[ys[0]+yv[0]+yc[0]+yh[0],ys[1]+yv[1]];
+    const V=cdiv(I,Y);
+    out.S.push(cmul(V,ys));out.V.push(cmul(V,yv));out.C.push(cmul(V,yc));out.H.push(cmul(V,yh));
+  });
+  const rms=a=>Math.sqrt(a.reduce((s,c)=>s+c[0]*c[0]+c[1]*c[1],0)/2);
+  out.w0=w0;out.r={S:rms(out.S),V:rms(out.V),C:rms(out.C),H:rms(out.H)};
+  out.W=(p.li*p.st)/(RS/2);
+  return out;
+}
+const at=(arr,w0,t)=>arr.reduce((s,c,k)=>{const n=k+1,m=Math.hypot(c[0],c[1]),ph=Math.atan2(c[1],c[0]);return s+m*Math.cos(n*w0*t+ph)},0);
+const REF=solve({rs:0,vr:1,li:1,st:1,hr:72,sh:false,etv:false});
+let sol=solve(P);
+const PRE=[
+ ["Normal",{rs:0,vr:1,li:1,st:1,sh:false,etv:false},"Normal windkessel: almost all arterial pulsatile (AC) power passes through the large, low-damping subarachnoid CSF path to the veins. The aqueduct carries a small fraction and capillary flow is nearly pulseless."],
+ ["Acute SAH",{rs:72,vr:1,li:1,st:1,sh:false,etv:false},"Subarachnoid obstruction (e.g. SAH) raises damping in the SAS path. Pulsatility is redistributed to the parallel ventricular path (aqueductal flow rises steeply) and to the capillaries, putting the microcirculation under pulsatile stress. Greitz measured SAS pulsatility about halving and aqueductal pulsatility rising about 9-fold."],
+ ["+ Ventriculomegaly",{rs:72,vr:1.73,li:1,st:1,sh:false,etv:false},"Adaptive ventriculomegaly: in this theory ventricular dilation is an active response. A wider ventricular path lowers damping (resistance ∝ 1/r⁴), pulling pulsatility away from the capillaries, but capillary pulsatile stress remains above normal."],
+ ["+ Shunt",{rs:72,vr:1.73,li:1,st:1,sh:true,etv:false},"Shunt as an accessory windkessel: a low-impedance parallel path drains pulsatile energy out of the cranium, restoring nearly pulseless capillary flow."],
+ ["NPH (low inertia)",{rs:0,vr:1,li:0.3,st:1,sh:false,etv:false},"NPH in windkessel theory: low CSF pulse inertia (arteriosclerotic subarachnoid arteries) detunes the SAS path from the heart rate, raising its impedance without obstruction."],
+ ["LPH (low stiffness)",{rs:0,vr:1,li:1,st:0.3,sh:false,etv:false},"Low-pressure hydrocephalus: low CSF path stiffness (brain laxity) also detunes the SAS path. Neck wrapping (raises stiffness) and siphoning (lowers damping) improve W."]
+];
+const pr=$("presets");let active=0;
+PRE.forEach((p,i)=>{const b=document.createElement("button");b.className="pb";b.textContent=p[0];b.onclick=()=>{Object.assign(P,p[1]);active=i;sync();recompute()};pr.appendChild(b)});
+const ids=["rs","vr","li","st","hr"];
+ids.forEach(k=>$(k).oninput=()=>{P[k]=+$(k).value;active=-1;recompute()});
+$("sh").onchange=()=>{P.sh=$("sh").checked;active=-1;recompute()};
+$("etv").onchange=()=>{P.etv=$("etv").checked;active=-1;recompute()};
+function sync(){ids.forEach(k=>$(k).value=P[k]);$("sh").checked=P.sh;$("etv").checked=P.etv}
+const CH=[
+ {k:"C",y:62,col:"#E24B4A",name:"Capillaries"},
+ {k:"V",y:124,col:"#378ADD",name:"Ventricles / aqueduct"},
+ {k:"S",y:186,col:"#1D9E75",name:"Subarachnoid space"},
+ {k:"H",y:248,col:"#7F77DD",name:"Shunt"}
+];
+const NS="http://www.w3.org/2000/svg",chan=$("chan"),dots=$("dots"),labs=$("labs");
+CH.forEach(c=>{
+  c.path=document.createElementNS(NS,"path");c.path.setAttribute("fill","none");c.path.setAttribute("stroke",c.col);c.path.setAttribute("stroke-opacity","0.35");c.path.setAttribute("stroke-linecap","round");
+  c.path.setAttribute("d",`M72,150 C120,150 120,${c.y} 168,${c.y} L588,${c.y}`);chan.appendChild(c.path);
+  c.d=[];for(let i=0;i<14;i++){const e=document.createElementNS(NS,"circle");e.setAttribute("fill",c.col);dots.appendChild(e);c.d.push(e)}
+  c.t=document.createElementNS(NS,"text");c.t.setAttribute("class","cl");c.t.setAttribute("x","176");c.t.setAttribute("y",c.y-8);labs.appendChild(c.t);
+});
+const fmt=x=>x>=10?Math.round(x)+"×":x.toFixed(x<1?2:1)+"×";
+function recompute(){
+  sol=solve(P);
+  $("rsv").textContent=Rs(P.rs).toFixed(Rs(P.rs)<10?1:0);$("vrv").textContent=P.vr.toFixed(2)+"×";
+  $("liv").textContent=P.li.toFixed(2)+"×";$("stv").textContent=P.st.toFixed(2)+"×";$("hrv").textContent=P.hr+" bpm";
+  [...pr.children].forEach((b,i)=>b.classList.toggle("on",i===active));
+  const r=sol.r,R=REF.r;
+  $("mW").textContent=sol.W.toFixed(2);
+  $("mS").textContent=fmt(r.S/R.S)+" normal";
+  $("mV").textContent=fmt(r.V/R.V)+" normal";
+  const cs=r.C/R.C;$("mC").textContent=fmt(cs)+" normal";
+  $("mC").style.color=cs>3?"var(--text-danger)":cs>1.5?"var(--text-warning)":"var(--text-primary)";
+  const tot=r.S+r.V+r.C+r.H;
+  CH.forEach(c=>{
+    const share=r[c.k]/tot,wd=c.k==="H"&&!P.sh?0:3+34*share;
+    c.path.setAttribute("stroke-width",wd);c.path.style.display=c.k==="H"&&!P.sh?"none":"";
+    c.d.forEach(e=>e.style.display=c.k==="H"&&!P.sh?"none":"");
+    c.t.textContent=c.k==="H"&&!P.sh?"":`${c.name}: ${Math.round(share*100)}% of pulsatile flow`;
+  });
+  const N=400,T=3;let maxP=0;
+  const vals={S:[],V:[],C:[],H:[]};
+  for(let i=0;i<=N;i++){const t=i/N*T;for(const k of ["S","V","C","H"]){const v=at(sol[k],sol.w0,t);vals[k].push(v);maxP=Math.max(maxP,Math.abs(v))}}
+  const sc=Math.max(maxP,1e-9);
+  for(const k of ["S","V","C","H"]){let d="";vals[k].forEach((v,i)=>{d+=(i?"L":"M")+(50+i/N*620).toFixed(1)+","+(110-v/sc*90).toFixed(1)});$("w"+k).setAttribute("d",k==="H"&&!P.sh?"":d)}
+  let m;
+  if(active>=0)m=PRE[active][2];
+  else{
+    m=cs>3?"Windkessel impaired: pulsatile energy is being pushed into the capillary bed.":cs>1.5?"Partial windkessel impairment: capillary pulsatility is above normal.":"Windkessel functioning: capillary flow remains nearly pulseless.";
+    if(P.etv)m+=" ETV lowers ventricular-path damping but also lowers stiffness, which have opposite effects on W.";
+  }
+  $("msg").textContent=m;
+}
+let t=0,last=null,run=true;
+$("pp").onclick=()=>{run=!run;$("pp").innerHTML=run?'<i class="ti ti-player-pause" aria-hidden="true"></i>':'<i class="ti ti-player-play" aria-hidden="true"></i>';$("pp").setAttribute("aria-label",run?"Pause":"Play");last=null;if(run)requestAnimationFrame(tick)};
+const refPk=Math.max(...Array.from({length:100},(_,i)=>Math.abs(at(REF.S,REF.w0,i/100*1))));
+function tick(ts){
+  if(!run)return;
+  const dt=last==null?0:Math.min((ts-last)/1000,0.05);last=ts;
+  t=(t+dt*0.5)%3;
+  $("cur").setAttribute("x1",50+t/3*620);$("cur").setAttribute("x2",50+t/3*620);
+  CH.forEach(c=>{
+    if(c.k==="H"&&!P.sh)return;
+    const v=at(sol[c.k],sol.w0,t),dx=Math.max(-40,Math.min(40,22*v/refPk));
+    const amp=sol.r[c.k]/REF.r.S;
+    c.d.forEach((e,i)=>{const x=190+i*28+dx;e.setAttribute("cx",x);e.setAttribute("cy",c.y);e.setAttribute("r",(2+Math.min(3,amp*3)).toFixed(1))});
+  });
+  requestAnimationFrame(tick);
+}
+sync();recompute();requestAnimationFrame(tick);
+})();
+
+}
+new MutationObserver(__init).observe(__sec,{attributes:true,attributeFilter:["hidden"]});
+__init();
+})();
+</script>
+<script>
+(function(){
+const __sec=document.getElementById("m-wkanim");
+const __g=id=>document.getElementById("x4-"+id);
+const requestAnimationFrame=f=>window.requestAnimationFrame(function w(t){ if(__sec.hidden) window.requestAnimationFrame(w); else f(t); });
+let __done=false;
+function __init(){ if(__done||__sec.hidden) return; __done=true;
+
+(function(){
+const $=id=>__g(id);
+const NS="http://www.w3.org/2000/svg";
+const HARM=[[1,0],[0.55,-1.2],[0.3,-2.3],[0.15,-3.1],[0.08,-3.9]];
+const raw=f=>HARM.reduce((s,[a,p],k)=>s+a*Math.cos(2*Math.PI*(k+1)*f+p),0);
+let mx=0,mn=0;for(let i=0;i<400;i++){const v=raw(i/400);mx=Math.max(mx,v);mn=Math.min(mn,v)}
+const ac=f=>{f=((f%1)+1)%1;const v=raw(f);return v>=0?v/mx:-v/mn};
+const blk=$("blk");
+function cfg(){const b=blk.checked;return b?{csf:0.45,aq:0.9,cap:0.4,ven:0.3}:{csf:1,aq:0.1,cap:0.04,ven:0.6}}
+const mini=(x0,w,fn,yc,a)=>{let d="";for(let i=0;i<=120;i++){const f=i/120*2;d+=(i?"L":"M")+(x0+i/120*w).toFixed(1)+","+(yc-fn(f)*a).toFixed(1)}return d};
+$("dA").setAttribute("d",mini(20,185,f=>ac(f),70,30));
+$("dD").setAttribute("d",mini(250,175,f=>0,58,0));
+$("dC").setAttribute("d",mini(470,190,f=>ac(f),70,30));
+const rows=[
+ {lab:"Arterial pressure",col:"#E24B4A",fn:(f,c)=>ac(f)},
+ {lab:"SAS CSF (foramen magnum)",col:"#1D9E75",fn:(f,c)=>c.csf*ac(f-0.04)},
+ {lab:"Aqueduct CSF",col:"#378ADD",fn:(f,c)=>c.aq*ac(f-0.07)},
+ {lab:"Venous outflow",col:"#534AB7",fn:(f,c)=>c.ven*ac(f-0.1)},
+ {lab:"Capillary flow",col:"#E24B4A",fn:(f,c)=>c.cap*ac(f-0.06)}
+];
+const tr=$("tr");
+rows.forEach((r,i)=>{
+  r.y=168+i*62;
+  tr.insertAdjacentHTML("beforeend",`<text class="ch" x="470" y="${r.y}">${r.lab}</text><line x1="470" y1="${r.y+28}" x2="670" y2="${r.y+28}" stroke="var(--border-strong)" stroke-width="0.5"/>`);
+  r.p=document.createElementNS(NS,"path");r.p.setAttribute("fill","none");r.p.setAttribute("stroke",r.col);r.p.setAttribute("stroke-width","1.8");tr.appendChild(r.p);
+  r.dot=document.createElementNS(NS,"circle");r.dot.setAttribute("r","3.5");r.dot.setAttribute("fill",r.col);tr.appendChild(r.dot);
+});
+function drawTraces(){const c=cfg();rows.forEach(r=>{let d="";for(let i=0;i<=160;i++){const f=i/160*2;d+=(i?"L":"M")+(470+i/160*200).toFixed(1)+","+(r.y+28-r.fn(f,c)*20).toFixed(1)}r.p.setAttribute("d",d)})}
+function mk(path,n,col,rad){const el=$(path),L=el.getTotalLength(),arr=[];for(let i=0;i<n;i++){const e=document.createElementNS(NS,"circle");e.setAttribute("r",rad);e.setAttribute("fill",col);$("pd").appendChild(e);arr.push({e,s:i/n*L})}return{el,L,arr}}
+const A=mk("art",9,"#A32D2D",2.6),Cp=mk("cap",11,"#A32D2D",2.2),V=mk("ven",12,"#3C3489",2.4),F1=mk("csfp",10,"#0F6E56",2.6),F2=mk("csfp2",10,"#0F6E56",2.6),VP=mk("vp",16,"#185FA5",2.4);
+const place=(o,s)=>o.el.getPointAtLength(Math.max(0,Math.min(o.L,s)));
+blk.onchange=()=>{$("blkmark").style.display=blk.checked?"":"none";drawTraces()};
+let ph=0,last=null,run=true;
+$("pp").onclick=()=>{run=!run;$("pp").innerHTML=run?'<i class="ti ti-player-pause" aria-hidden="true"></i>':'<i class="ti ti-player-play" aria-hidden="true"></i>';$("pp").setAttribute("aria-label",run?"Pause":"Play");last=null;if(run)requestAnimationFrame(tick)};
+const vent=$("vent");
+function tick(t){
+  if(!run)return;
+  const dt=last==null?0:Math.min((t-last)/1000,0.05);last=t;
+  const sp=+$("spd").value;ph=(ph+dt*sp)%2;
+  const f=ph%1,c=cfg(),a=ac(f);
+  [["kA",20,185,a,70,30],["kD",250,175,0,58,0],["kC",470,190,a,70,30]].forEach(([id,x0,w,v,yc,am])=>{$(id).setAttribute("cx",x0+ph/2*w);$(id).setAttribute("cy",yc-v*am)});
+  $("art").setAttribute("stroke-width",(9+4*a).toFixed(2));
+  const sacW=40*(1+0.22*(c.csf+0.3*c.aq)*ac(f-0.04));$("sac").setAttribute("x",260-sacW/2);$("sac").setAttribute("width",sacW);
+  $("ven").setAttribute("stroke-width",(7+3*c.ven*ac(f-0.1)).toFixed(2));
+  $("cap").setAttribute("stroke-width",(3+5*c.cap*Math.max(0,ac(f-0.06))).toFixed(2));
+  $("cap").setAttribute("stroke-opacity",blk.checked?"0.6":"0.35");
+  const vs=1-0.05*c.aq*ac(f-0.07);
+  vent.setAttribute("transform",`translate(262 290) scale(${vs.toFixed(4)}) translate(-262 -290)`);
+  const sA=dt*sp*70;
+  A.arr.forEach(o=>{o.s=(o.s+sA*(1+0.9*a))%A.L;const p=place(A,o.s);o.e.setAttribute("cx",p.x);o.e.setAttribute("cy",p.y)});
+  Cp.arr.forEach(o=>{o.s=(o.s+sA*0.9*(1+c.cap*ac(f-0.06)))%Cp.L;const p=place(Cp,o.s);o.e.setAttribute("cx",p.x);o.e.setAttribute("cy",p.y)});
+  V.arr.forEach(o=>{o.s=(o.s+sA*1.1*(1+c.ven*ac(f-0.1)))%V.L;const p=place(V,o.s);o.e.setAttribute("cx",p.x);o.e.setAttribute("cy",p.y)});
+  const disp=-22*c.csf*ac(f-0.29);
+  [F1,F2].forEach(o=>o.arr.forEach(q=>{const p=place(o,q.s+o.L*0.04+disp);q.e.setAttribute("cx",p.x);q.e.setAttribute("cy",p.y)}));
+  const vd=-24*c.aq*ac(f-0.32);
+  VP.arr.forEach(q=>{const p=place(VP,q.s+vd);q.e.setAttribute("cx",p.x);q.e.setAttribute("cy",p.y)});
+  rows.forEach(r=>{r.dot.setAttribute("cx",470+ph/2*200);r.dot.setAttribute("cy",r.y+28-r.fn(ph,c)*20)});
+  $("tcur").setAttribute("x1",470+ph/2*200);$("tcur").setAttribute("x2",470+ph/2*200);
+  const sys=a>0.15;
+  $("st").innerHTML=blk.checked
+    ?(sys?'<i class="ti ti-alert-triangle" aria-hidden="true" style="color:var(--text-danger)"></i> Systole, SAS blocked: subarachnoid CSF barely moves. The pulse is diverted into the ventricles (aqueductal flow surges, ventricles are squeezed) and into the capillaries, which now pulsate.':'Diastole: CSF surges back up the aqueduct; capillaries still carry a pulsatile load.')
+    :(sys?'<i class="ti ti-arrow-down" aria-hidden="true" style="color:#378ADD"></i> Systole: SAS arteries swell and push subarachnoid CSF into the spinal sac (the main route). A small pulse goes down the aqueduct. Veins are squeezed and outflow surges, while capillary flow stays steady.':'<i class="ti ti-arrow-up" aria-hidden="true" style="color:#378ADD"></i> Diastole: arteries recoil and CSF returns to the skull through both routes. Capillary flow stays steady.');
+  requestAnimationFrame(tick);
+}
+drawTraces();requestAnimationFrame(tick);
+})();
+
+}
+new MutationObserver(__init).observe(__sec,{attributes:true,attributeFilter:["hidden"]});
+__init();
+})();
 </script>
 </body>
 </html>
