@@ -105,8 +105,8 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
     <div class="sheet scene">
       <canvas id="scene" aria-label="Animated elevation drawing of the cylinder draining onto the ground"></canvas>
       <div class="transport">
-        <button class="primary" id="play">Pause</button>
-        <button id="restart">Restart</button>
+        <button class="primary" id="play">Start</button>
+        <button id="restart">Reset</button>
         <select id="speed" aria-label="Playback speed">
           <option value="fit" selected>Fit to 15 s</option>
           <option value="1">Real time</option>
@@ -259,7 +259,7 @@ function at(sol, time){ // returns {y/h, V}
 }
 
 /* ---------- state ---------- */
-let P = {}, S = null, simT = 0, playing = !matchMedia("(prefers-reduced-motion: reduce)").matches, last = null;
+let P = {}, S = null, simT = 0, playing = false, last = null;
 function read(){
   const R = +$("R").value;
   $("r").max = R; if(+$("r").value > R) $("r").value = R;
@@ -492,20 +492,23 @@ function niceStep(raw){ const p = 10**Math.floor(Math.log10(raw)), f = raw/p; re
 function frame(now){
   if(last != null && playing){
     simT += Math.min((now-last)/1000, 0.1) * speed();
-    if(simT > total()) simT = 0;           // loop
+    if(simT >= total()){ simT = total(); playing = false; }   // stop at the end
   }
-  last = now; drawScene(); requestAnimationFrame(frame);
+  last = now; drawScene(); label(); requestAnimationFrame(frame);
 }
 ids.forEach(id => $(id).addEventListener("input", () => { read(); simT = Math.min(simT, total()); }));
-$("play").onclick = () => { playing = !playing; $("play").textContent = playing ? "Pause" : "Play"; };
-$("play").textContent = playing ? "Pause" : "Play";
-$("restart").onclick = () => { simT = 0; };
+function label(){
+  const t = playing ? "Pause" : simT <= 0 ? "Start" : simT >= total() ? "Start again" : "Resume";
+  if($("play").textContent !== t) $("play").textContent = t;
+}
+$("play").onclick = () => { if(!playing && simT >= total()) simT = 0; playing = !playing; label(); };
+$("restart").onclick = () => { simT = 0; playing = false; label(); };
 $("scrub").addEventListener("input", e => { simT = total()*e.target.value/1000; });
 const presets = {
   small:{R:0.30,r:0.030,Cd:1}, half:{R:0.30,r:0.150,Cd:1}, open:{R:0.30,r:0.30,Cd:1}, real:{R:0.30,r:0.030,Cd:0.61}
 };
 document.querySelectorAll("[data-p]").forEach(b => b.onclick = () => {
-  const q = presets[b.dataset.p]; $("R").value = q.R; $("r").max = q.R; $("r").value = q.r; $("Cd").value = q.Cd; read(); simT = 0; });
+  const q = presets[b.dataset.p]; $("R").value = q.R; $("r").max = q.R; $("r").value = q.r; $("Cd").value = q.Cd; read(); simT = 0; playing = false; label(); });
 const mq = matchMedia("(prefers-color-scheme: dark)");
 const retheme = () => { tokens(); drawGraph(); };
 mq.addEventListener?.("change", retheme);
