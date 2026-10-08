@@ -153,6 +153,8 @@ ol.refs em{color:var(--ink);font-style:italic;}
 .xm .wn{background:var(--bg-warning);color:var(--text-warning)}
 .xm .bd{background:var(--bg-danger);color:var(--text-danger)}
 .xm .hd{font-size:12px;color:var(--text-muted);margin:10px 0 2px}
+.xm .mc .n{font-size:11px;color:var(--text-muted)}
+.xm select{width:auto;margin:0}
 </style>
 </head>
 <body>
@@ -160,7 +162,7 @@ ol.refs em{color:var(--ink);font-style:italic;}
 <nav class="side" aria-label="Models">
   <div class="brand">
     <h1>CSF dynamics, modelled</h1>
-    <p>Thirty-nine interactive models in five groups: foundations, clinical models, special scenarios, pulsatility and the windkessel, and mission profiles.</p>
+    <p>Forty interactive models in five groups: foundations, clinical models, special scenarios, pulsatility and the windkessel, and mission profiles.</p>
   </div>
   <ul class="navlist" id="navlist"></ul>
   <div class="foot">Teaching models with simplified physiology. Parameter values are representative, not patient-specific.</div>
@@ -735,6 +737,88 @@ ol.refs em{color:var(--ink);font-style:italic;}
         <li>Boon AJW, et al. <em>Dutch NPH Study: prediction of outcome after shunting by resistance to outflow of CSF.</em> J Neurosurg 1997;87:687–693.</li>
         <li>Williams MA, Malm J. <em>Diagnosis and treatment of idiopathic normal pressure hydrocephalus.</em> Continuum 2016;22:579–599.</li>
       </ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-nphpulse" data-group="Clinical models" data-dim="Pulsation" data-name="NPH: restricted pulsation and shunting" hidden>
+  <header>
+    <h2>NPH: restricted pulsation, the ventricular water hammer and shunting</h2>
+    <p>A pulsation hypothesis of normal pressure hydrocephalus. The high-convexity subarachnoid space is effaced and the rest of the cranial subarachnoid space (Sylvian fissures, basal cisterns) is already full, so the brain cannot move caudally in systole. The arterial pulse is transmitted instead through the ventricles and aqueduct: aqueductal flow becomes hyperdynamic and the CSF pulse strikes the ventricular wall from the luminal side. A VP shunt with a one-way valve drains forward at the systolic peaks and lowers ventricular volume, damping the pulse.</p>
+  </header>
+  <div class="xm">
+<div class="ctl" id="x6-pre"></div>
+<div class="ctl">
+  <label class="sl">NPH severity <input type="range" id="x6-sev" min="0" max="1" step="0.01" value="0" style="flex:1"><span class="v" id="x6-sevv"></span></label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x6-sh"> VP shunt</label>
+  <label style="display:flex;align-items:center;gap:6px">Valve opening pressure <select id="x6-vs"><option value="0">Low</option><option value="1" selected>Medium</option><option value="2">High</option></select></label>
+</div>
+<div class="ctl">
+  <label style="display:flex;align-items:center;gap:8px">Speed <input type="range" id="x6-spd" min="0.15" max="1.2" step="0.05" value="0.45" style="width:110px"></label>
+  <button id="x6-pp" aria-label="Pause"><i class="ti ti-player-pause" aria-hidden="true"></i></button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:6px 0 10px">
+  <div class="mc"><div class="l">Aqueductal stroke volume</div><div class="v" id="x6-mAq">–</div><div class="n">per beat</div></div>
+  <div class="mc"><div class="l">Foramen magnum stroke volume</div><div class="v" id="x6-mFm">–</div><div class="n">per beat</div></div>
+  <div class="mc"><div class="l">Ventricular pulse pressure</div><div class="v" id="x6-mPP">–</div><div class="n">intraventricular</div></div>
+  <div class="mc"><div class="l">Brain systolic descent</div><div class="v" id="x6-mBd">–</div><div class="n">vs normal</div></div>
+  <div class="mc"><div class="l">Shunt valve open</div><div class="v" id="x6-mVo">–</div><div class="n">of each cardiac cycle</div></div>
+</div>
+<div id="x6-st" style="font-size:14px;color:var(--text-primary);min-height:44px;margin:0 0 4px"></div>
+<svg viewBox="0 0 680 450" width="100%" style="display:block" role="img">
+  <title>Sagittal schematic of CSF pulsation in NPH</title>
+  <ellipse cx="300" cy="200" rx="185" ry="142" fill="#378ADD" fill-opacity="0.22" stroke="#888780" stroke-width="3"/>
+  <rect x="279" y="330" width="42" height="112" rx="12" fill="#378ADD" fill-opacity="0.22" stroke="#888780" stroke-width="1.5"/>
+  <rect x="282" y="324" width="36" height="16" fill="#378ADD" fill-opacity="0.22"/>
+  <g id="x6-brain">
+    <ellipse id="x6-br" cx="300" cy="207" rx="168" ry="126" fill="#B4B2A9" fill-opacity="0.75"/>
+    <path id="x6-syl" d="M175,232 C205,222 235,212 262,196" stroke="#378ADD" stroke-opacity="0.6" stroke-linecap="round" fill="none"/>
+    <path id="x6-halo" fill="none" stroke="#E24B4A" stroke-opacity="0" stroke-width="10" stroke-linejoin="round"/>
+    <path id="x6-lv" fill="#378ADD" fill-opacity="0.6"/>
+    <path id="x6-v3" fill="#378ADD" fill-opacity="0.6"/>
+    <path d="M318,232 L334,260" stroke="#378ADD" stroke-opacity="0.85" stroke-width="4" fill="none"/>
+    <path d="M330,256 L352,276 L333,292 Z" fill="#378ADD" fill-opacity="0.6"/>
+    <path d="M336,290 L316,330" stroke="#378ADD" stroke-opacity="0.5" stroke-width="4" fill="none"/>
+    <g id="x6-rings"></g>
+  </g>
+  <g id="x6-shuntg" style="display:none">
+    <path id="x6-shp" d="M262,150 L205,96 C190,70 150,58 120,62 C80,68 66,110 66,160 L66,430" fill="none" stroke="#7F77DD" stroke-width="4" stroke-linecap="round"/>
+    <rect id="x6-valve" x="54" y="250" width="24" height="34" rx="6" fill="#7F77DD" fill-opacity="0.25" stroke="#7F77DD"/>
+    <path id="x6-vflap" d="M58,262 L66,272 L74,262" fill="none" stroke="#534AB7" stroke-width="2"/>
+    <text class="cl" x="84" y="262" id="x6-vtxt">valve closed</text>
+    <text class="cl" x="84" y="278">one-way</text>
+    <text class="cl" x="76" y="444">to peritoneum ↓</text>
+  </g>
+  <path id="x6-pCx" d="M128,180 C140,78 460,78 472,180" fill="none"/>
+  <path id="x6-pSp" d="M372,300 L330,326 L304,350 L302,436" fill="none"/>
+  <path id="x6-pVe" d="M246,172 C270,150 330,148 350,170 L322,196 L320,226 L334,258 L340,280 L322,312 L306,338 L298,436" fill="none"/>
+  <g id="x6-pd"></g>
+  <path id="x6-arr" fill="#E24B4A" fill-opacity="0.7"/>
+  <text class="cl" x="300" y="46" text-anchor="middle" id="x6-vxl">vertex subarachnoid space</text>
+  <text class="cl" x="496" y="200">skull</text>
+  <text class="cl" x="150" y="262">Sylvian fissure</text>
+  <text class="cl" x="232" y="128">lateral ventricle</text>
+  <text class="cl" x="358" y="262">aqueduct</text>
+  <text class="cl" x="330" y="400">spinal SAS</text>
+  <text class="cl" x="392" y="318">basal cisterns</text>
+</svg>
+<svg viewBox="0 0 680 230" width="100%" style="display:block;margin-top:4px" role="img">
+  <title>Flow and pressure traces</title>
+  <g id="x6-trc"></g>
+  <line id="x6-cur" x1="60" y1="4" x2="60" y2="226" stroke="var(--text-primary)" stroke-width="1" stroke-dasharray="3 3"/>
+</svg>
+<div id="x6-msg" class="msg"></div>
+
+  </div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <p>Each systolic arterial pulse (about 1 mL) is shared between the cranial subarachnoid route, the aqueduct and, when present, the shunt, in proportion to each route's compliance. NPH removes most of the subarachnoid reserve; whatever cannot be accommodated raises the ventricular pressure pulse. The shunt valve opens only when ventricular pressure exceeds its opening pressure, so shunt flow is forward-only and occurs at the systolic peaks; there is no retrograde flow. Values are illustrative but set within reported ranges (aqueductal stroke volume tens of µL normally, around 100 µL or more in NPH).</p>
+      <p class="caveat">A hypothesis model, not fitted to patient data. The predictive value of hyperdynamic aqueductal flow for shunt response is inconsistent across studies, and whether the tight convexity is a cause or a consequence of CSF redistribution is debated. Valve behaviour also depends on posture, intra-abdominal pressure and anti-siphon devices, which are not modelled.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs"><li>Bradley WG Jr, Scalzo D, Queralt J, Nitz WN, Atkinson DJ, Wong P. <em>Normal-pressure hydrocephalus: evaluation with cerebrospinal fluid flow measurements at MR imaging.</em> Radiology 1996;198:523–529.</li><li>Greitz D. <em>Radiological assessment of hydrocephalus: new theories and implications for therapy.</em> Neurosurg Rev 2004;27:145–165.</li><li>Hashimoto M, Ishikawa M, Mori E, Kuwana N; SINPHONI. <em>Diagnosis of idiopathic normal pressure hydrocephalus is supported by MRI-based scheme: a prospective cohort study.</em> Cerebrospinal Fluid Res 2010;7:18.</li></ol>
     </div>
   </div>
 </section>
@@ -4551,6 +4635,125 @@ __init();
 <script>
 addEventListener("message", e => { const f = document.getElementById("drain-frame");
   if(f && e.source === f.contentWindow && e.data && e.data.drainHeight) f.style.height = Math.ceil(e.data.drainHeight) + "px"; });
+</script>
+<script>
+(function(){
+const __sec=document.getElementById("m-nphpulse");
+const __g=id=>document.getElementById("x6-"+id);
+const requestAnimationFrame=f=>window.requestAnimationFrame(function w(t){ if(__sec.hidden) window.requestAnimationFrame(w); else f(t); });
+let __done=false;
+function __init(){ if(__done||__sec.hidden) return; __done=true;
+
+(function(){
+const $=id=>__g(id);const NS="http://www.w3.org/2000/svg";
+const HARM=[[1,0],[0.55,-1.2],[0.3,-2.3],[0.15,-3.1],[0.08,-3.9]];
+const raw=f=>HARM.reduce((s,[a,p],k)=>s+a*Math.cos(2*Math.PI*(k+1)*f+p),0);
+let mx=0,mn=0;for(let i=0;i<400;i++){const v=raw(i/400);mx=Math.max(mx,v);mn=Math.min(mn,v)}
+const ac=f=>{f=((f%1)+1)%1;const v=raw(f);return v>=0?v/mx:-v/mn};
+const VALVES=[{y:0.8,thr:0.0},{y:0.45,thr:0.3},{y:0.2,thr:0.55}];
+const S={sev:0,sh:false,vs:1};
+const YAQ=0.05,KART=0.3;
+function model(){
+  const V=VALVES[S.vs],Ys=1-0.85*S.sev,Ysh=S.sh?V.y:0,Yt=Ys+YAQ+Ysh,acc=Yt/(Yt+KART);
+  return{aq:acc*YAQ/Yt,fm:acc*Ys/Yt,shv:acc*Ysh/Yt,pp:4/(Yt+KART),desc:acc*Ys/Yt,thr:V.thr};
+}
+const REF=(()=>{const s=S.sev,h=S.sh;S.sev=0;S.sh=false;const r=model();S.sev=s;S.sh=h;return r})();
+let M=model();
+const rect=(f,thr)=>{const v=ac(f);return v>thr?(v-thr)/(1-thr):0};
+let openFrac={};VALVES.forEach((v,i)=>{let n=0;for(let k=0;k<400;k++)if(ac(k/400)>v.thr)n++;openFrac[i]=n/400});
+const PRE=[["Normal",{sev:0,sh:false}],["NPH",{sev:1,sh:false}],["NPH + VP shunt",{sev:1,sh:true}]];
+let active=0;
+PRE.forEach((p,i)=>{const b=document.createElement("button");b.className="pb";b.textContent=p[0];b.onclick=()=>{Object.assign(S,p[1]);active=i;sync();upd()};$("pre").appendChild(b)});
+function sync(){$("sev").value=S.sev;$("sh").checked=S.sh;$("vs").value=String(S.vs)}
+$("sev").oninput=()=>{S.sev=+$("sev").value;active=-1;upd()};
+$("sh").onchange=()=>{S.sh=$("sh").checked;active=-1;upd()};
+$("vs").onchange=()=>{S.vs=+$("vs").value;upd()};
+const rows=[
+ {k:"aq",lab:"Aqueductal CSF flow (to and fro)",col:"#378ADD",lag:0.07,sc:0.12},
+ {k:"fm",lab:"Foramen magnum CSF flow (to and fro)",col:"#1D9E75",lag:0.04,sc:0.8},
+ {k:"pp",lab:"Ventricular CSF pressure pulse",col:"#E24B4A",lag:0.02,sc:8.5},
+ {k:"shv",lab:"Shunt flow (forward only: valve opens in systole)",col:"#7F77DD",lag:0.03,sc:1.2}
+];
+const val=(r,f,m)=>r.k==="shv"?(S.sh?m.shv*2.2*rect(f-r.lag,m.thr):0):m[r.k]*ac(f-r.lag);
+const trc=$("trc");
+rows.forEach((r,i)=>{r.y=6+i*56;
+  trc.insertAdjacentHTML("beforeend",`<text class="ch" x="60" y="${r.y+10}">${r.lab}</text><line x1="60" y1="${r.y+34}" x2="670" y2="${r.y+34}" stroke="var(--border-strong)" stroke-width="0.5"/>`);
+  r.p=document.createElementNS(NS,"path");r.p.setAttribute("fill","none");r.p.setAttribute("stroke",r.col);r.p.setAttribute("stroke-width","1.8");trc.appendChild(r.p);
+  r.ref=document.createElementNS(NS,"path");r.ref.setAttribute("fill","none");r.ref.setAttribute("stroke",r.col);r.ref.setAttribute("stroke-width","1");r.ref.setAttribute("stroke-opacity","0.35");r.ref.setAttribute("stroke-dasharray","3 3");trc.appendChild(r.ref);
+  r.dot=document.createElementNS(NS,"circle");r.dot.setAttribute("r","3.5");r.dot.setAttribute("fill",r.col);trc.appendChild(r.dot);
+});
+const tY=(r,v)=>r.y+34-Math.max(-1.1,Math.min(1.1,v/r.sc))*20;
+function drawTraces(){rows.forEach(r=>{let d="",e="";for(let i=0;i<=200;i++){const f=i/200*2,x=(60+i/200*610).toFixed(1);d+=(i?"L":"M")+x+","+tY(r,val(r,f,M)).toFixed(1);e+=(i?"L":"M")+x+","+tY(r,REF[r.k]*ac(f-r.lag)).toFixed(1)}r.p.setAttribute("d",d);r.ref.setAttribute("d",r.k==="shv"?"":e)})}
+function lvPath(sc){const c=[250,175];const P=[[208,168],[222,140,282,134,330,154],[344,164,340,186,326,186],[300,168,256,166,232,186],[216,196,202,182,208,168]];
+  const T=([x,y])=>[(c[0]+(x-c[0])*sc).toFixed(1),(c[1]+(y-c[1])*sc).toFixed(1)];
+  const p=P.map(a=>{const o=[];for(let i=0;i<a.length;i+=2)o.push(T([a[i],a[i+1]]).join(","));return o});
+  return `M${p[0][0]} C${p[1].join(" ")} C${p[2].join(" ")} C${p[3].join(" ")} C${p[4].join(" ")} Z`}
+function v3Path(sc){const w=1+(sc-1)*1.6;const x0=310,x1=310+24*w;return `M${x0},186 L${x1},186 L${x1-2},232 L${x0+3},228 Z`}
+function mk(path,n,col,rad){const el=$(path),L=el.getTotalLength(),arr=[];for(let i=0;i<n;i++){const e=document.createElementNS(NS,"circle");e.setAttribute("r",rad);e.setAttribute("fill",col);$("pd").appendChild(e);arr.push({e,s:i/n*L})}return{el,L,arr}}
+let PC,PS,PV,PH;
+function initParts(){$("pd").innerHTML="";PC=mk("pCx",18,"#0F6E56",2.4);PS=mk("pSp",10,"#0F6E56",2.6);PV=mk("pVe",16,"#185FA5",2.4);PH=mk("shp",18,"#534AB7",2.4)}
+const rings=[];for(let i=0;i<3;i++){const c=document.createElementNS(NS,"ellipse");c.setAttribute("fill","none");c.setAttribute("stroke","#E24B4A");$("rings").appendChild(c);rings.push(c)}
+let vsc=1;
+function upd(){
+  M=model();
+  [...$("pre").children].forEach((b,i)=>b.classList.toggle("on",i===active));
+  $("sevv").textContent=S.sev<0.05?"none":S.sev<0.4?"mild":S.sev<0.75?"moderate":"marked";
+  $("mAq").textContent=Math.round(M.aq*1000)+" µL";
+  $("mFm").textContent=M.fm.toFixed(2)+" mL";
+  $("mPP").textContent=M.pp.toFixed(1)+" mmHg";
+  $("mBd").textContent=Math.round(M.desc/REF.desc*100)+"%";
+  $("mVo").textContent=S.sh?Math.round(openFrac[S.vs]*100)+"%":"no shunt";
+  $("mAq").style.color=M.aq>0.07?"var(--text-danger)":M.aq>0.05?"var(--text-warning)":"var(--text-primary)";
+  $("mPP").style.color=M.pp>6?"var(--text-danger)":M.pp>4.2?"var(--text-warning)":"var(--text-primary)";
+  vsc=Math.max(1,1+0.45*S.sev-(S.sh?0.18*S.sev*(VALVES[S.vs].y/0.45):0));
+  $("lv").setAttribute("d",lvPath(vsc));$("v3").setAttribute("d",v3Path(vsc));$("halo").setAttribute("d",lvPath(vsc*1.04));
+  $("br").setAttribute("cy",207-13*S.sev);$("br").setAttribute("ry",126+2*S.sev);
+  $("syl").setAttribute("stroke-width",(3+9*S.sev).toFixed(1));
+  $("shuntg").style.display=S.sh?"":"none";
+  $("vxl").textContent=S.sev>0.5?"vertex SAS effaced (tight high convexity)":"vertex subarachnoid space";
+  let m;
+  if(S.sh&&S.sev>0.3)m="VP shunt: the valve is one-way. It opens only when ventricular pressure exceeds its opening pressure, which happens at the systolic peaks, so CSF leaves forwards in spurts and the valve shuts in diastole with no retrograde flow. Draining the systolic peaks clips the ventricular pressure pulse, and the steady drainage lowers ventricular CSF volume, moving the system to a more compliant part of the pressure–volume curve. A lower opening pressure keeps the valve open for more of each cycle and damps more (with more risk of overdrainage).";
+  else if(S.sev>0.5)m="NPH: the high-convexity sulci are effaced and the remaining cranial subarachnoid space (Sylvian fissures, basal cisterns) is already full, so the brain has little room to move caudally in systole. Cervical CSF displacement falls, and the arterial pulse is driven into the ventricles instead: aqueductal flow becomes hyperdynamic and the ventricular CSF pulse hammers the ependymal (luminal) surface.";
+  else if(S.sev>0.05)m="Early change: subarachnoid reserve at the vertex is shrinking, so a growing share of each systolic pulse is displaced through the ventricles and aqueduct.";
+  else m="Normal: in systole the arteries expand, the brain moves slightly caudally and CSF is pushed out of the cranial subarachnoid space through the foramen magnum. The aqueduct carries only a small share (tens of µL per beat).";
+  $("msg").textContent=m;
+  drawTraces();
+}
+let ph=0,last=null,run=true;
+$("pp").onclick=()=>{run=!run;$("pp").innerHTML=run?'<i class="ti ti-player-pause" aria-hidden="true"></i>':'<i class="ti ti-player-play" aria-hidden="true"></i>';$("pp").setAttribute("aria-label",run?"Pause":"Play");last=null;if(run)requestAnimationFrame(tick)};
+const place=(o,s)=>o.el.getPointAtLength(Math.max(0,Math.min(o.L,s)));
+function tick(t){
+  if(!run)return;
+  const dt=last==null?0:Math.min((t-last)/1000,0.05);last=t;
+  const sp=+$("spd").value;ph=(ph+dt*sp)%2;const f=ph%1,a=ac(f);
+  const dsp=ac(f-0.3);
+  const cxA=40*M.fm*(1-0.9*S.sev);
+  PC.arr.forEach(q=>{const p=place(PC,q.s+cxA*dsp*0.6);q.e.setAttribute("cx",p.x);q.e.setAttribute("cy",p.y)});
+  PS.arr.forEach(q=>{const p=place(PS,q.s-30*M.fm*dsp);q.e.setAttribute("cx",p.x);q.e.setAttribute("cy",p.y)});
+  PV.arr.forEach(q=>{const p=place(PV,q.s-260*M.aq*dsp);q.e.setAttribute("cx",p.x);q.e.setAttribute("cy",p.y)});
+  const open=S.sh?rect(f-0.03,M.thr):0;
+  PH.arr.forEach(q=>{q.e.style.display=S.sh?"":"none";if(!S.sh)return;q.s=(q.s+dt*sp*260*M.shv*open)%PH.L;const p=place(PH,q.s);q.e.setAttribute("cx",p.x);q.e.setAttribute("cy",p.y)});
+  if(S.sh){$("valve").setAttribute("fill-opacity",open>0?"0.6":"0.2");$("vflap").setAttribute("d",open>0?"M58,260 L58,276 M74,260 L74,276":"M58,262 L66,272 L74,262");$("vtxt").textContent=open>0?"valve open":"valve closed"}
+  const desc=5*M.desc*Math.max(0,a);$("brain").setAttribute("transform",`translate(0 ${desc.toFixed(2)})`);
+  const ad=desc*1.6;$("arr").setAttribute("d",ad>0.6?`M300,${336+ad} l-7,-10 l14,0 Z`:"");
+  const ppn=Math.max(0,(M.pp-3.1)/5);
+  $("halo").setAttribute("stroke-opacity",(ppn*0.55*(0.4+0.6*Math.max(0,ac(f-0.02)))).toFixed(3));
+  rings.forEach((c,i)=>{const u=(f+i/3)%1;const on=ac(f-0.02)>0.1;c.setAttribute("cx",276);c.setAttribute("cy",166);c.setAttribute("rx",(10+60*u*vsc).toFixed(1));c.setAttribute("ry",(5+20*u*vsc).toFixed(1));c.setAttribute("stroke-opacity",on?(ppn*0.8*(1-u)).toFixed(3):"0");c.setAttribute("stroke-width","1.5")});
+  rows.forEach(r=>{r.dot.setAttribute("cx",60+ph/2*610);r.dot.setAttribute("cy",tY(r,val(r,ph,M)))});
+  $("cur").setAttribute("x1",60+ph/2*610);$("cur").setAttribute("x2",60+ph/2*610);
+  const sys=a>0.15;
+  $("st").innerHTML=sys
+    ?(S.sev>0.5&&!S.sh?'<i class="ti ti-alert-triangle" aria-hidden="true" style="color:var(--text-danger)"></i> Systole: the brain cannot descend, so the arterial pulse squeezes the ventricles. CSF jets down the aqueduct and the pressure pulse strikes the ventricular wall.':S.sh&&S.sev>0.3?(open>0?'<i class="ti ti-arrow-down" aria-hidden="true" style="color:#7F77DD"></i> Systole: ventricular pressure exceeds the valve opening pressure, so the valve opens and CSF drains forwards, clipping the pressure peak.':'Systole (early): pressure is still below the valve opening pressure, so the valve stays shut.'):'<i class="ti ti-arrow-down" aria-hidden="true" style="color:#378ADD"></i> Systole: the brain moves slightly down and CSF leaves the skull through the foramen magnum.')
+    :(S.sh&&S.sev>0.3?'Diastole: the valve is closed, so there is no shunt flow and no backflow. CSF flows back up the aqueduct.':'<i class="ti ti-arrow-up" aria-hidden="true" style="color:#378ADD"></i> Diastole: CSF flows back into the skull and up the aqueduct.');
+  requestAnimationFrame(tick);
+}
+sync();upd();initParts();requestAnimationFrame(tick);
+})();
+
+}
+new MutationObserver(__init).observe(__sec,{attributes:true,attributeFilter:["hidden"]});
+__init();
+})();
 </script>
 </body>
 </html>
