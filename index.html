@@ -160,7 +160,7 @@ ol.refs em{color:var(--ink);font-style:italic;}
 <nav class="side" aria-label="Models">
   <div class="brand">
     <h1>CSF dynamics, modelled</h1>
-    <p>Thirty-eight interactive models in five groups: foundations, clinical models, special scenarios, pulsatility and the windkessel, and mission profiles.</p>
+    <p>Thirty-nine interactive models in five groups: foundations, clinical models, special scenarios, pulsatility and the windkessel, and mission profiles.</p>
   </div>
   <ul class="navlist" id="navlist"></ul>
   <div class="foot">Teaching models with simplified physiology. Parameter values are representative, not patient-specific.</div>
@@ -336,6 +336,30 @@ ol.refs em{color:var(--ink);font-style:italic;}
         <li>Czosnyka ZH, Czosnyka M, Richards HK, Pickard JD. <em>Evaluation of three new models of hydrocephalus shunts.</em> Acta Neurochir Suppl 2005;95:223–227. doi:10.1007/3-211-32318-x_46</li>
         <li>Czosnyka ZH, Czosnyka M, Richards HK, Pickard JD. <em>Laboratory evaluation of the Phoenix CRx Diamond valve.</em> Neurosurgery 2001;48:689–694. doi:10.1097/00006123-200103000-00052</li>
         <li>Czosnyka M, Czosnyka ZH, Richards HK, Pickard JD. <em>Hydrodynamic properties of extraventricular drainage systems.</em> Neurosurgery 2003;52:619–623. doi:10.1227/01.neu.0000049956.11888.6d</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-drain" data-dim="Torricelli" data-name="Draining cylinder" hidden>
+  <header>
+    <h2>Draining cylinder: how long does a raised tank take to empty?</h2>
+    <p>A cylinder of radius R and height L, with its base at height H above the ground, holds water to depth h and drains through a central hole of radius r. The model solves the unsteady Bernoulli equation exactly, so it covers everything from a pinhole (Torricelli's law) to a hole as wide as the cylinder (the water falls out as a slug). It also tracks the volume that has left the cylinder and the volume that has reached the ground. It is the same orifice physics as the shunt equation, without the valve or catheter resistance.</p>
+  </header>
+  <iframe id="drain-frame" src="models/draining-cylinder.html?embed" title="Draining cylinder model" loading="lazy" style="display:block;width:100%;height:1500px;border:0;background:transparent"></iframe>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <div class="eq">\[A\,u=a\,V,\qquad y\frac{du}{dt}=g\,y-\frac{k^2-1}{2}\,u^2,\qquad k=\frac{A}{a}=\frac{R^2}{C_d\,r^2}\]</div>
+      <div class="eq">\[T=\sqrt{\frac{h}{2g(k^2-2)}}\;B\!\left(\frac{1}{2(k^2-2)},\tfrac12\right),\qquad V_{out}(t)=\pi R^2\,[h-y(t)]\]</div>
+      <p>For k ≫ 1 this reduces to Torricelli's law, T ≈ (R/r)²√(2h/g). With r = R and C<sub>d</sub> = 1, k = 1 and T = √(2h/g). The height H does not change the draining time; it adds the fall time of the stream, about √(2H/g) for the last water.</p>
+      <p class="caveat">Assumes an open top, frictionless flow apart from the discharge coefficient C<sub>d</sub>, no surface tension or drain vortex, and a thin base.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs">
+        <li>Torricelli E. <em>De motu gravium naturaliter descendentium et proiectorum.</em> In: Opera geometrica. Florence; 1644.</li>
+        <li>White FM. <em>Fluid Mechanics.</em> 8th ed. New York: McGraw-Hill; 2016. Chapter 3 (Bernoulli equation and unsteady flow).</li>
       </ol>
     </div>
   </div>
@@ -4523,6 +4547,10 @@ drawTraces();requestAnimationFrame(tick);
 new MutationObserver(__init).observe(__sec,{attributes:true,attributeFilter:["hidden"]});
 __init();
 })();
+</script>
+<script>
+addEventListener("message", e => { const f = document.getElementById("drain-frame");
+  if(f && e.source === f.contentWindow && e.data && e.data.drainHeight) f.style.height = Math.ceil(e.data.drainHeight) + "px"; });
 </script>
 </body>
 </html>

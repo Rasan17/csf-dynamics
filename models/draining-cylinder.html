@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="author" content="Dr G Narenthiran">
+<title>Draining Cylinder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0}
+html.embed header{display:none}
+html.embed #scene{height:520px}
+html.embed .wrap{padding-inline:0;padding-block:0 8px}
+/* Layout: engineering-sheet — live elevation drawing left, input "title block" right, results + derivation below */
+:root{
+  --bg:#ECEFF2; --surface:#FBFCFD; --ink:#18212B; --muted:#5A6672; --line:#C6CED6;
+  --water:#1F7DB6; --water-soft:rgba(31,125,182,.22); --accent:#C9531E; --steel:#7D8A96;
+  --f-display:"Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Newsreader", Georgia, "Times New Roman", serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E141A; --surface:#151D25; --ink:#E3E9EF; --muted:#93A0AD; --line:#2A3743;
+  --water:#4DB0E6; --water-soft:rgba(77,176,230,.22); --accent:#F08A4B; --steel:#6E7C89; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E141A; --surface:#151D25; --ink:#E3E9EF; --muted:#93A0AD; --line:#2A3743;
+  --water:#4DB0E6; --water-soft:rgba(77,176,230,.22); --accent:#F08A4B; --steel:#6E7C89; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 56px;display:grid;gap:28px}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,4vw,40px);letter-spacing:-.01em}
+h2{font-size:22px}
+.lede{max-width:68ch;margin:8px 0 0;color:var(--muted)}
+.lede b{color:var(--ink);font-weight:500}
+.label{font-family:var(--f-display);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+.stage{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.stage{grid-template-columns:1fr}}
+.sheet{background:var(--surface);border:1px solid var(--line);border-radius:6px;min-width:0}
+.scene{position:relative}
+#scene{display:block;width:100%;height:min(68vh,600px);min-height:380px}
+.transport{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+button,select{font-family:var(--f-display);font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:7px 12px;cursor:pointer}
+button.primary{background:var(--water);border-color:var(--water);color:var(--surface);font-weight:700;min-width:84px}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#scrub{flex:1 1 160px;min-width:0;accent-color:var(--water)}
+.clock{font-family:var(--f-mono);font-size:14px;min-width:12ch;text-align:right}
+
+.panel{padding:16px 18px;display:grid;gap:14px}
+.field{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline}
+.field label{font-family:var(--f-display);font-size:15px}
+.field label i{font-family:var(--f-body);font-style:italic;color:var(--accent);margin-right:4px}
+.field output{font-family:var(--f-mono);font-size:14px}
+.field input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--water)}
+.field small{grid-column:1/-1;color:var(--muted);font-size:13.5px;line-height:1.35}
+.presets{display:flex;flex-wrap:wrap;gap:8px}
+.presets button{font-size:13px;padding:5px 9px}
+
+.live{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.live div{background:var(--surface);padding:10px 14px;display:grid;gap:2px}
+.live .v{font-family:var(--f-mono);font-size:16px}
+@media (max-width:560px){.live{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.answer{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px}
+@media (max-width:820px){.answer{grid-template-columns:1fr}}
+.verdict{padding:20px 22px;display:grid;gap:10px}
+.big{font-family:var(--f-mono);font-size:clamp(34px,5vw,48px);font-weight:600;color:var(--water);line-height:1}
+.rows{display:grid;gap:0}
+.rows div{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:15.5px}
+.rows div:last-child{border-bottom:0}
+.rows span:last-child{font-family:var(--f-mono);font-size:14px;white-space:nowrap}
+.regime{display:inline-block;font-family:var(--f-display);font-size:13px;padding:3px 9px;border-radius:999px;border:1px solid var(--accent);color:var(--accent);justify-self:start}
+.graph{padding:14px 16px}
+#graph,#vgraph{display:block;width:100%;height:220px}
+.graphs{display:grid;gap:20px;min-width:0}
+.legend span.gr::before{border-top:2px dashed var(--steel)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--f-display);font-size:13px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:18px;height:0;border-top:2.5px solid var(--water);vertical-align:middle;margin-right:6px}
+.legend span.qs::before{border-top:2px dashed var(--accent)}
+
+.deriv{padding:22px 24px;display:grid;gap:14px}
+.deriv p,.deriv li{max-width:70ch;margin:0}
+.deriv ol{margin:0;padding-left:1.3em;display:grid;gap:12px}
+.eq{font-family:var(--f-body);font-style:italic;font-size:19px;background:var(--bg);border-left:3px solid var(--water);padding:8px 14px;overflow-x:auto;white-space:nowrap;margin-top:6px}
+.eq .n{font-style:normal}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.9em;margin:0 2px}
+.frac>span:first-child{border-bottom:1px solid currentColor;padding:0 3px}
+.note{color:var(--muted);font-size:15px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="label">Fluid mechanics · draining tank</div>
+    <h1>How long does the cylinder take to empty?</h1>
+    <p class="lede">A vertical cylinder of radius <b>R</b> and height <b>L</b> stands with its base at height <b>H</b> above the ground. It holds water to depth <b>h</b> and drains through a central hole of radius <b>r</b> in the bottom. Set <b>r = R</b> for the case where the hole is the whole base. Adjust any value and the drawing, timings and curve update together.</p>
+  </header>
+
+  <section class="stage">
+    <div class="sheet scene">
+      <canvas id="scene" aria-label="Animated elevation drawing of the cylinder draining onto the ground"></canvas>
+      <div class="transport">
+        <button class="primary" id="play">Pause</button>
+        <button id="restart">Restart</button>
+        <select id="speed" aria-label="Playback speed">
+          <option value="fit" selected>Fit to 15 s</option>
+          <option value="1">Real time</option>
+          <option value="5">5×</option>
+          <option value="25">25×</option>
+        </select>
+        <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Time">
+        <span class="clock" id="clock">t = 0.00 s</span>
+      </div>
+      <div class="live">
+        <div><span class="label">Water depth y</span><span class="v" id="lv-y">–</span></div>
+        <div><span class="label">Jet speed V</span><span class="v" id="lv-v">–</span></div>
+        <div><span class="label">Flow rate Q</span><span class="v" id="lv-q">–</span></div>
+        <div><span class="label">Volume left</span><span class="v" id="lv-vol">–</span></div>
+        <div><span class="label">Water drained</span><span class="v" id="lv-out">–</span></div>
+        <div><span class="label">Reached the ground</span><span class="v" id="lv-gnd">–</span></div>
+      </div>
+    </div>
+
+    <form class="sheet panel" id="inputs" onsubmit="return false">
+      <div class="label">Inputs (SI units, g = 9.81 m/s²)</div>
+      <div class="field"><label for="R"><i>R</i>Cylinder radius</label><output id="R-o"></output>
+        <input type="range" id="R" min="0.05" max="1" step="0.01" value="0.30"></div>
+      <div class="field"><label for="r"><i>r</i>Hole radius</label><output id="r-o"></output>
+        <input type="range" id="r" min="0.001" max="1" step="0.001" value="0.030">
+        <small>Limited to R. At r = R the base is open.</small></div>
+      <div class="field"><label for="L"><i>L</i>Cylinder height</label><output id="L-o"></output>
+        <input type="range" id="L" min="0.2" max="3" step="0.05" value="1.20"></div>
+      <div class="field"><label for="h"><i>h</i>Initial water depth</label><output id="h-o"></output>
+        <input type="range" id="h" min="0.02" max="3" step="0.01" value="1.00">
+        <small>Limited to L.</small></div>
+      <div class="field"><label for="H"><i>H</i>Base height above ground</label><output id="H-o"></output>
+        <input type="range" id="H" min="0.1" max="5" step="0.05" value="1.50"></div>
+      <div class="field"><label for="Cd"><i>C<sub>d</sub></i>Discharge coefficient</label><output id="Cd-o"></output>
+        <input type="range" id="Cd" min="0.5" max="1" step="0.01" value="1.00">
+        <small>1.00 is the ideal frictionless hole. A sharp-edged hole in a thin plate is about 0.61 because the jet contracts.</small></div>
+      <div class="label">Presets</div>
+      <div class="presets">
+        <button type="button" data-p="small">Small hole</button>
+        <button type="button" data-p="half">Hole = R/2</button>
+        <button type="button" data-p="open">Hole = R (open base)</button>
+        <button type="button" data-p="real">Real sharp hole</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="answer">
+    <div class="sheet verdict">
+      <div class="label">Time to empty</div>
+      <div class="big" id="T">–</div>
+      <span class="regime" id="regime">–</span>
+      <div class="rows">
+        <div><span>Torricelli estimate, (A/a)√(2h/g)</span><span id="T-torr">–</span></div>
+        <div><span>Quasi-steady, √((A/a)²−1)·√(2h/g)</span><span id="T-qs">–</span></div>
+        <div><span>Free fall of the water column, √(2h/g)</span><span id="T-ff">–</span></div>
+        <div><span>Last water reaches the ground after</span><span id="T-ground">–</span></div>
+        <div><span>Fastest impact on the ground</span><span id="v-imp">–</span></div>
+        <div><span>Water volume, πR²h</span><span id="vol">–</span></div>
+        <div><span>Half the water has drained by</span><span id="T-half">–</span></div>
+      </div>
+    </div>
+    <div class="graphs">
+    <div class="sheet graph">
+      <div class="label">Water depth over time</div>
+      <canvas id="graph" aria-label="Graph of water depth against time"></canvas>
+      <div class="legend"><span>Full model (used in the animation)</span><span class="qs">Quasi-steady Torricelli</span></div>
+    </div>
+    <div class="sheet graph">
+      <div class="label">Water drained over time (litres)</div>
+      <canvas id="vgraph" aria-label="Graph of cumulative volume of water drained against time"></canvas>
+      <div class="legend"><span>Left the cylinder</span><span class="gr">Reached the ground</span></div>
+    </div>
+    </div>
+  </section>
+
+  <section class="sheet deriv">
+    <h2>The model</h2>
+    <p>Let <i>y</i> be the water depth, <i>u</i> the speed at which the surface falls and <i>V</i> the jet speed at the hole. The tank area is <i>A</i> = π<i>R</i>² and the effective hole area is <i>a</i> = <i>C</i><sub>d</sub>π<i>r</i>². Write <i>k</i> = <i>A</i>/<i>a</i>.</p>
+    <ol>
+      <li>Conservation of mass: what leaves the surface leaves the hole.
+        <div class="eq">A u = a V &nbsp;&nbsp;⇒&nbsp;&nbsp; V = k u</div></li>
+      <li>Unsteady Bernoulli along the water column. The column of height <i>y</i> must be accelerated, so the familiar Torricelli balance gains an inertia term.
+        <div class="eq">y <span class="frac"><span>du</span><span>dt</span></span> = g y − <span class="frac"><span>1</span><span>2</span></span>(V² − u²) &nbsp;=&nbsp; g y − <span class="frac"><span>k² − 1</span><span>2</span></span> u²</div></li>
+      <li>Using <i>dy</i>/<i>dt</i> = −<i>u</i> and starting from rest gives the speed at every depth exactly.
+        <div class="eq">u² = <span class="frac"><span>2 g y</span><span>k² − 2</span></span> [ 1 − (y/h)<sup>k² − 2</sup> ]</div></li>
+      <li>The time to empty is <i>T</i> = ∫<sub>0</sub><sup>h</sup> <i>dy</i>/<i>u</i>, which comes out as a Beta function. The page evaluates it numerically, so every value of <i>k</i> ≥ 1 works.
+        <div class="eq">T = <span class="frac"><span>h</span><span>2 g (k² − 2)</span></span><sup class="n">½</sup> · B( <span class="frac"><span>1</span><span>2(k² − 2)</span></span>, <span class="frac"><span>1</span><span>2</span></span> )</div></li>
+    </ol>
+    <h3>Water drained over time</h3>
+    <p>The volume that has left the cylinder by time <i>t</i> is whatever the surface has dropped through, and its rate is the flow through the hole.</p>
+    <div class="eq">V<sub class="n">out</sub>(t) = πR² [ h − y(t) ] &nbsp;&nbsp;&nbsp; Q(t) = <span class="frac"><span>dV<sub class="n">out</sub></span><span>dt</span></span> = a V(t)</div>
+    <p>For a small hole the depth follows <i>y</i> = <i>h</i>(1 − <i>t</i>/<i>T</i>)², so the drained volume is <i>V</i><sub>out</sub> = π<i>R</i>²<i>h</i>[1 − (1 − <i>t</i>/<i>T</i>)²]. The flow is fastest at the start and tapers to zero, so half the water is gone after only about 29% of the draining time. Water released at time τ with jet speed <i>V</i> reaches the ground a fall time later, found from <i>H</i> = <i>V</i>Δ<i>t</i> + ½<i>g</i>Δ<i>t</i>², which is why the ground curve lags behind.</p>
+    <h3>What the answer reduces to</h3>
+    <p><b>Small hole (r ≪ R).</b> The inertia term dies away almost at once and the result is Torricelli's law, <i>T</i> ≈ (<i>R</i>/<i>r</i>)²√(2<i>h</i>/<i>g</i>) for an ideal hole. Halving the hole radius makes the tank take four times as long.</p>
+    <p><b>Hole radius equal to R.</b> With an open base <i>k</i> = 1, the equation becomes <i>du</i>/<i>dt</i> = <i>g</i>, and the water simply drops out as a slug in <i>T</i> = √(2<i>h</i>/<i>g</i>). The quasi-steady formula would wrongly give zero here, which is why the inertia term is kept.</p>
+    <p><b>Height above ground, H.</b> H has no effect on how long the cylinder takes to empty, because the pressure at the hole is atmospheric whatever the height. It only sets how long the stream takes to fall and how hard it lands: the last water reaches the ground about √(2<i>H</i>/<i>g</i>) after the tank empties.</p>
+    <p class="note">Assumptions: open top, frictionless flow apart from C<sub>d</sub>, no surface tension or vortex at the drain, and a thin base so the water in the hole itself has negligible inertia. The cylinder height L only matters as the upper limit on h.</p>
+  </section>
+</div>
+
+<script>
+(() => {
+const g = 9.81;
+const $ = id => document.getElementById(id);
+const ids = ["R","r","L","h","H","Cd"];
+const fmt = (x,d=2) => Number.isFinite(x) ? x.toFixed(d) : "–";
+function fmtT(s){
+  if(!Number.isFinite(s)) return "–";
+  if(s < 60) return s.toFixed(s<10?3:2) + " s";
+  if(s < 3600) return `${Math.floor(s/60)} min ${(s%60).toFixed(1)} s`;
+  return `${Math.floor(s/3600)} h ${Math.floor((s%3600)/60)} min`;
+}
+const fmtLen = m => m < 0.1 ? (m*1000).toFixed(m<0.01?1:0)+" mm" : m.toFixed(2)+" m";
+
+/* ---------- physics: exact solution of the unsteady draining equation ---------- */
+function solve(p){
+  const A = Math.PI*p.R*p.R, a = p.Cd*Math.PI*p.r*p.r;
+  const k = Math.max(1, A/a), m = k*k - 2, h = p.h;
+  // F(s) = (1 - s^m)/m, stable near s = 1 and m = 0
+  const F = lns => Math.abs(m) < 1e-12 ? -lns : -Math.expm1(m*lns)/m;
+  const N = 5000, c = Math.sqrt(h/(2*g));
+  const t = new Float64Array(N+1), s = new Float64Array(N+1), V = new Float64Array(N+1);
+  s[0] = 1; t[0] = 0; V[0] = 0;
+  // s = cos²φ, graded grid in φ so the start-up transient is resolved for large k
+  const phi = i => (Math.PI/2)*Math.pow(i/N, 4);
+  for(let i=0;i<N;i++){
+    const pa = phi(i), pb = phi(i+1), pm = (pa+pb)/2, sp = Math.sin(pm);
+    const lns = Math.log1p(-sp*sp);
+    const G = 2*sp/Math.sqrt(F(lns));
+    t[i+1] = t[i] + c*G*(pb-pa);
+    const sb = Math.max(Math.cos(pb)**2, 1e-300);
+    s[i+1] = i+1===N ? 0 : sb;
+    const w = 2*g*h*sb*F(Math.log(sb));
+    V[i+1] = k*Math.sqrt(Math.max(w,0));
+  }
+  const T = t[N];
+  const Vend = V[N];
+  const tFall = (-Vend + Math.sqrt(Vend*Vend + 2*g*p.H))/g;
+  let Vmax = 0; for(const v of V) Vmax = Math.max(Vmax, v);
+  return {A, a, k, T, t, s, V, N, Vend, tFall, Vmax,
+    Ttorr: k*Math.sqrt(2*h/g), Tqs: Math.sqrt((k*k-1)*2*h/g), Tff: Math.sqrt(2*h/g)};
+}
+function at(sol, time){ // returns {y/h, V}
+  if(time <= 0) return {s:1, V:0};
+  if(time >= sol.T) return {s:0, V:0, done:true};
+  let lo=0, hi=sol.N;
+  while(hi-lo>1){ const mid=(lo+hi)>>1; if(sol.t[mid] <= time) lo=mid; else hi=mid; }
+  const f = (time-sol.t[lo])/((sol.t[hi]-sol.t[lo])||1);
+  return {s: sol.s[lo]+(sol.s[hi]-sol.s[lo])*f, V: sol.V[lo]+(sol.V[hi]-sol.V[lo])*f};
+}
+
+/* ---------- state ---------- */
+let P = {}, S = null, simT = 0, playing = !matchMedia("(prefers-reduced-motion: reduce)").matches, last = null;
+function read(){
+  const R = +$("R").value;
+  $("r").max = R; if(+$("r").value > R) $("r").value = R;
+  const L = +$("L").value;
+  $("h").max = L; if(+$("h").value > L) $("h").value = L;
+  P = {R, r:+$("r").value, L, h:+$("h").value, H:+$("H").value, Cd:+$("Cd").value};
+  $("R-o").textContent = fmtLen(P.R);
+  $("r-o").textContent = fmtLen(P.r) + (P.r >= P.R ? " (= R)" : "");
+  $("L-o").textContent = fmtLen(P.L);
+  $("h-o").textContent = fmtLen(P.h);
+  $("H-o").textContent = fmtLen(P.H);
+  $("Cd-o").textContent = P.Cd.toFixed(2);
+  S = solve(P);
+  $("T").textContent = fmtT(S.T);
+  $("T-torr").textContent = fmtT(S.Ttorr);
+  $("T-qs").textContent = S.k <= 1.0001 ? "0 (fails)" : fmtT(S.Tqs);
+  $("T-ff").textContent = fmtT(S.Tff);
+  $("T-ground").textContent = fmtT(S.T + S.tFall);
+  $("v-imp").textContent = fmt(Math.sqrt(S.Vmax*S.Vmax + 2*g*P.H)) + " m/s";
+  $("vol").textContent = (S.A*P.h*1000).toFixed(S.A*P.h*1000 < 10 ? 2 : 1) + " L";
+  const k = S.k;
+  $("regime").textContent = k > 10 ? `A/a = ${k.toFixed(0)} · Torricelli regime`
+    : k > 1.001 ? `A/a = ${k.toFixed(2)} · inertia matters` : "A/a = 1 · free-falling slug";
+  let lo=0, hi=S.N; while(hi-lo>1){ const mid=(lo+hi)>>1; if(S.s[mid] >= 0.5) lo=mid; else hi=mid; }
+  $("T-half").textContent = fmtT(S.t[lo] + (S.t[hi]-S.t[lo])*(S.s[lo]-0.5)/((S.s[lo]-S.s[hi])||1));
+  // arrival curve: water drained by tau reaches the ground at tau + fall time
+  S.arr = []; for(let i=0;i<=400;i++){ const tau = S.T*i/400, V0 = at(S,tau).V;
+    S.arr.push([tau + (-V0 + Math.sqrt(V0*V0 + 2*g*P.H))/g, 1 - at(S,tau).s]); }
+  drawGraph();
+}
+const total = () => S.T + S.tFall + 0.6;
+function speed(){ const v = $("speed").value; return v === "fit" ? total()/15 : +v; }
+
+/* ---------- drawing ---------- */
+const sc = $("scene"), gc = $("graph"), vc = $("vgraph");
+let css = {};
+function tokens(){ const cs = getComputedStyle(document.documentElement);
+  ["bg","surface","ink","muted","line","water","water-soft","accent","steel"].forEach(n => css[n] = cs.getPropertyValue("--"+n).trim()); }
+function fit(c){ const r = c.getBoundingClientRect(), d = devicePixelRatio||1;
+  if(c.width !== Math.round(r.width*d) || c.height !== Math.round(r.height*d)){ c.width = Math.round(r.width*d); c.height = Math.round(r.height*d); }
+  const x = c.getContext("2d"); x.setTransform(d,0,0,d,0,0); return [x, r.width, r.height]; }
+
+function dimV(x, X, y1, y2, label, side=1){
+  x.strokeStyle = css.accent; x.fillStyle = css.accent; x.lineWidth = 1;
+  x.beginPath(); x.moveTo(X, y1); x.lineTo(X, y2); x.stroke();
+  [[y1,1],[y2,-1]].forEach(([yy,dir]) => { const d = Math.sign(y2-y1)*dir;
+    x.beginPath(); x.moveTo(X, yy); x.lineTo(X-3, yy+6*d); x.lineTo(X+3, yy+6*d); x.closePath(); x.fill();
+    x.beginPath(); x.moveTo(X-6, yy); x.lineTo(X+6, yy); x.stroke(); });
+  if(Math.abs(y2-y1) > 14){ x.font = "italic 15px Newsreader, Georgia, serif"; x.textAlign = side>0 ? "left" : "right"; x.textBaseline = "middle";
+    x.fillText(label, X + 9*side, (y1+y2)/2); }
+}
+function drawScene(){
+  const [x, W, Ht] = fit(sc);
+  x.clearRect(0,0,W,Ht);
+  const padT = 34, padB = 46, groundY = Ht - padB;
+  const worldH = P.H + P.L, worldW = 2*P.R;
+  const sx = Math.min((groundY - padT)/worldH, (W - 170)/worldW);
+  const cx = W*0.47, baseY = groundY - P.H*sx, topY = baseY - P.L*sx;
+  const Rp = P.R*sx, e = 0.18; // ellipse squash for the 3/4 view
+  const st = at(S, simT), y = st.s*P.h, waterY = baseY - y*sx;
+
+  // ground
+  x.strokeStyle = css.ink; x.lineWidth = 1.5;
+  x.beginPath(); x.moveTo(16, groundY); x.lineTo(W-16, groundY); x.stroke();
+  x.strokeStyle = css.line; x.lineWidth = 1;
+  for(let gx = 20; gx < W-16; gx += 12){ x.beginPath(); x.moveTo(gx, groundY+1); x.lineTo(gx-8, groundY+9); x.stroke(); }
+
+  // stand legs
+  x.strokeStyle = css.steel; x.lineWidth = 3;
+  [-1,1].forEach(sd => { x.beginPath(); x.moveTo(cx + sd*Rp*0.92, baseY + 2); x.lineTo(cx + sd*(Rp*0.92 + 14), groundY); x.stroke(); });
+
+  // puddle (volume that has landed)
+  const rc = P.r*Math.sqrt(P.Cd);
+  let landedS = 1;
+  const tauMax = Math.min(simT, S.T), tauMin = Math.max(0, simT - S.tFall - 2);
+  const pts = [];
+  const M = 160;
+  for(let i=0;i<=M;i++){
+    const tau = tauMax - (tauMax - tauMin)*i/M;
+    if(tau < 0 || tauMax < tauMin) break;
+    const dt = simT - tau, V0 = at(S, tau).V, z = V0*dt + 0.5*g*dt*dt;
+    if(z >= P.H){ landedS = at(S, tau).s; pts.push({z:P.H, rad: rc*Math.sqrt(Math.max(V0,1e-3)/Math.max(V0+g*dt,1e-3))}); break; }
+    pts.push({z, rad: rc*Math.sqrt(Math.max(V0,1e-3)/Math.max(V0+g*dt,1e-3))});
+  }
+  let landedFrac = 0; for(const [ta,f] of S.arr){ if(ta <= simT) landedFrac = Math.max(landedFrac, f); }
+  if(simT >= S.T + S.tFall) landedFrac = 1;
+  if(landedFrac > 0.001){
+    const pr = Math.min(W*0.42, (20 + Math.sqrt(landedFrac)*Math.max(Rp*2.2, 90)));
+    x.fillStyle = css["water-soft"]; x.strokeStyle = css.water; x.lineWidth = 1;
+    x.beginPath(); x.ellipse(cx, groundY, pr, pr*e*0.8, 0, 0, Math.PI*2); x.fill(); x.stroke();
+  }
+  // jet: each slice is water released at time tau, now falling under gravity
+  if(pts.length > 1 && simT > 0){
+    x.fillStyle = css.water; x.beginPath();
+    pts.forEach((q,i) => { const X = cx + Math.max(q.rad*sx, 0.8), Y = baseY + q.z*sx; i ? x.lineTo(X,Y) : x.moveTo(X,Y); });
+    for(let i=pts.length-1;i>=0;i--){ const q = pts[i]; x.lineTo(cx - Math.max(q.rad*sx, 0.8), baseY + q.z*sx); }
+    x.closePath(); x.fill();
+    if(pts[pts.length-1].z >= P.H - 1e-6 && simT < S.T + S.tFall){ // splash
+      x.strokeStyle = css.water; x.lineWidth = 1.5;
+      for(let j=0;j<5;j++){ const a = -Math.PI/2 + (j-2)*0.45, L0 = 8 + 6*Math.sin(simT*9 + j*2);
+        x.beginPath(); x.moveTo(cx, groundY-1); x.lineTo(cx + Math.cos(a)*L0*1.6, groundY - 1 + Math.sin(a)*L0); x.stroke(); }
+    }
+  }
+
+  // cylinder back rim, water, walls
+  x.lineWidth = 1.5;
+  x.strokeStyle = css.ink;
+  x.beginPath(); x.ellipse(cx, topY, Rp, Rp*e, 0, Math.PI, 0); x.stroke();
+  if(y > 1e-5){
+    x.fillStyle = css["water-soft"];
+    x.beginPath(); x.moveTo(cx-Rp, waterY); x.lineTo(cx-Rp, baseY);
+    x.ellipse(cx, baseY, Rp, Rp*e, 0, Math.PI, 0, true); x.lineTo(cx+Rp, waterY);
+    x.ellipse(cx, waterY, Rp, Rp*e, 0, 0, Math.PI, false); x.closePath(); x.fill();
+    x.fillStyle = css.water; x.globalAlpha = .35;
+    x.beginPath(); x.ellipse(cx, waterY, Rp, Rp*e, 0, 0, Math.PI*2); x.fill(); x.globalAlpha = 1;
+    x.strokeStyle = css.water; x.beginPath(); x.ellipse(cx, waterY, Rp, Rp*e, 0, 0, Math.PI*2); x.stroke();
+  }
+  x.strokeStyle = css.ink;
+  x.beginPath(); x.moveTo(cx-Rp, topY); x.lineTo(cx-Rp, baseY); x.moveTo(cx+Rp, topY); x.lineTo(cx+Rp, baseY); x.stroke();
+  x.beginPath(); x.ellipse(cx, topY, Rp, Rp*e, 0, 0, Math.PI); x.stroke();
+  // base with hole
+  const rp = P.r*sx;
+  x.beginPath(); x.ellipse(cx, baseY, Rp, Rp*e, 0, 0, Math.PI); x.stroke();
+  x.setLineDash([3,3]); x.beginPath(); x.ellipse(cx, baseY, Rp, Rp*e, 0, Math.PI, 0); x.stroke(); x.setLineDash([]);
+  if(rp < Rp - 0.5){ x.fillStyle = css.ink; x.beginPath(); x.ellipse(cx, baseY, Math.max(rp,1.2), Math.max(rp*e,0.8), 0, 0, Math.PI*2); x.fill(); }
+
+  // dimensions
+  const dx = cx + Rp + 34;
+  dimV(x, dx, groundY, baseY, "H");
+  dimV(x, dx + 34, baseY, topY, "L");
+  dimV(x, cx - Rp - 26, baseY, waterY, "y = " + fmtLen(y), -1);
+  x.strokeStyle = css.accent; x.fillStyle = css.accent; x.lineWidth = 1;
+  x.beginPath(); x.moveTo(cx, topY - Rp*e - 12); x.lineTo(cx + Rp, topY - Rp*e - 12); x.stroke();
+  x.beginPath(); x.moveTo(cx, topY - Rp*e - 16); x.lineTo(cx, topY - Rp*e - 8); x.moveTo(cx+Rp, topY - Rp*e - 16); x.lineTo(cx+Rp, topY - Rp*e - 8); x.stroke();
+  x.font = "italic 15px Newsreader, Georgia, serif"; x.textAlign = "center"; x.textBaseline = "bottom";
+  x.fillText("R", cx + Rp/2, topY - Rp*e - 14);
+  x.textAlign = "left"; x.textBaseline = "middle";
+  x.fillText("r = " + fmtLen(P.r), cx + Rp + 6, baseY + 16);
+  // centreline
+  x.strokeStyle = css.line; x.setLineDash([8,4,2,4]);
+  x.beginPath(); x.moveTo(cx, topY - Rp*e - 4); x.lineTo(cx, baseY - 2); x.stroke(); x.setLineDash([]);
+
+  // readouts
+  const Vn = simT < S.T ? st.V : 0;
+  $("clock").textContent = "t = " + (simT < 600 ? simT.toFixed(2) + " s" : fmtT(simT));
+  $("lv-y").textContent = fmtLen(y);
+  $("lv-v").textContent = fmt(Vn) + " m/s";
+  $("lv-q").textContent = fmt(S.a*Vn*1000, 3) + " L/s";
+  $("lv-vol").textContent = fmt(S.A*y*1000, 2) + " L";
+  const Vtot = S.A*P.h*1000;
+  $("lv-out").textContent = fmt(Vtot*(1-st.s), 2) + " L · " + Math.round(100*(1-st.s)) + "%";
+  $("lv-gnd").textContent = fmt(Vtot*landedFrac, 2) + " L";
+  $("scrub").value = Math.round(1000*Math.min(simT/total(), 1));
+  drawGraphMarker(st.s);
+}
+
+let graphImg = null;
+function drawGraph(){
+  const [x, W, H] = fit(gc);
+  x.clearRect(0,0,W,H);
+  const L = 44, Rm = 12, T0 = 10, B = 30, pw = W-L-Rm, ph = H-T0-B;
+  const tMax = Math.max(S.T, S.k > 1.0001 ? S.Tqs : 0) * 1.05;
+  const X = t => L + pw*t/tMax, Y = s => T0 + ph*(1-s);
+  x.font = "12px 'JetBrains Mono', Menlo, monospace"; x.fillStyle = css.muted; x.strokeStyle = css.line; x.lineWidth = 1;
+  x.textAlign = "right"; x.textBaseline = "middle";
+  [0,0.25,0.5,0.75,1].forEach(s => { x.beginPath(); x.moveTo(L, Y(s)); x.lineTo(W-Rm, Y(s)); x.stroke();
+    x.fillText(s===1 ? "h" : s===0 ? "0" : s.toFixed(2)+"h", L-6, Y(s)); });
+  const step = niceStep(tMax/5);
+  x.textAlign = "center"; x.textBaseline = "top";
+  for(let t=0; t<=tMax+1e-9; t+=step){ x.beginPath(); x.moveTo(X(t), T0); x.lineTo(X(t), T0+ph); x.stroke();
+    x.fillText(t < 1 ? t.toFixed(2) : t < 10 ? t.toFixed(1) : t.toFixed(0), X(t), T0+ph+6); }
+  x.textAlign = "right"; x.fillText("time (s)", W-Rm, T0+ph+18 > H-12 ? H-14 : T0+ph+18);
+  if(S.k > 1.0001){
+    x.strokeStyle = css.accent; x.setLineDash([6,4]); x.lineWidth = 2; x.beginPath();
+    for(let i=0;i<=200;i++){ const t = S.Tqs*i/200, s = (1 - t/S.Tqs)**2; i ? x.lineTo(X(t),Y(s)) : x.moveTo(X(t),Y(s)); }
+    x.stroke(); x.setLineDash([]);
+  }
+  x.strokeStyle = css.water; x.lineWidth = 2.5; x.beginPath();
+  const n = 300; for(let i=0;i<=n;i++){ const t = S.T*i/n, s = at(S,t).s; i ? x.lineTo(X(t),Y(s)) : x.moveTo(X(t),Y(s)); }
+  x.stroke();
+  graphImg = {X, Y, data: x.getImageData(0,0,gc.width,gc.height)};
+  drawVolGraph();
+}
+let vImg = null;
+function drawVolGraph(){
+  const [x, W, H] = fit(vc);
+  x.clearRect(0,0,W,H);
+  const Vtot = S.A*P.h*1000;
+  const L = 54, Rm = 12, T0 = 10, B = 30, pw = W-L-Rm, ph = H-T0-B;
+  const tMax = (S.T + S.tFall)*1.03;
+  const X = t => L + pw*t/tMax, Y = f => T0 + ph*(1-f);
+  x.font = "12px 'JetBrains Mono', Menlo, monospace"; x.fillStyle = css.muted; x.strokeStyle = css.line; x.lineWidth = 1;
+  x.textAlign = "right"; x.textBaseline = "middle";
+  const vs = niceStep(Vtot/4);
+  for(let v=0; v<=Vtot+1e-9; v+=vs){ const f = v/Vtot; x.beginPath(); x.moveTo(L, Y(f)); x.lineTo(W-Rm, Y(f)); x.stroke();
+    x.fillText(v < 10 ? v.toFixed(v<1?2:1) : v.toFixed(0), L-6, Y(f)); }
+  x.setLineDash([2,3]); x.beginPath(); x.moveTo(L, Y(1)); x.lineTo(W-Rm, Y(1)); x.stroke(); x.setLineDash([]);
+  x.textAlign = "left"; x.textBaseline = "bottom"; x.fillText("total " + fmt(Vtot, Vtot<10?2:1) + " L", L+4, Y(1)-2);
+  const step = niceStep(tMax/5);
+  x.textAlign = "center"; x.textBaseline = "top";
+  for(let t=0; t<=tMax+1e-9; t+=step){ x.beginPath(); x.moveTo(X(t), T0); x.lineTo(X(t), T0+ph); x.stroke();
+    x.fillText(t < 1 ? t.toFixed(2) : t < 10 ? t.toFixed(1) : t.toFixed(0), X(t), T0+ph+6); }
+  x.textAlign = "right"; x.fillText("time (s)", W-Rm, Math.min(T0+ph+18, H-14));
+  x.strokeStyle = css.steel; x.lineWidth = 2; x.setLineDash([6,4]); x.beginPath();
+  x.moveTo(X(0), Y(0)); x.lineTo(X(S.arr[0][0]), Y(0));
+  let run = 0; S.arr.forEach(([ta,f]) => { run = Math.max(run, f); x.lineTo(X(ta), Y(run)); });
+  x.lineTo(X(tMax), Y(1)); x.stroke(); x.setLineDash([]);
+  x.strokeStyle = css.water; x.lineWidth = 2.5; x.beginPath();
+  for(let i=0;i<=300;i++){ const t = S.T*i/300, f = 1 - at(S,t).s; i ? x.lineTo(X(t),Y(f)) : x.moveTo(X(t),Y(f)); }
+  x.lineTo(X(tMax), Y(1)); x.stroke();
+  vImg = {X, Y, data: x.getImageData(0,0,vc.width,vc.height)};
+}
+function drawGraphMarker(s){
+  if(!graphImg) return;
+  const x = gc.getContext("2d"); x.putImageData(graphImg.data, 0, 0);
+  const d = devicePixelRatio||1; x.setTransform(d,0,0,d,0,0);
+  const t = Math.min(simT, S.T);
+  x.fillStyle = css.water; x.strokeStyle = css.surface; x.lineWidth = 2;
+  x.beginPath(); x.arc(graphImg.X(t), graphImg.Y(s), 5, 0, Math.PI*2); x.fill(); x.stroke();
+  if(!vImg) return;
+  const v = vc.getContext("2d"); v.putImageData(vImg.data, 0, 0); v.setTransform(d,0,0,d,0,0);
+  const tv = simT;
+  v.strokeStyle = css.muted; v.lineWidth = 1; v.beginPath(); v.moveTo(vImg.X(tv), vImg.Y(0)); v.lineTo(vImg.X(tv), vImg.Y(1.0)); v.stroke();
+  v.fillStyle = css.water; v.strokeStyle = css.surface; v.lineWidth = 2;
+  v.beginPath(); v.arc(vImg.X(tv), vImg.Y(1-s), 5, 0, Math.PI*2); v.fill(); v.stroke();
+}
+function niceStep(raw){ const p = 10**Math.floor(Math.log10(raw)), f = raw/p; return (f<1.5?1:f<3.5?2:f<7.5?5:10)*p; }
+
+/* ---------- loop & controls ---------- */
+function frame(now){
+  if(last != null && playing){
+    simT += Math.min((now-last)/1000, 0.1) * speed();
+    if(simT > total()) simT = 0;           // loop
+  }
+  last = now; drawScene(); requestAnimationFrame(frame);
+}
+ids.forEach(id => $(id).addEventListener("input", () => { read(); simT = Math.min(simT, total()); }));
+$("play").onclick = () => { playing = !playing; $("play").textContent = playing ? "Pause" : "Play"; };
+$("play").textContent = playing ? "Pause" : "Play";
+$("restart").onclick = () => { simT = 0; };
+$("scrub").addEventListener("input", e => { simT = total()*e.target.value/1000; });
+const presets = {
+  small:{R:0.30,r:0.030,Cd:1}, half:{R:0.30,r:0.150,Cd:1}, open:{R:0.30,r:0.30,Cd:1}, real:{R:0.30,r:0.030,Cd:0.61}
+};
+document.querySelectorAll("[data-p]").forEach(b => b.onclick = () => {
+  const q = presets[b.dataset.p]; $("R").value = q.R; $("r").max = q.R; $("r").value = q.r; $("Cd").value = q.Cd; read(); simT = 0; });
+const mq = matchMedia("(prefers-color-scheme: dark)");
+const retheme = () => { tokens(); drawGraph(); };
+mq.addEventListener?.("change", retheme);
+new MutationObserver(retheme).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+addEventListener("resize", () => drawGraph());
+tokens(); read();
+document.fonts?.ready.then(() => drawGraph());
+requestAnimationFrame(frame);
+window.__solve = solve;
+})();
+</script>
+<script>
+// Embed mode (used by index.html): hide the page heading, follow the parent's theme, report height
+(() => {
+  if(!/[?&]embed\b/.test(location.search)) return;
+  const root = document.documentElement; root.classList.add("embed");
+  const syncTheme = () => { try{ const t = parent.document.documentElement.dataset.theme;
+    if(t) root.dataset.theme = t; else delete root.dataset.theme; }catch(e){} };
+  syncTheme();
+  try{ new MutationObserver(syncTheme).observe(parent.document.documentElement,{attributes:true,attributeFilter:["data-theme"]}); }catch(e){}
+  const post = () => { try{ parent.postMessage({drainHeight: document.body.scrollHeight}, "*"); }catch(e){} };
+  new ResizeObserver(post).observe(document.body); addEventListener("load", post);
+})();
+</script>
+</body>
+</html>
