@@ -155,6 +155,7 @@ ol.refs em{color:var(--ink);font-style:italic;}
 .xm .hd{font-size:12px;color:var(--text-muted);margin:10px 0 2px}
 .xm .mc .n{font-size:11px;color:var(--text-muted)}
 .xm select{width:auto;margin:0}
+.xm button:disabled,.xm input:disabled{opacity:.5}
 </style>
 </head>
 <body>
@@ -162,7 +163,7 @@ ol.refs em{color:var(--ink);font-style:italic;}
 <nav class="side" aria-label="Models">
   <div class="brand">
     <h1>CSF dynamics, modelled</h1>
-    <p>Forty interactive models in five groups: foundations, clinical models, special scenarios, pulsatility and the windkessel, and mission profiles.</p>
+    <p>Forty-one interactive models in five groups: foundations, clinical models, special scenarios, pulsatility and the windkessel, and mission profiles.</p>
   </div>
   <ul class="navlist" id="navlist"></ul>
   <div class="foot">Teaching models with simplified physiology. Parameter values are representative, not patient-specific.</div>
@@ -1230,6 +1231,94 @@ ol.refs em{color:var(--ink);font-style:italic;}
     <div>
       <h3>References</h3>
       <ol class="refs"><li>Morota N, et al. <em>Anatomical variants in the floor of the third ventricle; implications for endoscopic third ventriculostomy.</em> J Neurol Neurosurg Psychiatry 2000;69:531–534. doi:10.1136/jnnp.69.4.531</li><li>Kobayashi S, et al. <em>Herniation of the third ventricle into empty sella caused by surgery for pituitary apoplexy.</em> Neurol Med Chir 1996;36:451–454. doi:10.2176/nmc.36.451</li><li>Montemurro N, et al. <em>Surgical treatment of long-standing overt ventriculomegaly in adults (LOVA).</em> Int J Environ Res Public Health 2022;19:1926. doi:10.3390/ijerph19041926</li><li>Moravec T, et al. Case Rep Neurol 2026. doi:10.1159/000550933</li><li>González-Tortosa et al. <em>Reversible primary empty sella.</em> Neurocirugía 2010. doi:10.4321/s1130-14732010000400005</li><li>Bruno OD, et al. Endocrinol Diabetes Metab Case Rep 2017. doi:10.1530/EDM-16-0157</li><li>Hamilton et al. Br J Neurosurg 2018. doi:10.1080/02688697.2018.1435849</li></ol>
+    </div>
+  </div>
+</section>
+
+<section class="model" id="m-tmp" data-group="Special scenarios" data-dim="Transmantle" data-name="ETV versus shunt: ventricular size" hidden>
+  <header>
+    <h2>Ventricular size after ETV and VP shunt: the transmantle pressure</h2>
+    <p>Obstructive hydrocephalus from aqueductal stenosis, treated by endoscopic third ventriculostomy or a ventriculoperitoneal shunt. Ventricular size follows the transmantle pressure (ventricular minus subarachnoid pressure). ETV opens the third ventricle into the basal cisterns, which are continuous with the cortical subarachnoid space, so the transmantle pressure falls to zero and the ventricles shrink only a little. A shunt holds ventricular pressure at the valve opening pressure, below subarachnoid pressure, so the transmantle pressure becomes negative and sucks on the ventricular wall. The lower the opening pressure, the more the ventricles shrink and the cortical mantle thickens. The reduction is shaded orange.</p>
+  </header>
+  <div class="xm">
+<div class="ctl" id="x7-tx"></div>
+<div class="ctl">
+  <label class="sl">Valve opening pressure <input type="range" id="x7-op" min="3" max="20" step="0.5" value="7" style="flex:1"><span class="v" id="x7-opv"></span></label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x7-up"> Upright (siphon)</label>
+  <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="x7-asd"> Anti-siphon device</label>
+</div>
+<div class="ctl">
+  <label class="sl">Time after surgery <input type="range" id="x7-tm" min="0" max="12" step="0.05" value="0" style="flex:1"><span class="v" id="x7-tmv"></span></label>
+  <button id="x7-play"><i class="ti ti-player-play" aria-hidden="true"></i> Play 12 months</button>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:6px 0 10px">
+  <div class="mc"><div class="l">Ventricular pressure</div><div class="v" id="x7-mPv">–</div></div>
+  <div class="mc"><div class="l">Subarachnoid pressure</div><div class="v" id="x7-mPs">–</div></div>
+  <div class="mc"><div class="l">Transmantle pressure</div><div class="v" id="x7-mT">–</div></div>
+  <div class="mc"><div class="l">Evans index</div><div class="v" id="x7-mE">–</div></div>
+  <div class="mc"><div class="l">Ventricular size reduction</div><div class="v" id="x7-mR">–</div></div>
+  <div class="mc"><div class="l">Cortical mantle at vertex</div><div class="v" id="x7-mM">–</div></div>
+</div>
+<svg viewBox="0 0 680 410" width="100%" style="display:block" role="img">
+  <title>Coronal section showing ventricles, mantle and transmantle pressure</title>
+  <ellipse cx="200" cy="200" rx="172" ry="152" fill="#378ADD" fill-opacity="0.24" stroke="#888780" stroke-width="3"/>
+  <path id="x7-sdh" fill="#EF9F27" fill-opacity="0.55"/>
+  <ellipse id="x7-brain" cx="200" cy="188" rx="162" ry="130" fill="#B4B2A9" fill-opacity="0.85"/>
+  <path id="x7-ihf" d="M200,58 L200,100" stroke="#378ADD" stroke-opacity="0.55" stroke-width="3"/>
+  <ellipse id="x7-oL" fill="#EF9F27" fill-opacity="0.7" stroke="#BA7517" stroke-width="1" stroke-dasharray="4 3"/>
+  <ellipse id="x7-oR" fill="#EF9F27" fill-opacity="0.7" stroke="#BA7517" stroke-width="1" stroke-dasharray="4 3"/>
+  <rect id="x7-o3" fill="#EF9F27" fill-opacity="0.7"/>
+  <g id="x7-arrows"></g>
+  <ellipse id="x7-lvL" fill="#378ADD" fill-opacity="0.75"/>
+  <ellipse id="x7-lvR" fill="#378ADD" fill-opacity="0.75"/>
+  <rect id="x7-v3" fill="#378ADD" fill-opacity="0.75"/>
+  <g id="x7-etvg" style="display:none">
+    <line x1="200" y1="296" x2="200" y2="334" stroke="#378ADD" stroke-width="6" stroke-linecap="round" stroke-opacity="0.85"/>
+    <text class="cl" x="212" y="330">ETV stoma</text>
+  </g>
+  <g id="x7-shg" style="display:none">
+    <path id="x7-shp" fill="none" stroke="#7F77DD" stroke-width="4" stroke-linecap="round"/>
+    <rect x="372" y="118" width="26" height="40" rx="6" fill="#7F77DD" fill-opacity="0.35" stroke="#7F77DD"/>
+    <path d="M385,158 L385,392" stroke="#7F77DD" stroke-width="4" stroke-linecap="round"/>
+    <text class="cl" x="404" y="134">valve</text>
+    <text class="cl" x="404" y="150" id="x7-opl"></text>
+    <text class="cl" x="392" y="406">to peritoneum ↓</text>
+  </g>
+  <g id="x7-pd"></g>
+  <text class="cl" x="30" y="40">skull</text>
+  <text class="cl" x="200" y="20" text-anchor="middle">cortical subarachnoid space</text>
+  <text class="cl" x="200" y="346" text-anchor="middle">basal cisterns (continuous with the cortical SAS)</text>
+  <text id="x7-sdhl" class="cl" x="200" y="36" text-anchor="middle" style="display:none"></text>
+  <text class="cl" x="60" y="250">cortical mantle</text>
+  <text class="ch" x="200" y="378" text-anchor="middle" id="x7-tmpl"></text>
+  <rect x="96" y="388" width="14" height="10" fill="#EF9F27" fill-opacity="0.7"/><text class="cl" x="116" y="397">reduction in ventricular size</text>
+  <text class="ch" x="440" y="18">Evans index after surgery</text>
+  <line x1="440" y1="230" x2="670" y2="230" stroke="var(--border-strong)" stroke-width="0.5"/>
+  <line x1="440" y1="30" x2="440" y2="230" stroke="var(--border-strong)" stroke-width="0.5"/>
+  <g id="x7-gax"></g>
+  <path id="x7-cPre" fill="none" stroke="#888780" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <path id="x7-cEtv" fill="none" stroke="#378ADD" stroke-width="1.6"/>
+  <path id="x7-cSh" fill="none" stroke="#7F77DD" stroke-width="1.6"/>
+  <line x1="440" x2="670" id="x7-thr" stroke="#1D9E75" stroke-width="1" stroke-dasharray="2 3"/>
+  <circle id="x7-gdot" r="5" fill="var(--text-primary)"/>
+  <text class="cl" x="555" y="262" text-anchor="middle">months</text>
+  <line x1="446" y1="282" x2="466" y2="282" stroke="#378ADD" stroke-width="2"/><text class="cl" x="472" y="286">ETV (gradient 0)</text>
+  <line x1="446" y1="300" x2="466" y2="300" stroke="#7F77DD" stroke-width="2"/><text class="cl" x="472" y="304" id="x7-lgSh">VP shunt</text>
+  <line x1="446" y1="318" x2="466" y2="318" stroke="#888780" stroke-width="1.2" stroke-dasharray="4 3"/><text class="cl" x="472" y="322">untreated</text>
+  <line x1="446" y1="336" x2="466" y2="336" stroke="#1D9E75" stroke-dasharray="2 3"/><text class="cl" x="472" y="340">Evans 0.30 (upper normal)</text>
+</svg>
+<div id="x7-msg" class="msg"></div>
+
+  </div>
+  <div class="notes">
+    <div>
+      <h3>Model</h3>
+      <p>Target ventricular size (Evans index) depends linearly on the transmantle pressure about a remodelled resting size (0.45), starting from 0.50 before surgery. It approaches the target exponentially, with a time constant of about 4 months after ETV and about 1 month after shunting. Pressures (cmH₂O) are illustrative: before surgery 22 in the ventricles against 18 in the subarachnoid space; after ETV, both 11; with a shunt, ventricular pressure equals the valve opening pressure against a subarachnoid pressure of 10, with an extra −12 when upright without an anti-siphon device. The orange region is the pre-operative ventricular outline minus the current one; the percentage is the change in area on this coronal section.</p>
+      <p class="caveat">Teaching model, not fitted to patient data. Measured transmantle gradients in patients are small (a few mmHg at most) and some studies found none; ventricular size also depends on mantle elasticity, chronic remodelling, pulsatility, posture and duration of hydrocephalus. Ventricles often remain large after a successful ETV, so ventricular size is a poor marker of ETV success.</p>
+    </div>
+    <div>
+      <h3>References</h3>
+      <ol class="refs"><li>Hakim S, Venegas JG, Burton JD. <em>The physics of the cranial cavity, hydrocephalus and normal pressure hydrocephalus: mechanical interpretation and mathematical model.</em> Surg Neurol 1976;5:187–210.</li><li>Kulkarni AV, et al. <em>Endoscopic third ventriculostomy in the treatment of childhood hydrocephalus.</em> J Pediatr 2009;155:254–259.</li><li>Bargalló N, et al. <em>Functional analysis of third ventriculostomy patency by quantification of CSF stroke volume by using cine phase-contrast MR imaging.</em> AJNR 2005;26:2514–2521.</li></ol>
     </div>
   </div>
 </section>
@@ -4748,6 +4837,123 @@ function tick(t){
   requestAnimationFrame(tick);
 }
 sync();upd();initParts();requestAnimationFrame(tick);
+})();
+
+}
+new MutationObserver(__init).observe(__sec,{attributes:true,attributeFilter:["hidden"]});
+__init();
+})();
+</script>
+<script>
+(function(){
+const __sec=document.getElementById("m-tmp");
+const __g=id=>document.getElementById("x7-"+id);
+const requestAnimationFrame=f=>window.requestAnimationFrame(function w(t){ if(__sec.hidden) window.requestAnimationFrame(w); else f(t); });
+let __done=false;
+function __init(){ if(__done||__sec.hidden) return; __done=true;
+
+(function(){
+const $=id=>__g(id);const NS="http://www.w3.org/2000/svg";
+const S={tx:"pre",op:7,up:false,asd:false,t:0};
+const E0=0.5,E_REST=0.45,KE=0.03;
+function press(s){
+  if(s.tx==="pre")return{pv:22,ps:18};
+  if(s.tx==="etv")return{pv:11,ps:11};
+  const ps=10,siph=s.up&&!s.asd?-12:0;
+  return{pv:s.op+siph,ps};
+}
+const target=s=>{if(s.tx==="pre")return E0;const p=press(s);return Math.max(0.2,Math.min(E0,E_REST+KE*(p.pv-p.ps)))};
+const tau=s=>s.tx==="etv"?4:1;
+const evans=(s,t)=>s.tx==="pre"?E0:target(s)+(E0-target(s))*Math.exp(-t/tau(s));
+const TX=[["pre","Before surgery"],["etv","ETV"],["sh","VP shunt"]];
+TX.forEach(([k,l])=>{const b=document.createElement("button");b.className="pb";b.textContent=l;b.dataset.k=k;b.onclick=()=>{S.tx=k;if(k==="pre")S.t=0;else if(S.t===0)S.t=12;upd()};$("tx").appendChild(b)});
+$("op").oninput=()=>{S.op=+$("op").value;upd()};
+$("up").onchange=()=>{S.up=$("up").checked;upd()};
+$("asd").onchange=()=>{S.asd=$("asd").checked;upd()};
+$("tm").oninput=()=>{S.t=+$("tm").value;playing=false;setPlay();upd()};
+let playing=false;
+function setPlay(){$("play").innerHTML=playing?'<i class="ti ti-player-pause" aria-hidden="true"></i> Pause':'<i class="ti ti-player-play" aria-hidden="true"></i> Play 12 months'}
+$("play").onclick=()=>{if(S.tx==="pre")S.tx="sh";if(S.t>=12||!playing&&S.t>11.9)S.t=0;playing=!playing;setPlay();upd()};
+const GX=t=>440+t/12*230,GY=e=>230-(e-0.18)/(0.56-0.18)*200;
+const gax=$("gax");
+[0,3,6,9,12].forEach(t=>gax.insertAdjacentHTML("beforeend",`<text class="cl" x="${GX(t)}" y="246" text-anchor="middle">${t}</text>`));
+[0.2,0.3,0.4,0.5].forEach(e=>gax.insertAdjacentHTML("beforeend",`<text class="cl" x="434" y="${GY(e)+4}" text-anchor="end">${e.toFixed(1)}</text><line x1="440" x2="670" y1="${GY(e)}" y2="${GY(e)}" stroke="var(--border)" stroke-width="0.5"/>`));
+$("thr").setAttribute("y1",GY(0.3));$("thr").setAttribute("y2",GY(0.3));
+const curve=s=>{let d="";for(let i=0;i<=120;i++){const t=i/10;d+=(i?"L":"M")+GX(t).toFixed(1)+","+GY(evans(s,t)).toFixed(1)}return d};
+const ventGeom=E=>{const half=E*324/2;const rx=Math.max(8,(half-3)/2),ry=24+190*(E-0.25);return{rx,ry,cy:168,xl:200-3-rx,xr:200+3+rx}};
+const area=g=>g.rx*g.ry;
+const setV=(ids,g,w3)=>{[[ids[0],g.xl,-20],[ids[1],g.xr,20]].forEach(([id,x,r])=>{const e=$(id);e.setAttribute("cx",x);e.setAttribute("cy",g.cy);e.setAttribute("rx",g.rx);e.setAttribute("ry",g.ry);e.setAttribute("transform",`rotate(${r} ${x} ${g.cy})`)});
+  const y0=g.cy+g.ry*0.55;const r=$(ids[2]);r.setAttribute("x",200-w3/2);r.setAttribute("y",y0);r.setAttribute("width",w3);r.setAttribute("height",Math.max(8,298-y0))};
+const arrows=[];for(let i=0;i<10;i++){const p=document.createElementNS(NS,"path");p.setAttribute("fill","none");p.setAttribute("stroke-width","2.2");p.setAttribute("stroke-linecap","round");$("arrows").appendChild(p);arrows.push(p)}
+const dots=[];for(let i=0;i<8;i++){const c=document.createElementNS(NS,"circle");c.setAttribute("r","2.4");$("pd").appendChild(c);dots.push({c,u:i/8})}
+let pulse=0;
+const G0=ventGeom(E0);
+function render(){
+  const E=evans(S,S.t),p=press(S),tmp=p.pv-p.ps,g=ventGeom(E);
+  const show0=S.tx!=="pre";
+  ["oL","oR","o3"].forEach(id=>$(id).style.display=show0?"":"none");
+  setV(["oL","oR","o3"],G0,Math.max(3,4+60*(E0-0.25)));
+  setV(["lvL","lvR","v3"],g,Math.max(3,4+60*(E-0.25)));
+  const over=S.tx==="sh"&&S.t>0.3&&tmp<=-8;
+  const ret=over?Math.min(10,(-tmp-7)*1.6)*Math.min(1,S.t/2):0;
+  $("brain").setAttribute("ry",130-ret);$("brain").setAttribute("cy",188+ret);
+  $("sdh").setAttribute("d",ret>0.5?`M58,150 C88,52 312,52 342,150 C300,${64+ret*1.4} 100,${64+ret*1.4} 58,150 Z`:"");
+  $("sdhl").style.display=ret>0.5?"":"none";$("sdhl").textContent="overdrainage: subdural collection risk";
+  $("ihf").setAttribute("d",`M200,${58+2*ret} L200,${(g.cy-g.ry+6).toFixed(1)}`);
+  const top=58+2*ret,vtop=g.cy-g.ry,mant=(vtop-top)*140/324;
+  const A=Math.min(1,Math.abs(tmp)/6),dir=tmp>0.3?1:tmp<-0.3?-1:0;
+  const ph=0.75+0.25*Math.sin(pulse);
+  arrows.forEach((a,i)=>{
+    if(!dir){a.setAttribute("d","");return}
+    const ang=-Math.PI*0.95+i/(arrows.length-1)*Math.PI*0.9,cx=i<arrows.length/2?g.xl:g.xr;
+    const ex=cx+Math.cos(ang)*g.rx*1.05,ey=g.cy+Math.sin(ang)*g.ry*1.05;
+    const L=(8+20*A)*ph,ox=ex+Math.cos(ang)*L,oy=ey+Math.sin(ang)*L;
+    const [x1,y1,x2,y2]=dir>0?[ex,ey,ox,oy]:[ox,oy,ex,ey];
+    const hx=x2-x1,hy=y2-y1,hl=Math.hypot(hx,hy)||1,ux=hx/hl,uy=hy/hl;
+    a.setAttribute("d",`M${x1.toFixed(1)},${y1.toFixed(1)} L${x2.toFixed(1)},${y2.toFixed(1)} M${(x2-6*ux-4*uy).toFixed(1)},${(y2-6*uy+4*ux).toFixed(1)} L${x2.toFixed(1)},${y2.toFixed(1)} L${(x2-6*ux+4*uy).toFixed(1)},${(y2-6*uy-4*ux).toFixed(1)}`);
+    a.setAttribute("stroke",dir>0?"#E24B4A":"#534AB7");a.setAttribute("stroke-opacity",(0.55+0.45*A).toFixed(2));
+  });
+  $("tmpl").textContent=dir>0?"Transmantle pressure positive: ventricles push outward":dir<0?"Transmantle pressure negative: suction on the ventricular wall":"Transmantle pressure 0: no push, no suction";
+  $("etvg").style.display=S.tx==="etv"?"":"none";$("shg").style.display=S.tx==="sh"?"":"none";
+  if(S.tx==="sh"){const sx=g.xr+g.rx*0.4,sy=g.cy-g.ry*0.5;$("shp").setAttribute("d",`M${sx.toFixed(1)},${sy.toFixed(1)} L300,95 L340,62 C360,52 385,70 385,118`);$("opl").textContent=S.op+" cmH₂O"}
+  dots.forEach(d=>{
+    if(S.tx==="etv"){const y=298+34*((d.u+0.5*Math.sin(pulse+d.u*6)+1)%1);d.c.setAttribute("cx",200+(d.u-0.5)*6);d.c.setAttribute("cy",y.toFixed(1));d.c.setAttribute("fill","#185FA5");d.c.style.display=""}
+    else if(S.tx==="sh"){const el=$("shp"),L=el.getTotalLength();if(L>0){const q=el.getPointAtLength(d.u*L);d.c.setAttribute("cx",q.x);d.c.setAttribute("cy",q.y);d.c.setAttribute("fill","#534AB7");d.c.style.display=tmp<4?"":"none"}}
+    else d.c.style.display="none";
+  });
+  const red=show0?Math.max(0,1-area(g)/area(G0)):0;
+  return{E,p,tmp,mant,red};
+}
+function upd(){
+  [...$("tx").children].forEach(b=>b.classList.toggle("on",b.dataset.k===S.tx));
+  $("opv").textContent=S.op+" cmH₂O ("+Math.round(S.op*10)+" mmH₂O)";
+  ["op","up","asd"].forEach(id=>$(id).disabled=S.tx!=="sh");
+  $("tm").value=S.t;$("tmv").textContent=S.tx==="pre"?"–":S.t.toFixed(1)+" months";
+  const r=render();
+  $("mPv").textContent=r.p.pv.toFixed(0)+" cmH₂O";$("mPs").textContent=r.p.ps.toFixed(0)+" cmH₂O";
+  $("mT").textContent=(r.tmp>0?"+":"")+r.tmp.toFixed(0)+" cmH₂O";
+  $("mT").style.color=r.tmp>0.3?"var(--text-danger)":r.tmp<-0.3?"var(--text-accent)":"var(--text-primary)";
+  $("mE").textContent=r.E.toFixed(2);$("mM").textContent=r.mant.toFixed(0)+" mm";
+  $("mR").textContent=S.tx==="pre"?"–":Math.round(r.red*100)+"%";
+  $("cPre").setAttribute("d",`M440,${GY(E0)} L670,${GY(E0)}`);
+  $("cEtv").setAttribute("d",curve({...S,tx:"etv"}));$("cSh").setAttribute("d",curve({...S,tx:"sh"}));
+  $("cEtv").setAttribute("stroke-width",S.tx==="etv"?3:1.4);$("cSh").setAttribute("stroke-width",S.tx==="sh"?3:1.4);
+  $("lgSh").textContent=`VP shunt, ${S.op} cmH₂O${S.up&&!S.asd?" upright":""}`;
+  $("gdot").setAttribute("cx",GX(S.tx==="pre"?0:S.t));$("gdot").setAttribute("cy",GY(r.E));
+  let m;
+  if(S.tx==="pre")m="Aqueductal stenosis: CSF made in the lateral and third ventricles cannot reach the subarachnoid space, so ventricular pressure exceeds subarachnoid pressure. The positive transmantle pressure pushes the ventricular wall outward; the ventricles are very large and the cortical mantle thin.";
+  else if(S.tx==="etv")m="ETV: the stoma opens the third ventricle into the basal cisterns, which are continuous with the cortical subarachnoid space. Ventricular and subarachnoid pressures equalise, so the positive transmantle pressure falls to zero. With no suction from inside, the ventricles shrink only a little (orange), through the elastic recoil of the mantle, and remain large.";
+  else{const t=r.tmp;m=t>0.3?"VP shunt with a high opening pressure: ventricular pressure stays above subarachnoid pressure, so the ventricles stay large (relative underdrainage).":t>-0.3?"VP shunt with the opening pressure matched to subarachnoid pressure: the transmantle pressure is zero and the result resembles ETV.":"VP shunt: the valve holds ventricular pressure at its opening pressure, below subarachnoid pressure. The transmantle pressure becomes negative and sucks on the ventricular (luminal) wall, so the ventricles shrink much more than after ETV (orange) and the cortical mantle thickens. Lower the opening pressure and the gradient becomes more negative, so the orange region grows."+(S.up&&!S.asd?" Upright, siphoning drops ventricular pressure further: slit ventricles and, in adults, the brain can pull away from the dura, causing subdural collections. An anti-siphon device prevents this.":"")}
+  $("msg").textContent=m;
+}
+let last=null;
+function tick(ts){
+  const dt=last==null?0:Math.min((ts-last)/1000,0.05);last=ts;pulse+=dt*6;
+  dots.forEach(d=>{d.u=(d.u+dt*(S.tx==="sh"?0.25:0.05))%1});
+  if(playing){S.t=Math.min(12,S.t+dt*1.2);if(S.t>=12){playing=false;setPlay()}upd()}else render();
+  requestAnimationFrame(tick);
+}
+upd();requestAnimationFrame(tick);
 })();
 
 }
